@@ -1,0 +1,12 @@
+backspace
+bell attach --- sound bell
+delete
+slash screen -- half way | full done
+blink cursor -- done
+design remaining graphical text characters
+graphics mode
+add to terminfo ?
+choose a good name --- miniterm (arduino + nokia1100 lcd + ansi + terminal + unix )
+make the screen scollable[so that heigher width/height can be attained] ?
+make a good pcb design(with serial !USB)
+support different ch set

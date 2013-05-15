@@ -1,0 +1,2 @@
+03:10:21 PM: Library <lcd_nokia_6100> has duplicate entry name <NOKIA6100_LCD_CON>. This may cause some unexpected behavior when loading components into a schematic.
+03:10:21 PM: Library <lcd_nokia_6100> has duplicate entry name <NOKIA6100_LCD_CON>. This may cause some unexpected behavior when loading components into a schematic.

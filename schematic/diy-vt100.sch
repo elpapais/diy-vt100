@@ -1,0 +1,281 @@
+EESchema Schematic File Version 2  date Tue 14 May 2013 06:21:29 PM IST
+LIBS:power
+LIBS:device
+LIBS:transistors
+LIBS:conn
+LIBS:linear
+LIBS:regul
+LIBS:74xx
+LIBS:cmos4000
+LIBS:adc-dac
+LIBS:memory
+LIBS:xilinx
+LIBS:special
+LIBS:microcontrollers
+LIBS:dsp
+LIBS:microchip
+LIBS:analog_switches
+LIBS:motorola
+LIBS:texas
+LIBS:intel
+LIBS:audio
+LIBS:interface
+LIBS:digital-audio
+LIBS:philips
+LIBS:display
+LIBS:cypress
+LIBS:siliconi
+LIBS:opto
+LIBS:atmel
+LIBS:contrib
+LIBS:valves
+LIBS:embedded-microcontrollers
+LIBS:lcd_nokia_6100
+LIBS:nokia1100_lcd
+LIBS:capteurs
+LIBS:diy-vt100-cache
+EELAYER 25  0
+EELAYER END
+$Descr A4 11700 8267
+encoding utf-8
+Sheet 1 1
+Title ""
+Date "14 may 2013"
+Rev ""
+Comp ""
+Comment1 ""
+Comment2 ""
+Comment3 ""
+Comment4 ""
+$EndDescr
+Wire Wire Line
+	7450 3700 7450 3900
+Connection ~ 7200 3200
+Wire Wire Line
+	7450 3200 7200 3200
+Wire Wire Line
+	2700 4300 7200 4300
+Wire Wire Line
+	2700 4300 2700 3350
+Wire Wire Line
+	2700 3350 2950 3350
+Wire Wire Line
+	7200 4300 7200 2150
+Wire Wire Line
+	7200 2150 7450 2150
+Connection ~ 7100 3500
+Wire Wire Line
+	7450 3500 6050 3500
+Wire Wire Line
+	6050 3800 6800 3800
+Wire Wire Line
+	6800 3800 6800 1800
+Wire Wire Line
+	6800 1800 7450 1800
+Wire Wire Line
+	7100 3500 7100 1450
+Wire Wire Line
+	9850 1050 9650 1050
+Wire Wire Line
+	9650 1050 9650 1450
+Wire Wire Line
+	9650 1450 8850 1450
+Wire Wire Line
+	9250 3150 9850 3150
+Wire Wire Line
+	9250 3150 9250 2150
+Wire Wire Line
+	9250 2150 8850 2150
+Wire Wire Line
+	9850 2550 9550 2550
+Wire Wire Line
+	9550 2550 9550 1950
+Wire Wire Line
+	9550 1950 8850 1950
+Wire Wire Line
+	9850 1950 9850 1750
+Wire Wire Line
+	9850 1750 8850 1750
+Wire Wire Line
+	10250 1050 10250 3150
+Connection ~ 10250 2250
+Connection ~ 10250 1650
+Connection ~ 10250 1050
+Connection ~ 10250 1350
+Connection ~ 10250 1950
+Connection ~ 10250 2550
+Connection ~ 10250 2850
+Wire Wire Line
+	10250 3150 10500 3150
+Wire Wire Line
+	9850 3150 9850 3350
+Wire Wire Line
+	9850 3350 10500 3350
+Wire Wire Line
+	8850 1650 9850 1650
+Wire Wire Line
+	8850 1850 9700 1850
+Wire Wire Line
+	9700 1850 9700 2250
+Wire Wire Line
+	9700 2250 9850 2250
+Wire Wire Line
+	8850 2050 9400 2050
+Wire Wire Line
+	9400 2050 9400 2850
+Wire Wire Line
+	9400 2850 9850 2850
+Wire Wire Line
+	8850 1550 9750 1550
+Wire Wire Line
+	9750 1550 9750 1350
+Wire Wire Line
+	9750 1350 9850 1350
+Wire Wire Line
+	7100 1450 7450 1450
+Wire Wire Line
+	7000 3600 7000 1600
+Wire Wire Line
+	7000 1600 7450 1600
+Connection ~ 7000 3600
+Wire Wire Line
+	6050 3700 6900 3700
+Wire Wire Line
+	6900 3700 6900 1700
+Wire Wire Line
+	6900 1700 7450 1700
+Wire Wire Line
+	6050 3300 6700 3300
+Wire Wire Line
+	6700 3300 6700 1950
+Wire Wire Line
+	6700 1950 7450 1950
+Wire Wire Line
+	6050 3600 7450 3600
+Wire Wire Line
+	6050 3400 7300 3400
+Wire Wire Line
+	7300 3400 7300 3300
+Wire Wire Line
+	7300 3300 7450 3300
+Connection ~ 7450 3800
+$Comp
+L GND #PWR?
+U 1 1 519226AE
+P 7450 3400
+F 0 "#PWR?" H 7450 3400 30  0001 C CNN
+F 1 "GND" H 7450 3330 30  0001 C CNN
+	1    7450 3400
+	0    1    1    0   
+$EndComp
+$Comp
+L DIODE D?
+U 1 1 51921F0F
+P 10050 3150
+F 0 "D?" H 10050 3250 40  0000 C CNN
+F 1 "DIODE" H 10050 3050 40  0000 C CNN
+	1    10050 3150
+	1    0    0    -1  
+$EndComp
+$Comp
+L BUZZER B1
+U 1 1 51921EED
+P 10800 3250
+F 0 "B1" H 10650 3500 60  0000 C CNN
+F 1 "BUZZER" H 11050 3500 60  0000 C CNN
+	1    10800 3250
+	-1   0    0    1   
+$EndComp
+$Comp
+L LED PROG_4
+U 1 1 51921B70
+P 10050 2850
+F 0 "PROG_4" H 10050 2950 50  0000 C CNN
+F 1 "LED" H 10050 2750 50  0000 C CNN
+	1    10050 2850
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED PROG_3
+U 1 1 51921B57
+P 10050 2550
+F 0 "PROG_3" H 10050 2650 50  0000 C CNN
+F 1 "LED" H 10050 2450 50  0000 C CNN
+	1    10050 2550
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED PROG_2
+U 1 1 51921B3D
+P 10050 2250
+F 0 "PROG_2" H 10050 2350 50  0000 C CNN
+F 1 "LED" H 10050 2150 50  0000 C CNN
+	1    10050 2250
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED PROG_1
+U 1 1 51921B34
+P 10050 1950
+F 0 "PROG_1" H 10050 2050 50  0000 C CNN
+F 1 "LED" H 10050 1850 50  0000 C CNN
+	1    10050 1950
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED KBD_LOCKED
+U 1 1 51921B2F
+P 10050 1650
+F 0 "KBD_LOCKED" H 10050 1750 50  0000 C CNN
+F 1 "LED" H 10050 1550 50  0000 C CNN
+	1    10050 1650
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED OFFLINE
+U 1 1 51921B2A
+P 10050 1350
+F 0 "OFFLINE" H 10050 1450 50  0000 C CNN
+F 1 "LED" H 10050 1250 50  0000 C CNN
+	1    10050 1350
+	1    0    0    -1  
+$EndComp
+$Comp
+L LED ONLINE
+U 1 1 51921B09
+P 10050 1050
+F 0 "ONLINE" H 10050 1150 50  0000 C CNN
+F 1 "LED" H 10050 950 50  0000 C CNN
+	1    10050 1050
+	1    0    0    -1  
+$EndComp
+$Comp
+L NOKIA1100_LCD LCD1
+U 1 1 51921AAE
+P 8200 3600
+F 0 "LCD1" H 8200 3600 60  0000 C CNN
+F 1 "NOKIA1100_LCD" H 8200 3350 60  0000 C CNN
+	1    8200 3600
+	0    -1   -1   0   
+$EndComp
+$Comp
+L MSP430G2553IN20 U?
+U 1 1 51920588
+P 3250 2150
+F 0 "U?" H 5700 2250 60  0000 C CNN
+F 1 "MSP430G2553IN20" H 4550 850 60  0000 C CNN
+F 2 "~" H 3250 2150 60  0000 C CNN
+F 3 "~" H 3250 2150 60  0000 C CNN
+	1    3250 2150
+	1    0    0    -1  
+$EndComp
+$Comp
+L 74LS259 U1
+U 1 1 51912FFA
+P 8150 1800
+F 0 "U1" H 8150 1900 60  0000 C CNN
+F 1 "74LS259" H 8150 1650 60  0000 C CNN
+	1    8150 1800
+	1    0    0    -1  
+$EndComp
+$EndSCHEMATC
