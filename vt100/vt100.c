@@ -26,12 +26,6 @@ vt100_keypad_nummode()
 	vt100.mode.keypad = 0;
 }
 
-void
-vt100_set_horizontal_tabulation()
-{
-	/* TODO: add support for tabulation */
-}
-
 void 
 vt100_to_reset_state()
 {

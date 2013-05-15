@@ -2,6 +2,7 @@
 #define _VT100_ATTRIBUTE_H_
 
 #include <vt100/extern.h>
+#include <vt100/screen.h>
 
 void vt100_select_attribute();
 void vt100_set_doublewidth();

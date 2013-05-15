@@ -12,7 +12,7 @@ vt100_buffer_putchar()
 	
 	vt100.screen[vt100.cursor.row][vt100.cursor.col].data = vt100.data;
 	
-	vt100.screen[vt100.cursor.row][vt100.cursor.col].blink = vt100.mode.attr_blink;
+	//vt100.screen[vt100.cursor.row][vt100.cursor.col].blink = vt100.mode.attr_blink;
 	vt100.screen[vt100.cursor.row][vt100.cursor.col].underline = vt100.mode.attr_underline;
 	vt100.screen[vt100.cursor.row][vt100.cursor.col].inverse = vt100.mode.attr_inverse;
 	vt100.screen[vt100.cursor.row][vt100.cursor.col].bold = vt100.mode.attr_bold;
@@ -66,10 +66,33 @@ vt100_buffer_shiftup()
 }
 
 void
+vt100_buffer_shiftdown()
+{
+	row_t i;
+	col_t j;
+	
+	for( i = 1; i < VT100_HEIGHT; i++ )
+	{
+		for( j = 0; j < VT100_WIDTH; j++ )
+		{
+			vt100.screen[i][j] = vt100.screen[i+1][j];
+		}
+		
+		vt100.screen[i][0].touched = 1;
+	}
+	
+	vt100.screen[0][0].touched = 1;
+	for( j = 0; j < VT100_WIDTH; j++ )
+	{
+		vt100_buffer_clear_char(0,j);
+	}
+}
+
+void
 vt100_buffer_clear_char(const row_t i, const col_t j)
 {
 	vt100.screen[i][j].data = '\0';
-	vt100.screen[i][j].blink = 0;
+	//vt100.screen[i][j].blink = 0;
 	vt100.screen[i][j].bold = 0;
 	vt100.screen[i][j].inverse = 0;
 	vt100.screen[i][j].underline = 0;

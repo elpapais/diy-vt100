@@ -71,11 +71,31 @@ vt100_cursor_position()
 void 
 vt100_restore_cursor()
 {
-	
+	vt100.cursor = vt100.mode.cursor_bkp;
 }
 
 void 
 vt100_save_cursor()
 {
-	
+	vt100.mode.cursor_bkp = vt100.cursor;
+}
+
+void
+vt100_cursor_down_with_scrollup()
+{
+	if(!(++vt100.cursor.row < VT100_WIDTH))
+	{
+		vt100.cursor.row = VT100_WIDTH - 1;
+		vt100_buffer_shiftup();
+	}
+}
+
+
+void
+vt100_cursor_up_with_scrolldown()
+{
+	if(vt100.cursor.row == 0)
+	{
+		vt100_buffer_shiftdown();
+	}
 }

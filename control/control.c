@@ -1,7 +1,7 @@
 #include <control.h>
 
 const struct __control
-control_opensquarebracket[] = 
+control_opensquarebracket[] = //[
 {
 	func_call			('D', vt100_cursor_backward, 1, 1),
 	func_call			('B', vt100_cursor_down, 1, 1),
@@ -18,11 +18,12 @@ control_opensquarebracket[] =
 	func_call			('m', vt100_select_attribute, VT100_PARAM_QUEUE_SIZE, 0),
 	func_call			('n', vt100_DSR, 1, 0),
 	func_call			('x', vt100_report_parameters, 1, 0),
+	func_call			('g', vt100_tabulation_clear, 1,0),
 	control_end()
 };
 
 const struct __control
-control_hash[] =
+control_hash[] = //#
 {
 	func_call_noparam	('3', vt100_set_doubleheight_tophalf),
 	func_call_noparam	('4', vt100_set_doubleheight_bottomhalf),
@@ -35,18 +36,18 @@ const struct __control
 control_C1[] = 
 {
 	control_select		(ASCII_ESCAPE, control_C1),
-	func_call_noparam	('Z', vt100_identity),
 	control_select		('[', control_opensquarebracket),
 	control_select		('#', control_hash),
+	func_call_noparam	('Z', vt100_identity),
 	func_call_noparam	('=', vt100_keypad_appmode),
 	func_call_noparam	('>', vt100_keypad_nummode),
 	func_call_noparam	('Z', vt100_identity),
 	func_call_noparam	('8', vt100_restore_cursor),
 	func_call_noparam	('7', vt100_save_cursor),
 	func_call_noparam	('H', vt100_set_horizontal_tabulation),
-	func_call			('D', vt100_cursor_down, 1, 1),
+	func_call_noparam	('D', vt100_cursor_down_with_scrollup),
 	func_call_noparam	('E', vt100_buffer_newrow),
-	func_call			('M', vt100_cursor_up, 1, 1),
+	func_call_noparam	('M', vt100_cursor_up_with_scrolldown),
 	func_call_noparam	('c', vt100_to_reset_state),
 	control_end()
 };
@@ -78,7 +79,7 @@ static struct __control
 void
 control()
 {
-	static struct __control
+	struct __control
 	*i;
 
 	vt100.data = UCA0RXBUF;

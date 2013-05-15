@@ -10,6 +10,7 @@
 #include <vt100/type.h>
 #include <vt100/screen.h>
 #include <vt100/led.h>
+#include <vt100/tab.h>
 #include <nokia1100.h>
 #include <common.h>
 #include <uart.h>

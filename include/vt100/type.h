@@ -5,6 +5,14 @@
 #include <vt100/param.h>
 #include <common.h>
 
+
+/* cursor position */
+struct __cursor
+{
+	row_t row;
+	col_t col;
+};
+
 struct __mode
 {
 	/* Application  Mode :1 , Keypad Mode:0 */
@@ -23,6 +31,8 @@ struct __mode
 	uint8_t attr_blink:1;
 	
 	uint8_t attr_underline:1;
+	
+	struct __cursor cursor_bkp;
 };
 
 struct __char
@@ -33,10 +43,10 @@ struct __char
 	/* DATA attributes */
 	uint8_t bold:1;
 	uint8_t underline:1;
-	uint8_t blink:1;
+	//uint8_t blink:1;
 	uint8_t inverse:1;
 	
-	/* Below: these are only used for coloumn 1 (TO SAVE RAM) */
+	/* = only used for coloumn 1 */
 	
 	/* is row touched */
 	uint8_t touched:1;
@@ -49,13 +59,11 @@ struct __char
 	
 	/* is this a double width line */
 	uint8_t double_width:1;
-};
-
-/* cursor position */
-struct __cursor
-{
-	row_t row;
-	col_t col;
+	
+	/* = only used for row 1 */
+	
+	/* is this a tab stop point */
+	uint8_t tab:1;
 };
 
 /* terminal object */
