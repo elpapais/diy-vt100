@@ -22,7 +22,7 @@ struct __mode
 	uint8_t unsolicited_allowed:1;
 	
 	/* cursor current state */
-	uint8_t current_state:1;
+	uint8_t cursor_state:1;
 	
 	uint8_t attr_bold:1;
 	

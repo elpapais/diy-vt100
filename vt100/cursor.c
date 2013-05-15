@@ -4,9 +4,9 @@ void
 vt100_cursor()
 {
 	/* timer A1 at 15.625 KHz, we need to produce delay for blinking cursor */
-	TA0CCR0 = 5;//7812;
+	//TA0CCR0 = 100;//7812;
 	TA0CCTL0 = CCIE;
-	TA0CTL = TASSEL_1 + ID_3  + MC_1;
+	TA0CTL = TASSEL_2 + ID_3  + MC_2;
 }
 
 /* using Watchdog Interval Timer interrupt service for cursor blinking */
@@ -19,7 +19,7 @@ void timer0_interrupt()
 	}
 	
 	nokia1100_gotoyx(vt100.cursor.row, vt100.cursor.col * NOKIA1100_WIDTH_CHAR);
-	if(vt100.mode.current_state)
+	if(vt100.mode.cursor_state)
 	{
 		vt100_print_char(vt100.cursor.row, vt100.cursor.col, TRUE);
 	}
@@ -29,7 +29,7 @@ void timer0_interrupt()
 		vt100_print_char(vt100.cursor.row, vt100.cursor.col, FALSE);
 	}
 	
-	vt100.mode.current_state = ! vt100.mode.current_state;
+	vt100.mode.cursor_state = ! vt100.mode.cursor_state;
 }
 
 void
