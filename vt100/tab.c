@@ -28,3 +28,17 @@ void vt100_set_horizontal_tabulation()
 {
 	vt100.screen[0][vt100.cursor.col].tab = TRUE;
 }
+
+void vt100_goto_next_tab()
+{
+	register col_t j;
+	
+	for(j = vt100.cursor.col; j < VT100_WIDTH; j++)
+	{
+		if(vt100.screen[0][j].tab)
+		{
+			vt100.cursor.col = j;
+			break;
+		}
+	}
+}

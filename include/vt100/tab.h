@@ -6,5 +6,6 @@
 
 void vt100_tabulation_clear();
 void vt100_set_horizontal_tabulation();
+void vt100_goto_next_tab();
 
 #endif

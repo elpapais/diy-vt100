@@ -2,6 +2,8 @@
 #define _VT100_H_
 
 #include <vt100/bell.h>
+#include <vt100/attribute.h>
+#include <vt100/report.h>
 #include <vt100/buffer.h>
 #include <vt100/cursor.h>
 #include <vt100/param.h>

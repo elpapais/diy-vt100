@@ -46,6 +46,7 @@ typedef uint8_t row_t;
 #define ASCII_XOFF 		ASCII_DC3
 #define ASCII_ESCAPE 	ASCII_ESC
 #define ASCII_BELL		ASCII_BEL
+#define ASCII_TAB		ASCII_VT
 
 #define ASCII_SPACE		0x20
 

@@ -11,7 +11,8 @@ vt100_refresh()
 		if(vt100.screen[i][0].touched)
 		{
 			nokia1100_gotoyx(i, 0);
-			vt100.screen[i][0].touched=0;
+			
+			vt100.screen[i][0].touched = FALSE;
 			
 			for(j=0; j < (vt100.screen[i][0].double_width ? VT100_WIDTH/2 : VT100_WIDTH); j++)
 			{

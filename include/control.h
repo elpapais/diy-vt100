@@ -2,8 +2,9 @@
 #define _CONTROL_H_
 
 #include <common.h>
-#include <vt100/report.h>
-#include <vt100/attribute.h>
+#include <vt100/vt100.h>
+#include <uart.h>
+#include <cqueue.h>
 
 struct __control
 {
@@ -27,5 +28,16 @@ struct __control
 #define func_call_noparam(ascii, func) func_call(ascii, func, 0, 0)
 #define control_end() {0}
 
-void control() __attribute__((interrupt(USCIAB0RX_VECTOR))); /* USCI_A_RX */
+extern const struct __control control_C0[];
+extern const struct __control control_open_smallbracket[];
+extern const struct __control control_close_smallbracket[];
+extern const struct __control control_C1[];
+extern const struct __control control_hash[];
+extern const struct __control control_opensquarebracket[];
+
+void control_init();
+void control();
+
+void timerA1_interrupt() __attribute__((interrupt(TIMER0_A1_VECTOR)));
+
 #endif

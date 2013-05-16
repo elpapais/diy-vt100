@@ -17,7 +17,8 @@ vt100_buffer_putchar()
 	vt100.screen[vt100.cursor.row][vt100.cursor.col].inverse = vt100.mode.attr_inverse;
 	vt100.screen[vt100.cursor.row][vt100.cursor.col].bold = vt100.mode.attr_bold;
 	
-	vt100.screen[vt100.cursor.row][0].touched = 1;
+	vt100.screen[vt100.cursor.row][0].touched = TRUE;
+	
 	vt100.cursor.col++;
 	
 	if(!(vt100.cursor.col < VT100_WIDTH))
@@ -30,7 +31,7 @@ vt100_buffer_putchar()
 void
 vt100_buffer_newrow()
 {
-	vt100.screen[vt100.cursor.row][0].touched = 1;
+	vt100.screen[vt100.cursor.row][0].touched = TRUE;
 	vt100.cursor.row++;
 	
 	if(!(vt100.cursor.row < VT100_HEIGHT))
@@ -55,10 +56,10 @@ vt100_buffer_shiftup()
 			vt100.screen[i][j] = vt100.screen[i+1][j];
 		}
 		
-		vt100.screen[i][0].touched = 1;
+		vt100.screen[i][0].touched = TRUE;
 	}
 	
-	vt100.screen[i][0].touched = 1;
+	vt100.screen[i][0].touched = TRUE;
 	for( j = 0; j < VT100_WIDTH; j++ )
 	{
 		vt100_buffer_clear_char(i,j);
@@ -78,10 +79,11 @@ vt100_buffer_shiftdown()
 			vt100.screen[i][j] = vt100.screen[i+1][j];
 		}
 		
-		vt100.screen[i][0].touched = 1;
+		vt100.screen[i][0].touched = TRUE;
 	}
 	
-	vt100.screen[0][0].touched = 1;
+	vt100.screen[0][0].touched = TRUE;
+	
 	for( j = 0; j < VT100_WIDTH; j++ )
 	{
 		vt100_buffer_clear_char(0,j);
@@ -106,7 +108,8 @@ vt100_fill_all_E()
 	
 	for(i=0; i < VT100_HEIGHT; i++)
 	{
-		vt100.screen[i][0].touched = 1;
+		vt100.screen[i][0].touched = TRUE;
+		
 		for(j=0; j < VT100_WIDTH; j++)
 		{
 			vt100.screen[i][j].data = 'E';
@@ -125,7 +128,8 @@ vt100_erase()
 		case 0:
 			/* clear from current position to end of line */
 		
-			vt100.screen[vt100.cursor.row][0].touched=1;
+			vt100.screen[vt100.cursor.row][0].touched = TRUE;
+			
 			for(j=vt100.cursor.col; j < VT100_WIDTH; j++)
 			{
 				vt100_buffer_clear_char(vt100.cursor.row, j);
@@ -137,14 +141,16 @@ vt100_erase()
 		
 			for(i=0; i < vt100.cursor.row; i++)
 			{
-				vt100.screen[i][0].touched=1;
+				vt100.screen[i][0].touched = TRUE;
+				
 				for(j=0; j < VT100_WIDTH; j++)
 				{
 					vt100_buffer_clear_char(i, j);
 				}
 			}
 			
-			vt100.screen[i][0].touched=1;
+			vt100.screen[i][0].touched = TRUE;
+			
 			for(j=0; j <= vt100.cursor.col; j++)
 			{
 				vt100_buffer_clear_char(i, j);
@@ -158,7 +164,12 @@ vt100_erase()
 	
 			for( i = 0; i < VT100_HEIGHT; i++ )
 			{
-				vt100.screen[i][0].touched = 1;
+				if( vt100.data == 'J' )
+				{
+					vt100.screen[i][0].double_width = FALSE;
+				}
+				
+				vt100.screen[i][0].touched = TRUE;
 				
 				for( j = 0; j < VT100_WIDTH; j++ )
 				{
@@ -166,17 +177,10 @@ vt100_erase()
 				}
 			}
 			
-			if(vt100.data == 'J')
+			if(vt100.data == 'K')
 			{
-				for( i = 0; i < VT100_HEIGHT; i++ )
-				{
-					vt100.screen[i][0].double_width = 0;
-				}
-			}
-			else if(vt100.data == 'K')
-			{
-				vt100.cursor.col=0;
-				vt100.cursor.row=0;
+				vt100.cursor.col = 0;
+				vt100.cursor.row = 0;
 			}
 		break;
 		

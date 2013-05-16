@@ -3,14 +3,15 @@
 void
 vt100_cursor()
 {
-	/* timer A1 at 15.625 KHz, we need to produce delay for blinking cursor */
-	//TA0CCR0 = 100;//7812;
-	TA0CCTL0 = CCIE;
-	TA0CTL = TASSEL_2 + ID_3  + MC_2;
+	TA0CCR0 = 0xFFFF;
+	TACCTL0 = CCIE;
+	TACTL = TASSEL_2 + ID_3  + MC_1;
+	
+	/* interrupt goes to timerA0_interrupt() @ 3Hz */
 }
 
 /* using Watchdog Interval Timer interrupt service for cursor blinking */
-void timer0_interrupt()
+void timerA0_interrupt()
 {
 	/* make sure we dont overflow the cursor */
 	if(vt100.screen[vt100.cursor.row][0].double_width && vt100.cursor.col > VT100_WIDTH/2)
@@ -50,14 +51,14 @@ void
 vt100_cursor_up()
 {
 	/* TODO: margin are not supported | scroll up are not supported */	
-	vt100.cursor.row = constaint(vt100.cursor.row - vt100_param_get(0), 0, VT100_WIDTH - 1);
+	vt100.cursor.row = constaint(vt100.cursor.row - vt100_param_get(0), 0, VT100_HEIGHT - 1);
 }
 
 void
 vt100_cursor_down()
 {
 	/* TODO: margin are not supported | scroll down are not supported */
-	vt100.cursor.row = constaint(vt100.cursor.row + vt100_param_get(0), 0, VT100_WIDTH - 1);
+	vt100.cursor.row = constaint(vt100.cursor.row + vt100_param_get(0), 0, VT100_HEIGHT - 1);
 }
 
 void

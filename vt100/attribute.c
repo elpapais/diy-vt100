@@ -2,7 +2,6 @@
 
 void vt100_set_doubleheight_tophalf()
 {
-	
 	/* TODO: support double height */
 	vt100.screen[vt100.cursor.row][0].touched = TRUE;
 	vt100.screen[vt100.cursor.row][0].double_height_top = TRUE;
