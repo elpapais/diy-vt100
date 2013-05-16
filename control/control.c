@@ -10,7 +10,7 @@ control_init()
 	TACCTL1 = CCIE;
 	//TACTL = TASSEL_2 + ID_3  + MC_1; //already set in cursor init
 	
-	/* interrupt goes to timerA1_interrupt() @ 250Khz */
+	/* interrupt goes to timerA1_interrupt() @ 500Khz */
 	P1DIR |= BIT6;
 	P1OUT &= ~BIT6;
 }
@@ -68,14 +68,11 @@ void timerA1_interrupt()
 {
 	if(TACCTL1 & CCIFG)
 	{
-		P1OUT ^= BIT6;
-		
 		/* do the work */
 		while(cqueue_count(uart_cqueue_rx))
 		{
 			vt100.data = cqueue_pop(&uart_cqueue_rx);
-			//control();
-			vt100_buffer_putchar();
+			control();
 		}
 		
 		vt100_refresh();

@@ -2,7 +2,7 @@
 #define _CQUEUE_H_
 
 #define CQUEUE_SIZE 32
-#define CQUEUE_MOD 31
+#define CQUEUE_MOD CQUEUE_SIZE
 
 #include <common.h>
 

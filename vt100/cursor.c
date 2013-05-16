@@ -7,12 +7,12 @@ vt100_cursor()
 	TACCTL0 = CCIE;
 	TACTL = TASSEL_2 + ID_3  + MC_1;
 	
-	/* interrupt goes to timerA0_interrupt() @ 3Hz */
+	/* interrupt goes to timerA0_interrupt() @ 6Hz */
 }
 
 /* using Watchdog Interval Timer interrupt service for cursor blinking */
 void timerA0_interrupt()
-{
+{	
 	/* make sure we dont overflow the cursor */
 	if(vt100.screen[vt100.cursor.row][0].double_width && vt100.cursor.col > VT100_WIDTH/2)
 	{

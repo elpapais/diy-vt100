@@ -31,10 +31,12 @@ uart_init()
 	/* Clear UCSWRST flag (Initialize USCI state machine) */
 	UCA0CTL1 &= ~UCSWRST;
 
-	/* Enable interrupts */
-	IE2 = UCA0RXIE | UCA0TXIE;
+	/* Enable interrupts (UCA0TXIE will be enabled by uart_send) */
+	IE2 = UCA0RXIE;
 
 	/* RX interrupt goes to uart_queue_push() */
+	P1DIR |= BIT0 | BIT6;
+	P1OUT |= BIT0 | BIT6;
 }
 
 void uart_send(const uint8_t data)
@@ -42,7 +44,7 @@ void uart_send(const uint8_t data)
 	cqueue_push(&uart_cqueue_tx, data);
 	
 	/* enable interrupt if it was disabled due to empty cqueue */
-	IE2 &= ~UCA0TXIE;
+	IE2 |= UCA0TXIE;
 }
 
 void uart_send_int(uint8_t val)
@@ -92,12 +94,18 @@ void uart_send_param(uint8_t before, uint8_t after, uint8_t default_value)
 /* push received data to uart buffer */
 void usci0_receive_interrupt()
 {
-	cqueue_push(&uart_cqueue_rx, UCA0RXBUF);
+	uint8_t d = UCA0RXBUF;
+	P1OUT ^= BIT0;
+	
+	cqueue_push(&uart_cqueue_rx, d);
+	uart_send(d);
 	/* TODO: XON/XOFF sending for preventing overflow on when count == 32 */
 }
 
 void usci0_transmit_interrupt()
 {
+	P1OUT ^= BIT6;
+	
 	if(cqueue_count(uart_cqueue_tx))
 	{
 		UCA0TXBUF = cqueue_pop(&uart_cqueue_tx);

@@ -46,5 +46,5 @@ msp430_init()
 	 
 	DCOCTL = CALDCO_16MHZ;  /* Set DCO step and modulation */
 	BCSCTL1 = CALBC1_16MHZ; /* Set range */
-	BCSCTL2 = DIVS_3;
+	BCSCTL2 = DIVS_2;
 }

@@ -58,6 +58,8 @@ control_C0[] =
 	control_select		(ASCII_ESCAPE, control_C1),
 	func_call_noparam	(ASCII_BELL, vt100_bell),
 	func_call_noparam	(ASCII_TAB, vt100_goto_next_tab),
+	/* TODO: LNM: newline mode, no mode, default applied */
+	func_call_noparam	(ASCII_LF, vt100_buffer_newrow),
 	//func_call_noparam(ASCII_ENQ, vt100_identity), is ASCII_ENQ alias of ESC Z ??
 	control_end()
 };
