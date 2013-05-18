@@ -11,8 +11,6 @@ control_init()
 	//TACTL = TASSEL_2 + ID_3  + MC_1; //already set in cursor init
 	
 	/* interrupt goes to timerA1_interrupt() @ 500Khz */
-	P1DIR |= BIT6;
-	P1OUT &= ~BIT6;
 }
 
 void

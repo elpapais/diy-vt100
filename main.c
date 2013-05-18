@@ -4,6 +4,7 @@
 #include <splash.h>
 #include <vt100/vt100.h>
 #include <uart.h>
+#include <keyboard/ps2.h>
 
 void msp430_init();
 
@@ -19,6 +20,7 @@ main()
 	uart_init();
 	vt100_cursor();
 	control_init();
+	keyboard_ps2_init();
 	
 	while(TRUE)
 	{

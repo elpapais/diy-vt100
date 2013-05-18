@@ -1,4 +1,4 @@
-update=Tue 14 May 2013 04:54:25 PM IST
+update=Sat 18 May 2013 09:41:19 AM IST
 last_client=eeschema
 [eeschema]
 version=1
@@ -63,6 +63,6 @@ LibName28=atmel
 LibName29=contrib
 LibName30=valves
 LibName31=embedded-microcontrollers
-LibName32=lcd_nokia_6100
-LibName33=nokia1100_lcd
-LibName34=capteurs
+LibName32=nokia1100_lcd
+LibName33=capteurs
+LibName34=minidin_6
