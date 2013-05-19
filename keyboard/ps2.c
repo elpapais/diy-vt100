@@ -1,31 +1,13 @@
 #include <keyboard/ps2.h>
 
-struct __keyboard_ps2 keyboard_ps2;
-
-void keyboard_ps2_init()
+struct __keyboard_ps2 keyboard_ps2 = 
 {
-	KEYBOARD_PS2_PDIR &= ~(KEYBOARD_PS2_DATA | KEYBOARD_PS2_CLK);
-	KEYBOARD_PS2_PREN |= KEYBOARD_PS2_DATA | KEYBOARD_PS2_CLK;
-	KEYBOARD_PS2_POUT |= KEYBOARD_PS2_DATA | KEYBOARD_PS2_CLK;
-	
-	KEYBOARD_PS2_PIES |= KEYBOARD_PS2_CLK;
-	KEYBOARD_PS2_PIE |= KEYBOARD_PS2_CLK;
-	
-	KEYBOARD_PS2_PIFG &= ~KEYBOARD_PS2_CLK;
-	
-	P1DIR |= BIT6;
-	P1OUT &= ~BIT6;
-	
-	keyboard_ps2.index = -2;
-	/* caps off on startup */
-	keyboard_ps2.latch_caps = FALSE;
-	
-	/* interrupt goes to pin1_interrupt() */
-}
+	.index = -2,
+};
 
-uint8_t keyboard_ps2_data_decode(uint8_t data)
+void keyboard_ps2_data_decode()
 {
-	switch(data)
+	switch(keyboard_ps2.data)
 	{
 		case 0xF0:
 			/* some key released */
@@ -69,23 +51,22 @@ uint8_t keyboard_ps2_data_decode(uint8_t data)
 		default:
 			if(keyboard_ps2.make)
 			{
-				return keyboard_ps2_resolve_scancode(data);
+				keyboard_ps2_resolve_scancode();
 			}
 		break;
 	}
 	
 	keyboard_ps2.make = TRUE;
 	keyboard_ps2.modifier = FALSE;
-	return 0;
 }
 
-uint8_t keyboard_ps2_resolve_scancode(const uint8_t data)
+void keyboard_ps2_resolve_scancode()
 {
 	register uint8_t ch = 0;
 	
 	if(keyboard_ps2.modifier)
 	{
-		switch (data)
+		switch (keyboard_ps2.data)
 		{
 			case 0x70:
 				ch = KEYBOARD_PS2_INSERT;
@@ -140,6 +121,7 @@ uint8_t keyboard_ps2_resolve_scancode(const uint8_t data)
 	{
 		ch = keyboard_ps2_scancode_en[keyboard_ps2.data][keyboard_ps2.latch_shift];
 		
+		/* caps lock feature, turn character to opposite case */
 		if(keyboard_ps2.latch_caps)
 		{
 			if('a' <= ch && ch <= 'z' )
@@ -153,5 +135,9 @@ uint8_t keyboard_ps2_resolve_scancode(const uint8_t data)
 		}
 	}
 	
-	return ch;
+	if(ch)
+	{
+		//uart_send(ch);
+		cqueue_push(&uart_cqueue_rx, ch);
+	}
 }

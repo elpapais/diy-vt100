@@ -2,19 +2,24 @@
 
 uint8_t cqueue_pop(struct __cqueue *queue)
 {
+	register uint8_t data = queue->data[queue->start];
+	
+	queue->start = (queue->start + 1) % CQUEUE_SIZE;
+	
 	queue->count--;
 	
-	return queue->data[queue->start++];
+	return data;
 }
 
 void cqueue_push(struct __cqueue *queue, const uint8_t data)
 {
-	queue->data[queue->end++] = data;
-	
-	if(++queue->count == CQUEUE_SIZE)
+	if(queue->count == CQUEUE_SIZE)
 	{
 		cqueue_overflow(queue);
 	}
+	
+	register uint8_t end = (queue->start + queue->count++) % CQUEUE_SIZE;
+	queue->data[end] = data;
 }
 
 void cqueue_overflow(struct __cqueue *queue) 
@@ -25,6 +30,6 @@ void cqueue_overflow(struct __cqueue *queue)
 	while(1)
 	{
 		P1OUT ^= BIT0;
-		__delay_cycles(10000);
+		__delay_cycles(600000);
 	}
 }

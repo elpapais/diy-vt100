@@ -5,8 +5,6 @@
 #include <cqueue.h>
 #include <common.h>
 
-void uart_init();
-
 #define uart_send_ESCseq(str) uart_send(ASCII_ESCAPE);uart_send_string(str)
 
 void uart_send(const uint8_t data);

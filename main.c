@@ -1,11 +1,10 @@
 #include <msp430.h>
 #include <common.h>
-#include <nokia1100.h>
 #include <splash.h>
 #include <vt100/vt100.h>
-#include <interrupt/timerA.h>
-#include <interrupt/usci0.h>
-#include <interrupt/port2.h>
+#include <hardware/timerA.h>
+#include <hardware/usci0.h>
+#include <hardware/port2.h>
 
 void msp430_init();
 
@@ -13,7 +12,7 @@ int
 main()
 {
 	msp430_init();
-	nokia1100_init();
+	port1_init();
 	vt100_init();
 	
 	splash();
@@ -21,7 +20,7 @@ main()
 	usci0_init();
 	timerA_init();
 	port2_init();
-	
+
 	while(TRUE)
 	{
 		_BIS_SR(LPM0_bits + GIE);
@@ -45,7 +44,7 @@ msp430_init()
 	 * MCLK  @ 16MHz
 	 * SMCLK @ 2MHz
 	 */
-	 
+	
 	DCOCTL = CALDCO_16MHZ;  /* Set DCO step and modulation */
 	BCSCTL1 = CALBC1_16MHZ; /* Set range */
 	BCSCTL2 = DIVS_2;

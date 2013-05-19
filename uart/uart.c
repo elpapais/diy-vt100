@@ -12,31 +12,6 @@ uart_cqueue_rx =
 	0, 0
 };
 
-void
-uart_init()
-{
-	/* Configure ports */
-    P1SEL = BIT1 + BIT2;                // P1.1 = RXD, P1.2=TXD
-    P1SEL2= BIT1 + BIT2;                // P1.1 = RXD, P1.2=TXD
-    
-    /* Initialize USCI registers */
-    UCA0CTL1 |= UCSSEL_2;
-    
-    /* SMCLK @ 4MHz , BR 9600 */
-    UCA0BR0 = 0x00FF & 416;
-    UCA0BR1 = 416 >> 8;
-    
-	UCA0MCTL = UCBRS_6;
-	
-	/* Clear UCSWRST flag (Initialize USCI state machine) */
-	UCA0CTL1 &= ~UCSWRST;
-
-	/* Enable interrupts (UCA0TXIE will be enabled by uart_send) */
-	IE2 = UCA0RXIE;
-
-	/* RX interrupt goes to uart_queue_push() */
-}
-
 void uart_send(const uint8_t data)
 {
 	cqueue_push(&uart_cqueue_tx, data);

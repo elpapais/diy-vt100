@@ -53,8 +53,6 @@
 
 struct __keyboard_ps2
 {
-	struct __cqueue queue;
-	
 	uint8_t data;
 	int8_t index;
 	
@@ -73,7 +71,7 @@ extern struct __keyboard_ps2 keyboard_ps2;
 extern const uint8_t keyboard_ps2_scancode_en[KEYBOARD_PS2_KEYMAP_SIZE][2];
 
 void keyboard_ps2_init();
-uint8_t keyboard_ps2_data_decode(uint8_t);
-uint8_t keyboard_ps2_resolve_scancode(const uint8_t);
+void keyboard_ps2_data_decode(void);
+void keyboard_ps2_resolve_scancode(void);
 
 #endif

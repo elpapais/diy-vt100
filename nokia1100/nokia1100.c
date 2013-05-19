@@ -21,10 +21,6 @@ nokia1100_clear()
 void
 nokia1100_init()
 {
-	/* output port */
-	NOKIA1100_PDIR |= NOKIA1100_SS | NOKIA1100_CLK | NOKIA1100_MOSI;
-	NOKIA1100_POUT |= NOKIA1100_SS;
-	
 	/* initalization commands */
 	nokia1100_chargepump_on();
 	nokia1100_contrast(NOKIA1100_INIT_CONTRAST);

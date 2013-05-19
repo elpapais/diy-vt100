@@ -8,7 +8,7 @@
 struct __cqueue
 {
 	/* limit till 2^5 = 32 */
-	uint8_t count:5, start:5, end:5;
+	uint8_t count, start;
 	uint8_t data[CQUEUE_SIZE];
 };
 
