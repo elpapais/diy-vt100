@@ -17,7 +17,4 @@ void uart_send_param(uint8_t before, uint8_t after, uint8_t default_value);
 extern struct __cqueue uart_cqueue_rx;
 extern struct __cqueue uart_cqueue_tx;
 
-void usci0_transmit_interrupt() __attribute__((interrupt(USCIAB0TX_VECTOR))); /* USCI_A_RX */
-void usci0_receive_interrupt() __attribute__((interrupt(USCIAB0RX_VECTOR))); /* USCI_A_RX */
-
 #endif

@@ -2,7 +2,7 @@
 
 const uint8_t keyboard_ps2_scancode_en[KEYBOARD_PS2_KEYMAP_SIZE][2] =
 {
-	/* { with-shift, without-shift } */
+	/* { shift-off, shift-on } */
 	
 	keyboard_ps2_scancode_char(0, 0),
 	keyboard_ps2_scancode_char(KEYBOARD_PS2_F9, KEYBOARD_PS2_F9),

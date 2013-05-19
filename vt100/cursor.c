@@ -1,39 +1,6 @@
 #include <vt100/cursor.h>
 
 void
-vt100_cursor()
-{
-	TA0CCR0 = 0xFFFF;
-	TACCTL0 = CCIE;
-	TACTL = TASSEL_2 + ID_3  + MC_1;
-	
-	/* interrupt goes to timerA0_interrupt() @ 6Hz */
-}
-
-/* using Watchdog Interval Timer interrupt service for cursor blinking */
-void timerA0_interrupt()
-{	
-	/* make sure we dont overflow the cursor */
-	if(vt100.screen[vt100.cursor.row][0].double_width && vt100.cursor.col > VT100_WIDTH/2)
-	{
-		vt100.cursor.col /=2;
-	}
-	
-	nokia1100_gotoyx(vt100.cursor.row, vt100.cursor.col * NOKIA1100_WIDTH_CHAR);
-	if(vt100.mode.cursor_state)
-	{
-		vt100_print_char(vt100.cursor.row, vt100.cursor.col, TRUE);
-	}
-	else
-	{
-		/* overwrite the previous text to show like blinking */
-		vt100_print_char(vt100.cursor.row, vt100.cursor.col, FALSE);
-	}
-	
-	vt100.mode.cursor_state = ! vt100.mode.cursor_state;
-}
-
-void
 vt100_cursor_backward()
 {
 	/* TODO: margin are not supported */

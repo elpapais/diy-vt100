@@ -17,82 +17,75 @@ void keyboard_ps2_init()
 	P1OUT &= ~BIT6;
 	
 	keyboard_ps2.index = -2;
+	/* caps off on startup */
+	keyboard_ps2.latch_caps = FALSE;
 	
 	/* interrupt goes to pin1_interrupt() */
 }
 
-void keyboard_ps2_data_decode()
+uint8_t keyboard_ps2_data_decode(uint8_t data)
 {
-	if(keyboard_ps2.modifier)
+	switch(data)
 	{
-		/* before recv this data , we got MODIFIER */
-		switch(keyboard_ps2.data)
-		{
-			case 0x14: /* right CTRL */
-				keyboard_ps2.latch_ctrl = keyboard_ps2._break;
-			break;
-			
-			case 0x11: /* right ALT */
-				keyboard_ps2.latch_alt = keyboard_ps2._break;
-			break;
-			
-			case 0x1F: /* right GUI */
-				keyboard_ps2.latch_gui = keyboard_ps2._break;
-			break;
-			
-			//default:
-				//ignore
-		}
-	}
-	else
-	{
-		switch(keyboard_ps2.data)
-		{
-			case 0xF0:
-				/* _break == KEY RELEASE */
-				keyboard_ps2._break = TRUE;
-				return;
-			break;
-			
-			case 0xE0:
-				/* behaviour modifier */
-				keyboard_ps2.modifier = TRUE;
-				return;
-			break;
-			
-			case 0x12: /* left SHIFT */
-			case 0x59: /* right SHIFT */
-				keyboard_ps2.latch_shift = keyboard_ps2._break;
-			break;
-			
-			case 0x14: /* left CTRL */
-				keyboard_ps2.latch_ctrl = keyboard_ps2._break;
-			break;
-			
-			case 0x11: /* left ALT */
-				keyboard_ps2.latch_alt = keyboard_ps2._break;
-			break;
-			
-			case 0x1F: /* left GUI */
-				keyboard_ps2.latch_gui = keyboard_ps2._break;
-			break;
-			
-			default:
-				keyboard_ps2_resolve_scancode();
-		}
+		case 0xF0:
+			/* some key released */
+			keyboard_ps2.make = FALSE;
+		return;
+		
+		case 0xE0:
+			/* behaviour modifier */
+			keyboard_ps2.modifier = TRUE;
+		return;
+		
+		case 0x12: /* left SHIFT */
+		case 0x59: /* right SHIFT */
+			keyboard_ps2.latch_shift = keyboard_ps2.make;
+		break;
+		
+		/* right CTRL : <modifier> 0x14 */
+		case 0x14: /* left CTRL */
+			keyboard_ps2.latch_ctrl = keyboard_ps2.make;
+		break;
+		
+		/* right ALT : <modifier> 0x11 */
+		case 0x11: /* left ALT */
+			keyboard_ps2.latch_alt = keyboard_ps2.make;
+		break;
+		
+		/* including modifier version */
+		case 0x1F: /* left GUI */
+			keyboard_ps2.latch_gui = keyboard_ps2.make;
+		break;
+		
+		/* caps */
+		case 0x58:
+			if(keyboard_ps2.make)
+			{
+				/* flip caps */
+				keyboard_ps2.latch_caps ^= 0x01;
+			}
+		break;
+		
+		default:
+			if(keyboard_ps2.make)
+			{
+				return keyboard_ps2_resolve_scancode(data);
+			}
+		break;
 	}
 	
-	keyboard_ps2._break = FALSE;
+	keyboard_ps2.make = TRUE;
 	keyboard_ps2.modifier = FALSE;
+	return 0;
 }
 
-void keyboard_ps2_resolve_scancode()
+uint8_t keyboard_ps2_resolve_scancode(const uint8_t data)
 {
 	register uint8_t ch = 0;
 	
 	if(keyboard_ps2.modifier)
 	{
-		switch (keyboard_ps2.data)
+		switch (data)
 		{
 			case 0x70:
 				ch = KEYBOARD_PS2_INSERT;
@@ -145,61 +138,20 @@ void keyboard_ps2_resolve_scancode()
 	}
 	else if(keyboard_ps2.data < KEYBOARD_PS2_KEYMAP_SIZE)
 	{
-		if(keyboard_ps2.latch_shift)
-		{
-			ch = keyboard_ps2_scancode_en[keyboard_ps2.data][0];
-		}
-		else
-		{
-			ch = keyboard_ps2_scancode_en[keyboard_ps2.data][1];
-		}
-	}
-	
-	if(ch)
-	{
-		cqueue_push(&uart_cqueue_rx, ch);
-	}
-}
-
-void port2_interrupt()
-{
-	P1OUT ^= BIT6;
-	
-	KEYBOARD_PS2_PIFG &= ~KEYBOARD_PS2_CLK;
-	keyboard_ps2.index++;
-	
-	switch(keyboard_ps2.index)
-	{
-		case -1:
-			keyboard_ps2.data = 0;
-			/* start bit */
-		break;
+		ch = keyboard_ps2_scancode_en[keyboard_ps2.data][keyboard_ps2.latch_shift];
 		
-		case 0:
-		case 1:
-		case 2:
-		case 3:
-		case 4:
-		case 5:
-		case 6:
-		case 7:
-			/* data */
-			if(KEYBOARD_PS2_PIN & KEYBOARD_PS2_DATA)
+		if(keyboard_ps2.latch_caps)
+		{
+			if('a' <= ch && ch <= 'z' )
 			{
-				keyboard_ps2.data |= (1 << keyboard_ps2.index);
+				ch -= 'a' - 'A';
 			}
-		break;
-		
-		case 8:
-			/* TODO: check parity for data */
-		break;
-		
-		case 9:
-			/* STOP bit */
-			keyboard_ps2_data_decode();
-		default:
-			/* reset */
-			keyboard_ps2.index = -2;
-		break;
+			else if('A' <= ch && ch <= 'Z')
+			{
+				ch += 'a' - 'A';
+			}
+		}
 	}
+	
+	return ch;
 }

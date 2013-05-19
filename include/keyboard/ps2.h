@@ -3,6 +3,7 @@
 
 #include <common.h>
 #include <uart.h>
+#include <cqueue.h>
 
 #define KEYBOARD_PS2_PDIR P2DIR
 #define KEYBOARD_PS2_PIN  P2IN
@@ -48,29 +49,31 @@
 
 #define KEYBOARD_PS2_KEYMAP_SIZE 136
 
-#define keyboard_ps2_scancode_char(withshift, withoutshift) {withshift, withoutshift }
+#define keyboard_ps2_scancode_char(ch1, ch2) {ch1, ch2}
 
 struct __keyboard_ps2
 {
+	struct __cqueue queue;
+	
 	uint8_t data;
 	int8_t index;
 	
 	uint8_t modifier:1;
-	uint8_t _break:1;
+	uint8_t make:1;
 	
 	uint8_t latch_shift:1;
 	uint8_t latch_ctrl:1;
 	uint8_t latch_alt:1;
 	uint8_t latch_num:1;
 	uint8_t latch_gui:1;
+	uint8_t latch_caps:1;
 };
 
 extern struct __keyboard_ps2 keyboard_ps2;
 extern const uint8_t keyboard_ps2_scancode_en[KEYBOARD_PS2_KEYMAP_SIZE][2];
 
 void keyboard_ps2_init();
-void keyboard_ps2_data_decode();
-void keyboard_ps2_resolve_scancode();
-void port2_interrupt()__attribute__((interrupt(PORT2_VECTOR)));
+uint8_t keyboard_ps2_data_decode(uint8_t);
+uint8_t keyboard_ps2_resolve_scancode(const uint8_t);
 
 #endif

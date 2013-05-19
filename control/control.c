@@ -4,16 +4,6 @@ static struct __control
 *current_control = (struct __control *)control_C0;
 
 void
-control_init()
-{
-	TACCR1 = 1;
-	TACCTL1 = CCIE;
-	//TACTL = TASSEL_2 + ID_3  + MC_1; //already set in cursor init
-	
-	/* interrupt goes to timerA1_interrupt() @ 500Khz */
-}
-
-void
 control()
 {
 	struct __control *i;
@@ -59,23 +49,5 @@ control()
 	{
 		/* at the end of execution, revert to start state, | ignore unknown paramters */
 		current_control = (struct __control *)control_C0;
-	}
-}
-
-void timerA1_interrupt()
-{
-	if(TACCTL1 & CCIFG)
-	{
-		/* do the work */
-		while(cqueue_count(uart_cqueue_rx))
-		{
-			vt100.data = cqueue_pop(&uart_cqueue_rx);
-			control();
-		}
-		
-		vt100_refresh();
-		
-		/* clear the interrupt flag */
-		TACCTL1 &= ~CCIFG;
 	}
 }

@@ -3,8 +3,9 @@
 #include <nokia1100.h>
 #include <splash.h>
 #include <vt100/vt100.h>
-#include <uart.h>
-#include <keyboard/ps2.h>
+#include <interrupt/timerA.h>
+#include <interrupt/usci0.h>
+#include <interrupt/port2.h>
 
 void msp430_init();
 
@@ -17,10 +18,9 @@ main()
 	
 	splash();
 	
-	uart_init();
-	vt100_cursor();
-	control_init();
-	keyboard_ps2_init();
+	usci0_init();
+	timerA_init();
+	port2_init();
 	
 	while(TRUE)
 	{
