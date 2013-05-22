@@ -10,6 +10,5 @@
 
 void timerA_init();
 void timerA0_interrupt (void) __attribute__((interrupt(TIMER0_A0_VECTOR)));
-void timerA1_interrupt (void) __attribute__((interrupt(TIMER0_A1_VECTOR)));
 
 #endif

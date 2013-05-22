@@ -18,8 +18,10 @@ void cqueue_push(struct __cqueue *queue, const uint8_t data)
 		cqueue_overflow(queue);
 	}
 	
-	register uint8_t end = (queue->start + queue->count++) % CQUEUE_SIZE;
+	register uint8_t end = (queue->start + queue->count) % CQUEUE_SIZE;
+	
 	queue->data[end] = data;
+	queue->count++;
 }
 
 void cqueue_overflow(struct __cqueue *queue) 

@@ -11,6 +11,7 @@ void msp430_init();
 int
 main()
 {
+	register uint8_t data;
 	msp430_init();
 	port1_init();
 	vt100_init();
@@ -23,7 +24,29 @@ main()
 
 	while(TRUE)
 	{
-		_BIS_SR(LPM0_bits + GIE);
+		_BIS_SR(LPM1_bits + GIE);
+		
+		/* screen refresh { */
+		while(cqueue_count(uart_cqueue_rx))
+		{
+			vt100.data = cqueue_pop(&uart_cqueue_rx);
+			control();
+		}
+		
+		vt100_refresh();
+		/* } */
+		
+		/* cursor blinking { */
+		/* make sure we dont overflow the cursor */
+		if(vt100.screen[vt100.cursor.row][0].double_width && vt100.cursor.col > VT100_WIDTH/2)
+		{
+			vt100.cursor.col /=2;
+		}
+		
+		nokia1100_gotoyx(vt100.cursor.row, vt100.cursor.col * NOKIA1100_WIDTH_CHAR);
+		
+		vt100_print_char(vt100.cursor.row, vt100.cursor.col, vt100.mode.cursor_state);
+		/* } */
 	}
 }
 
@@ -42,7 +65,7 @@ msp430_init()
 	
 	/*
 	 * MCLK  @ 16MHz
-	 * SMCLK @ 2MHz
+	 * SMCLK @ 4MHz
 	 */
 	
 	DCOCTL = CALDCO_16MHZ;  /* Set DCO step and modulation */

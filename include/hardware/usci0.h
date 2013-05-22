@@ -6,7 +6,7 @@
 #include <uart.h>
 
 void usci0_init();
-void usci0_TX_interrupt() __attribute__((interrupt(USCIAB0TX_VECTOR))); /* USCI_A_RX */
+void usci0_TX_interrupt() __attribute__((interrupt(USCIAB0TX_VECTOR))); /* USCI_A_TX */
 void usci0_RX_interrupt() __attribute__((interrupt(USCIAB0RX_VECTOR))); /* USCI_A_RX */
 
 #endif

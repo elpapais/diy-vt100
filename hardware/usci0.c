@@ -30,6 +30,9 @@ void usci0_RX_interrupt()
 {
 	cqueue_push(&uart_cqueue_rx, UCA0RXBUF);
 	/* TODO: XON/XOFF sending for preventing overflow on when count == 16 */
+	
+	/* exit sleep mode to refresh screen */
+	__bic_status_register_on_exit(LPM1_bits);
 }
 
 void usci0_TX_interrupt()

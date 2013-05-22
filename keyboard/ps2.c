@@ -36,7 +36,7 @@ void keyboard_ps2_data_decode()
 		
 		/* including modifier version */
 		case 0x1F: /* left GUI */
-			keyboard_ps2.latch_gui = keyboard_ps2.make;
+			//keyboard_ps2.latch_gui = keyboard_ps2.make;
 		break;
 		
 		/* caps */
@@ -51,7 +51,7 @@ void keyboard_ps2_data_decode()
 		default:
 			if(keyboard_ps2.make)
 			{
-				keyboard_ps2_resolve_scancode();
+				return keyboard_ps2_resolve_scancode(keyboard_ps2.data);
 			}
 		break;
 	}
@@ -68,52 +68,52 @@ void keyboard_ps2_resolve_scancode()
 	{
 		switch (keyboard_ps2.data)
 		{
-			case 0x70:
-				ch = KEYBOARD_PS2_INSERT;
+			case 0x4A:
+				ch = '/';
+			break;
+			
+			case 0x5A:
+				ch = KEYBOARD_PS2_ENTER;
+			break;
+			
+			case 0x69:
+				ch = KEYBOARD_PS2_END;
+			break;
+			
+			case 0x6B:
+				ch = KEYBOARD_PS2_LEFTARROW;
 			break;
 			
 			case 0x6C:
 				ch = KEYBOARD_PS2_HOME;
 			break;
 			
-			case 0x7D:
-				ch = KEYBOARD_PS2_PAGEUP;
+			case 0x70:
+				ch = KEYBOARD_PS2_INSERT;
 			break;
-		  
+			
 			case 0x71:
 				ch = KEYBOARD_PS2_DELETE;
 			break;
-		  
-			case 0x69:
-				ch = KEYBOARD_PS2_END;
-			break;
-		  
-			case 0x7A:
-				ch = KEYBOARD_PS2_PAGEDOWN;
-			break;
-		  
-			case 0x75:
-				ch = KEYBOARD_PS2_UPARROW;
-			break;
-		  
-			case 0x6B:
-				ch = KEYBOARD_PS2_LEFTARROW;
-			break;
-		  
+			
 			case 0x72:
 				ch = KEYBOARD_PS2_DOWNARROW;
 			break;
-		  
+			
 			case 0x74:
 				ch = KEYBOARD_PS2_RIGHTARROW;
 			break;
-		  
-			case 0x4A:
-				ch = '/';
+			
+			case 0x75:
+				ch = KEYBOARD_PS2_UPARROW;
 			break;
-		  
-			case 0x5A:
-				ch = KEYBOARD_PS2_ENTER;
+			
+			case 0x7A:
+				ch = KEYBOARD_PS2_PAGEDOWN;
+			break;
+			
+			case 0x7D:
+				ch = KEYBOARD_PS2_PAGEUP;
 			break;
 		}
 	}
@@ -137,7 +137,7 @@ void keyboard_ps2_resolve_scancode()
 	
 	if(ch)
 	{
-		//uart_send(ch);
-		cqueue_push(&uart_cqueue_rx, ch);
+		uart_send(ch);
+		//cqueue_push(&uart_cqueue_rx, ch);
 	}
 }

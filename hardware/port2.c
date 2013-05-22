@@ -20,15 +20,15 @@ void port2_init()
 void port2_interrupt()
 {
 	P1OUT ^= BIT6;
-	
-	KEYBOARD_PS2_PIFG &= ~KEYBOARD_PS2_CLK;
+
 	keyboard_ps2.index++;
 	
 	switch(keyboard_ps2.index)
 	{
 		case -1:
-			keyboard_ps2.data = 0;
 			/* start bit */
+			keyboard_ps2.data = 0;
+			keyboard_ps2.parity = 0;
 		break;
 		
 		case 0:
@@ -43,19 +43,28 @@ void port2_interrupt()
 			if(KEYBOARD_PS2_PIN & KEYBOARD_PS2_DATA)
 			{
 				keyboard_ps2.data |= (1 << keyboard_ps2.index);
+				keyboard_ps2.parity ^= 0x01;
 			}
 		break;
 		
 		case 8:
-			/* TODO: check parity for data */
+			//if((!(KEYBOARD_PS2_PIN & KEYBOARD_PS2_DATA)) == (!keyboard_ps2.parity))
+			//{
+				//parity error
+				/* TODO: check parity for data */
+			//}
+			
+			
 		break;
 		
 		case 9:
 			/* STOP bit */
 			keyboard_ps2_data_decode();
-		
+			
 		default:
 			keyboard_ps2.index = -2;
 		break;
 	}
+	
+	KEYBOARD_PS2_PIFG &= ~KEYBOARD_PS2_CLK;
 }

@@ -1,6 +1,6 @@
 
-#ifndef __NOKIA1100_H__
-#define __NOKIA1100_H__
+#ifndef _NOKIA1100_H_
+#define _NOKIA1100_H_
 
 #define NOKIA1100_WIDTH_PIXEL 96
 #define NOKIA1100_HEIGHT_PIXEL 65
@@ -133,4 +133,4 @@ void nokia1100_send_data_brustmode(const uint8_t send[], const uint16_t size);
 #define nokia1100_addressingmode_horizontal() \
 			nokia1100_send_cmd(0xAA /* RAM ADDRESSING */ | 0x00)
 
-#endif /* __NOKIA1100_H__ */
+#endif /* _NOKIA1100_H_ */

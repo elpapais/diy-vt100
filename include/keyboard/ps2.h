@@ -3,11 +3,10 @@
 
 #include <common.h>
 #include <uart.h>
-#include <cqueue.h>
 
 #define KEYBOARD_PS2_PDIR P2DIR
 #define KEYBOARD_PS2_PIN  P2IN
-#define KEYBOARD_PS2_POUT  P2OUT
+#define KEYBOARD_PS2_POUT P2OUT
 #define KEYBOARD_PS2_PIFG P2IFG
 #define KEYBOARD_PS2_PIES P2IES
 #define KEYBOARD_PS2_PIE  P2IE
@@ -16,7 +15,7 @@
 #define KEYBOARD_PS2_DATA BIT3
 #define KEYBOARD_PS2_CLK BIT4
 
-/* port/derivative: http://www.pjrc.com/teensy/td_libs_PS2Keyboard.html */
+/* derivative: http://www.pjrc.com/teensy/td_libs_PS2Keyboard.html */
 
 /* scancodes */
 #define KEYBOARD_PS2_TAB						9
@@ -56,6 +55,8 @@ struct __keyboard_ps2
 	uint8_t data;
 	int8_t index;
 	
+	uint8_t parity:1;
+	
 	uint8_t modifier:1;
 	uint8_t make:1;
 	
@@ -63,7 +64,7 @@ struct __keyboard_ps2
 	uint8_t latch_ctrl:1;
 	uint8_t latch_alt:1;
 	uint8_t latch_num:1;
-	uint8_t latch_gui:1;
+	//uint8_t latch_gui:1;
 	uint8_t latch_caps:1;
 };
 
@@ -71,7 +72,7 @@ extern struct __keyboard_ps2 keyboard_ps2;
 extern const uint8_t keyboard_ps2_scancode_en[KEYBOARD_PS2_KEYMAP_SIZE][2];
 
 void keyboard_ps2_init();
-void keyboard_ps2_data_decode(void);
-void keyboard_ps2_resolve_scancode(void);
+void keyboard_ps2_data_decode();
+void keyboard_ps2_resolve_scancode();
 
 #endif
