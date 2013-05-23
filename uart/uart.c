@@ -48,18 +48,27 @@ void uart_send_param(uint8_t before, uint8_t after, uint8_t default_value)
 	uart_send(ASCII_ESCAPE);
 	uart_send(before);
 	
-	while(i < vt100_param_getcount())
+	while(i < vt100_param.count)
 	{
-		if(vt100_param_get(i) != default_value)
+		if(vt100_param.data[i] != default_value)
 		{
-			uart_send_int(vt100_param_get(i));
+			uart_send_int(vt100_param.data[i]);
 		}
 		
-		if(++i < vt100_param_getcount())
+		if(++i < vt100_param.count)
 		{
 			uart_send(VT100_PARAM_DELIMITER);
 		}
 	}
 	
 	uart_send(after);
+}
+
+void uart_send_param_direct()
+{
+	register uint8_t i;
+	for(i=0; i < vt100_param.count; i++)
+	{
+		uart_send(vt100_param.data[i]);
+	}
 }

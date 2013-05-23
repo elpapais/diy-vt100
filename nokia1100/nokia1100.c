@@ -5,7 +5,7 @@ nokia1100_clear()
 {	
 	uint16_t i;
 	
-	nokia1100_allpixel_off();
+	nokia1100_showpixel_off();
 	
 	nokia1100_gotoyx(0,0);
 	
@@ -14,7 +14,7 @@ nokia1100_clear()
 		nokia1100_send_data(0x00);
 	}
 	
-	nokia1100_allpixel_off();
+	nokia1100_showpixel_on();
 }
 
 /* init */

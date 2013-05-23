@@ -4,18 +4,18 @@ void vt100_tabulation_clear()
 {
 	uint8_t i;
 	
-	switch(vt100_param_get(0))
+	switch(vt100_param.data[0])
 	{
 		case 0:
 			/* clear the horizontal tab stop at the current position */
-			vt100.screen[0][vt100.cursor.col].tab = FALSE;
+			vt100_buffer[0][vt100_cursor.col].prop &= VT100_BUFFER_PROP_TAB;
 		break;
 
 		case 3:
 			/* clear all horizontal tab stops */
 			for(i=0; i < VT100_WIDTH; i++)
 			{
-				vt100.screen[0][i].tab = FALSE;
+				vt100_buffer[0][i].prop &= VT100_BUFFER_PROP_TAB;
 			}
 		break;
 		
@@ -24,20 +24,20 @@ void vt100_tabulation_clear()
 	}
 }
 
-void vt100_set_horizontal_tabulation()
+void vt100_tabulation_set()
 {
-	vt100.screen[0][vt100.cursor.col].tab = TRUE;
+	vt100_buffer[0][vt100_cursor.col].prop |= VT100_BUFFER_PROP_TAB;
 }
 
-void vt100_goto_next_tab()
+void vt100_tabulation_goto_next()
 {
 	register col_t j;
 	
-	for(j = vt100.cursor.col; j < VT100_WIDTH; j++)
+	for(j = vt100_cursor.col; j < VT100_WIDTH; j++)
 	{
-		if(vt100.screen[0][j].tab)
+		if(vt100_buffer[0][j].prop & VT100_BUFFER_PROP_TAB)
 		{
-			vt100.cursor.col = j;
+			vt100_cursor.col = j;
 			break;
 		}
 	}

@@ -12,7 +12,7 @@ vt100_audio_bell()
 {
 	/* TODO: make proper frequency(currently only used as dumb value) */
 	VT100_BELL_POUT |= VT100_BELL_PIN;
-	VT100_BELL_AUDIO_DELAY();
+	__delay_cycles(10000);
 	VT100_BELL_POUT &= ~VT100_BELL_PIN;
 }
 
@@ -20,12 +20,6 @@ void
 vt100_visual_bell()
 {
 	nokia1100_allpixel_on();
-	VT100_BELL_VISUAL_DELAY();
+	__delay_cycles(10000);
 	nokia1100_allpixel_off();
-}
-
-void
-vt100_bell()
-{
-	vt100_audio_bell();
 }

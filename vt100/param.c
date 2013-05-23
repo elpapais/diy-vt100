@@ -1,44 +1,41 @@
 #include <vt100/param.h>
 
-/* Parameters parsing */
+struct __vt100_param vt100_param;
 
 /* TODO: check for overflow */
-bool_t vt100_param_add()
+void vt100_param_add()
 {
 	/* parse the parameters and add it to list */
-	if( VT100_PARAM_DELIMITER == vt100.data)
+	if( VT100_PARAM_DELIMITER == vt100_param.pass)
 	{
-		vt100.param[0]++;
-		vt100.param[vt100.param[0]] = 0;
+		vt100_param.data[++vt100_param.count] = 0;
 	}
-	else if(vt100.data >= '0' && vt100.data <= '9') /* is digit, else ignore */
+	else if(vt100_param.pass >= '0' && vt100_param.pass <= '9') /* is digit, else ignore */
 	{
-		if(! vt100.param[0])
+		if(! vt100_param.count)
 		{
-			vt100.param[0] = 1;
-			vt100.param[1] = 0;
+			vt100_param.count = 1;
+			vt100_param.data[0] = 0;
 		}
 		
-		vt100.param[vt100.param[0]] = (vt100.param[vt100.param[0]] * 10) + vt100.data - '0';
+		vt100_param.data[vt100_param.count] = (vt100_param.data[vt100_param.count] * 10) + vt100_param.pass - '0';
 	}
-	else
-	{
-		return FALSE; /* could not parse the parameter | it isnt a digit */
-	}
-	
-	return TRUE;
+	//else
+	//{
+		/* could not parse the parameter | it isnt a digit */
+	//}
 }
 
 void vt100_param_default(uint8_t pcount, uint8_t default_value)
 {
-	if(pcount >= vt100.param[0])
+	if(pcount >= vt100_param.count)
 	{
-		vt100.param[0] = pcount;
+		vt100_param.count = pcount;
 		return;
 	}
 	
-	while(pcount > vt100.param[0])
+	while(pcount > vt100_param.count)
 	{
-		vt100.param[pcount--] = default_value;
+		vt100_param.data[pcount--] = default_value;
 	}
 }

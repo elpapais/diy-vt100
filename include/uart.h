@@ -11,6 +11,7 @@ void uart_send(const uint8_t data);
 void uart_send_int(uint8_t val);
 void uart_send_string(char *str);
 void uart_send_param(uint8_t before, uint8_t after, uint8_t default_value);
+void uart_send_param_direct();
 
 extern struct __cqueue uart_cqueue_rx;
 extern struct __cqueue uart_cqueue_tx;

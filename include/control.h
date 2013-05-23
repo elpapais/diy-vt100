@@ -2,9 +2,9 @@
 #define _CONTROL_H_
 
 #include <common.h>
-#include <vt100/vt100.h>
 #include <uart.h>
 #include <cqueue.h>
+#include <vt100/vt100.h>
 
 struct __control
 {
@@ -26,6 +26,7 @@ struct __control
 #define control_select(ascii, sel) {(const callback_t)1, ascii, .arg = {.select = sel}}
 #define func_call(ascii, func, pc, pd) {(const callback_t)func, ascii, .arg = {.param = {.pcount = pc, .pdefault = pd}}}
 #define func_call_noparam(ascii, func) func_call(ascii, func, 0, 0)
+#define char_ignore(ascii) func_call(ascii, 2, 0, 0)
 #define control_end() {0}
 
 extern const struct __control control_C0[];
@@ -37,7 +38,5 @@ extern const struct __control control_opensquarebracket[];
 
 void control_init();
 void control();
-
-void timerA1_interrupt() __attribute__((interrupt(TIMER0_A1_VECTOR)));
 
 #endif

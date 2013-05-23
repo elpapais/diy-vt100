@@ -3,9 +3,7 @@
 
 #include <common.h>
 #include <vt100/screen.h>
-#include <vt100/extern.h>
 #include <vt100/cursor.h>
-#include <font/simple.h>
 
 void splash();
 

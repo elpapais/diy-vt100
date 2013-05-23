@@ -1,65 +1,91 @@
 #include <vt100/buffer.h>
 
+struct __vt100_char
+vt100_buffer[VT100_HEIGHT][VT100_WIDTH];
+
 void
 vt100_buffer_putchar()
 {
-	if(!(vt100.cursor.row < VT100_HEIGHT))
+	if(vt100_param.pass < ASCII_SPACE)
 	{
-		vt100_buffer_shiftup();
-		vt100.cursor.row = VT100_HEIGHT - 1;
-		vt100.cursor.col = 0;
+		/* print special char */
+		uint8_t tmp = vt100_param.pass;
+		vt100_param.pass = '^';
+		vt100_buffer_putchar();
+		vt100_param.pass = 'A'+ 1 + tmp ;
 	}
 	
-	vt100.screen[vt100.cursor.row][vt100.cursor.col].data = vt100.data;
-	
-	//vt100.screen[vt100.cursor.row][vt100.cursor.col].blink = vt100.mode.attr_blink;
-	vt100.screen[vt100.cursor.row][vt100.cursor.col].underline = vt100.mode.attr_underline;
-	vt100.screen[vt100.cursor.row][vt100.cursor.col].inverse = vt100.mode.attr_inverse;
-	vt100.screen[vt100.cursor.row][vt100.cursor.col].bold = vt100.mode.attr_bold;
-	
-	vt100.screen[vt100.cursor.row][0].touched = TRUE;
-	
-	vt100.cursor.col++;
-	
-	if(!(vt100.cursor.col < VT100_WIDTH))
+	if(!(vt100_cursor.row < VT100_HEIGHT))
 	{
-		vt100.cursor.col = 0;
-		vt100.cursor.row++;
+		vt100_buffer_shiftup();
+		vt100_cursor.row = VT100_HEIGHT - 1;
+		vt100_cursor.col = 0;
+	}
+	
+	vt100_buffer[vt100_cursor.row][vt100_cursor.col].data = vt100_param.pass;
+	
+	vt100_buffer[vt100_cursor.row][vt100_cursor.col].prop = 0;
+	
+	if(vt100_setting.mode & VT100_SETTING_MODE_ATTR_BOLD)
+	{
+		vt100_buffer[vt100_cursor.row][vt100_cursor.col].prop |= VT100_BUFFER_PROP_BOLD;
+	}
+	
+	if(vt100_setting.mode & VT100_SETTING_MODE_ATTR_UNDERLINE)
+	{
+		vt100_buffer[vt100_cursor.row][vt100_cursor.col].prop |= VT100_BUFFER_PROP_UNDERLINE;
+	}
+	
+	if(vt100_setting.mode & VT100_SETTING_MODE_ATTR_INVERSE)
+	{
+		vt100_buffer[vt100_cursor.row][vt100_cursor.col].prop |= VT100_BUFFER_PROP_INVERSE;
+	}
+	
+	/* TODO: blink not supported */
+	vt100_buffer[vt100_cursor.row][0].prop |= VT100_BUFFER_PROP_TOUCH;
+	
+	vt100_cursor.col++;
+	
+	if(!(vt100_cursor.col < VT100_WIDTH))
+	{
+		vt100_cursor.col = 0;
+		vt100_cursor.row++;
 	}
 }
 
 void
 vt100_buffer_newrow()
 {
-	vt100.screen[vt100.cursor.row][0].touched = TRUE;
-	vt100.cursor.row++;
+	vt100_buffer[vt100_cursor.row][0].prop |= VT100_BUFFER_PROP_TOUCH;
+	vt100_cursor.row++;
 	
-	if(!(vt100.cursor.row < VT100_HEIGHT))
+	if(!(vt100_cursor.row < VT100_HEIGHT))
 	{
 		vt100_buffer_shiftup();
-		vt100.cursor.row = VT100_HEIGHT - 1;
+		vt100_cursor.row = VT100_HEIGHT - 1;
 	}
 	
-	vt100.cursor.col = 0;
+	vt100_cursor.col = 0;
 }
 
 void
 vt100_buffer_shiftup()
 {
-	row_t i;
-	col_t j;
+	register row_t i;
+	register col_t j;
 	
 	for( i = 0; i < VT100_HEIGHT - 1; i++ )
 	{
 		for( j = 0; j < VT100_WIDTH; j++ )
 		{
-			vt100.screen[i][j] = vt100.screen[i+1][j];
+			vt100_buffer[i][j] = vt100_buffer[i+1][j];
 		}
-		
-		vt100.screen[i][0].touched = TRUE;
+
+		vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
 	}
 	
-	vt100.screen[i][0].touched = TRUE;
+	vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
+	
 	for( j = 0; j < VT100_WIDTH; j++ )
 	{
 		vt100_buffer_clear_char(i,j);
@@ -69,79 +95,76 @@ vt100_buffer_shiftup()
 void
 vt100_buffer_shiftdown()
 {
-	row_t i;
-	col_t j;
+	register row_t i;
+	register col_t j;
 	
-	for( i = 1; i < VT100_HEIGHT; i++ )
+	for(i = 1; i < VT100_HEIGHT; i++)
 	{
-		for( j = 0; j < VT100_WIDTH; j++ )
+		for(j = 0; j < VT100_WIDTH; j++)
 		{
-			vt100.screen[i][j] = vt100.screen[i+1][j];
+			vt100_buffer[i][j] = vt100_buffer[i-1][j];
 		}
 		
-		vt100.screen[i][0].touched = TRUE;
+		vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
 	}
 	
-	vt100.screen[0][0].touched = TRUE;
+	vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
 	
-	for( j = 0; j < VT100_WIDTH; j++ )
+	for(i=0,j = 0; j < VT100_WIDTH; j++)
 	{
-		vt100_buffer_clear_char(0,j);
+		vt100_buffer_clear_char(i,j); /*(0,j)*/
 	}
 }
 
 void
-vt100_buffer_clear_char(const row_t i, const col_t j)
+vt100_buffer_clear_char(const register row_t i, const register col_t j)
 {
-	vt100.screen[i][j].data = '\0';
-	//vt100.screen[i][j].blink = 0;
-	vt100.screen[i][j].bold = 0;
-	vt100.screen[i][j].inverse = 0;
-	vt100.screen[i][j].underline = 0;
+	vt100_buffer[i][j].data = '\0';
+	vt100_buffer[i][j].prop = 0;
 }
 
 void 
-vt100_fill_all_E()
+vt100_buffer_fill_E()
 {
-	row_t i;
-	col_t j;
+	register row_t i;
+	register col_t j;
 	
 	for(i=0; i < VT100_HEIGHT; i++)
 	{
-		vt100.screen[i][0].touched = TRUE;
+		vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
 		
 		for(j=0; j < VT100_WIDTH; j++)
 		{
-			vt100.screen[i][j].data = 'E';
+			vt100_buffer[i][j].data = 'E';
 		}
 	}
 }
 
 void 
-vt100_erase()
+vt100_buffer_erase()
 {
-	row_t i;
-	col_t j;
+	register row_t i;
+	register col_t j;
 
-	switch(vt100_param_get(0))
+	switch(vt100_param.data[0])
 	{
 		case 0:
 			/* clear from current position to end of line */
 		
-			vt100.screen[vt100.cursor.row][0].touched = TRUE;
+			vt100_buffer[vt100_cursor.row][0].prop |= VT100_BUFFER_PROP_TOUCH;
 			
-			for(j=vt100.cursor.col; j < VT100_WIDTH; j++)
+			for(j=vt100_cursor.col; j < VT100_WIDTH; j++)
 			{
-				vt100_buffer_clear_char(vt100.cursor.row, j);
+				vt100_buffer_clear_char(vt100_cursor.row, j);
 			}
 		break;
 		
 		case 1:
 			/* Clear from top of screen to current position */
 		
-			for(i=0; i < vt100.cursor.row; i++)
+			for(i=0; i < vt100_cursor.row; i++)
 			{
-				vt100.screen[i][0].touched = TRUE;
+				vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
 				
 				for(j=0; j < VT100_WIDTH; j++)
 				{
@@ -149,9 +172,9 @@ vt100_erase()
 				}
 			}
 			
-			vt100.screen[i][0].touched = TRUE;
+			vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
 			
-			for(j=0; j <= vt100.cursor.col; j++)
+			for(j=0; j <= vt100_cursor.col; j++)
 			{
 				vt100_buffer_clear_char(i, j);
 			}
@@ -162,14 +185,16 @@ vt100_erase()
 			
 			nokia1100_clear();
 	
+			register uint8_t cleardw;
+			
+			/* clear the double width option */
+			cleardw = vt100_param.pass == 'J' ? ~VT100_BUFFER_PROP_DOUBLE_WIDTH : VT100_BUFFER_PROP_DOUBLE_WIDTH;
+	
 			for( i = 0; i < VT100_HEIGHT; i++ )
 			{
-				if( vt100.data == 'J' )
-				{
-					vt100.screen[i][0].double_width = FALSE;
-				}
+				vt100_buffer[i][0].prop &= cleardw;
 				
-				vt100.screen[i][0].touched = TRUE;
+				vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
 				
 				for( j = 0; j < VT100_WIDTH; j++ )
 				{
@@ -177,10 +202,10 @@ vt100_erase()
 				}
 			}
 			
-			if(vt100.data == 'K')
+			if(vt100_param.pass == 'K')
 			{
-				vt100.cursor.col = 0;
-				vt100.cursor.row = 0;
+				vt100_cursor.col = 0;
+				vt100_cursor.row = 0;
 			}
 		break;
 		

@@ -13,7 +13,7 @@ void timerA_init()
 
 void timerA0_interrupt()
 {
-	vt100.mode.cursor_state ^= TRUE;
+	vt100_setting.mode ^= VT100_SETTING_MODE_CURSOR_STATE;
 	
 	/* exit sleep mode to refresh screen */
 	__bic_status_register_on_exit(LPM1_bits);

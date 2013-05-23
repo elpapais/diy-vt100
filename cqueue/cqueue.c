@@ -4,7 +4,8 @@ uint8_t cqueue_pop(struct __cqueue *queue)
 {
 	register uint8_t data = queue->data[queue->start];
 	
-	queue->start = (queue->start + 1) % CQUEUE_SIZE;
+	/* NOTE: using AND instead of %(modulo) */
+	queue->start = (queue->start + 1) & CQUEUE_MOD;
 	
 	queue->count--;
 	
@@ -18,7 +19,8 @@ void cqueue_push(struct __cqueue *queue, const uint8_t data)
 		cqueue_overflow(queue);
 	}
 	
-	register uint8_t end = (queue->start + queue->count) % CQUEUE_SIZE;
+	/* NOTE: using AND instead of %(modulo) */
+	register uint8_t end = (queue->start + queue->count) & CQUEUE_MOD;
 	
 	queue->data[end] = data;
 	queue->count++;

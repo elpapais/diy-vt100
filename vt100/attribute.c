@@ -1,56 +1,55 @@
 #include <vt100/attribute.h>
 
-void vt100_set_doubleheight_tophalf()
+void
+vt100_double_height_tophalf()
 {
 	/* TODO: support double height */
-	vt100.screen[vt100.cursor.row][0].touched = TRUE;
-	vt100.screen[vt100.cursor.row][0].double_height_top = TRUE;
+	vt100_buffer[vt100_cursor.row][0].prop |= VT100_BUFFER_PROP_TOUCH | VT100_BUFFER_PROP_DOUBLE_HEIGHT_TOP;
 }
 
-void vt100_set_doubleheight_bottomhalf()
+void
+vt100_double_height_bottomhalf()
 {
 	/* TODO: support double height */
-	vt100.screen[vt100.cursor.row][0].touched = TRUE;
-	vt100.screen[vt100.cursor.row][0].double_height_bottom = TRUE;
+	vt100_buffer[vt100_cursor.row][0].prop |= VT100_BUFFER_PROP_TOUCH | VT100_BUFFER_PROP_DOUBLE_HEIGHT_BOTTOM;
 }
 
 void 
-vt100_set_doublewidth()
+vt100_double_width()
 {
 	/* TODO: support double width */
-	vt100.screen[vt100.cursor.row][0].touched = TRUE;
-	vt100.screen[vt100.cursor.row][0].double_width = TRUE;
+	vt100_buffer[vt100_cursor.row][0].prop |= VT100_BUFFER_PROP_TOUCH | VT100_BUFFER_PROP_DOUBLE_WIDTH;
 }
 
 void 
-vt100_select_attribute()
+vt100_attribute_select()
 {
 	uint8_t i;
-	for(i=0; i < vt100_param_getcount(); i++)
+	for(i=0; i < vt100_param.count; i++)
 	{
-		switch(vt100_param_get(i))
+		switch(vt100_param.data[i])
 		{
 			case 0:
-				vt100.mode.attr_bold = FALSE;
-				vt100.mode.attr_blink = FALSE;
-				vt100.mode.attr_inverse = FALSE;
-				vt100.mode.attr_underline = FALSE;
+				vt100_setting.mode &= ~(VT100_SETTING_MODE_ATTR_BOLD | 
+										VT100_SETTING_MODE_ATTR_INVERSE | 
+										VT100_SETTING_MODE_ATTR_BLINK | 
+										VT100_SETTING_MODE_ATTR_UNDERLINE);
 			break;
 			
 			case 1:
-				vt100.mode.attr_bold = TRUE;
+				vt100_setting.mode |= VT100_SETTING_MODE_ATTR_BOLD;
 			break;
 			
 			case 4:
-				vt100.mode.attr_underline = TRUE;
+				vt100_setting.mode |= VT100_SETTING_MODE_ATTR_UNDERLINE;
 			break;
 			
 			case 5:
-				vt100.mode.attr_blink = TRUE;
+				vt100_setting.mode |= VT100_SETTING_MODE_ATTR_BLINK;
 			break;
 			
 			case 7:
-				vt100.mode.attr_inverse = TRUE;
+				vt100_setting.mode |= VT100_SETTING_MODE_ATTR_INVERSE;
 			break;
 			
 			//default:

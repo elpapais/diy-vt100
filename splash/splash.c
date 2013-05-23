@@ -21,16 +21,18 @@ splash()
 	uint8_t i,j;
 	for(i=0; i<5; i++)
 	{
-		vt100.screen[i][0].touched = TRUE;
+		/* NOTE: this can be moved with j loop buffer prop */
+		vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
 		
 		for(j=0; j<16; j++)
 		{
-			vt100.screen[i][j].data = splash_message[i][j];
-			vt100.screen[i][j].inverse = TRUE;
+			vt100_buffer[i][j].data = splash_message[i][j];
+			vt100_buffer[i][j].prop |= VT100_BUFFER_PROP_INVERSE;
 		}
 	}
 
-	vt100_cursor_goto(5, 0);
+	vt100_cursor.col = 0;
+	vt100_cursor.row = 5;
 
-	vt100_refresh();
+	vt100_screen_refresh();
 }

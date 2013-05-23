@@ -28,7 +28,7 @@ void port2_interrupt()
 		case -1:
 			/* start bit */
 			keyboard_ps2.data = 0;
-			keyboard_ps2.parity = 0;
+			//keyboard_ps2.mode &= ~KEYBOARD_PS2_MODE_PARITY;
 		break;
 		
 		case 0:
@@ -43,18 +43,16 @@ void port2_interrupt()
 			if(KEYBOARD_PS2_PIN & KEYBOARD_PS2_DATA)
 			{
 				keyboard_ps2.data |= (1 << keyboard_ps2.index);
-				keyboard_ps2.parity ^= 0x01;
+				//keyboard_ps2.mode ^= KEYBOARD_PS2_MODE_PARITY;
 			}
 		break;
 		
 		case 8:
-			//if((!(KEYBOARD_PS2_PIN & KEYBOARD_PS2_DATA)) == (!keyboard_ps2.parity))
+			//if((!(KEYBOARD_PS2_PIN & KEYBOARD_PS2_DATA)) == (!keyboard_ps2.mode & KEYBOARD_PS2_MODE_PARITY))
 			//{
 				//parity error
 				/* TODO: check parity for data */
 			//}
-			
-			
 		break;
 		
 		case 9:

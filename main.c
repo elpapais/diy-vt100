@@ -11,7 +11,6 @@ void msp430_init();
 int
 main()
 {
-	register uint8_t data;
 	msp430_init();
 	port1_init();
 	vt100_init();
@@ -27,26 +26,16 @@ main()
 		_BIS_SR(LPM1_bits + GIE);
 		
 		/* screen refresh { */
-		while(cqueue_count(uart_cqueue_rx))
+		while(uart_cqueue_rx.count)
 		{
-			vt100.data = cqueue_pop(&uart_cqueue_rx);
+			vt100_param.pass = cqueue_pop(&uart_cqueue_rx);
 			control();
 		}
 		
-		vt100_refresh();
+		vt100_screen_refresh();
 		/* } */
 		
-		/* cursor blinking { */
-		/* make sure we dont overflow the cursor */
-		if(vt100.screen[vt100.cursor.row][0].double_width && vt100.cursor.col > VT100_WIDTH/2)
-		{
-			vt100.cursor.col /=2;
-		}
-		
-		nokia1100_gotoyx(vt100.cursor.row, vt100.cursor.col * NOKIA1100_WIDTH_CHAR);
-		
-		vt100_print_char(vt100.cursor.row, vt100.cursor.col, vt100.mode.cursor_state);
-		/* } */
+		vt100_cursor_draw();
 	}
 }
 

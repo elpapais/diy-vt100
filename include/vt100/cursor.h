@@ -2,22 +2,30 @@
 #define _VT100_CURSOR_H_
 
 #include <common.h>
-#include <vt100/extern.h>
-#include <nokia1100.h>
+#include <vt100/param.h>
 
-#define vt100_cursor_gotocol(c) (vt100.cursor.col = c)
-#define vt100_cursor_gotorow(r) (vt100.cursor.row = r)
-#define vt100_cursor_goto(r,c) vt100_cursor_gotorow(r);vt100_cursor_gotocol(c)
+/* cursor position */
+struct __vt100_cursor
+{
+	row_t row;
+	col_t col;
+};
+
+#include <vt100/buffer.h>
+
+extern struct __vt100_cursor vt100_cursor;
 
 void vt100_cursor_position();
 void vt100_cursor_down();
 void vt100_cursor_up();
 void vt100_cursor_forward();
 void vt100_cursor_backward();
-void vt100_restore_cursor();
-void vt100_save_cursor();
+void vt100_cursor_restore();
+void vt100_cursor_save();
 
 void vt100_cursor_up_with_scrolldown();
 void vt100_cursor_down_with_scrollup();
+
+void vt100_cursor_draw();
 
 #endif

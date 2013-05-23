@@ -11,26 +11,26 @@ control()
 	/* search for recv in __block table */
 	for(i=current_control; i->cb; i++)
 	{
-		if(i->ch != vt100.data)
+		if(i->ch != vt100_param.pass)
 		{
 			continue;
 		}
 		
-		if(i->cb == (callback_t)1)
+		if(i->cb == (const callback_t)1)
 		{
 			current_control = (struct __control *)i->arg.select;
 		}
-		else
+		else if(i->cb != (const callback_t)2)
 		{
 			vt100_param_default(i->arg.param.pcount, i->arg.param.pdefault);
 			i->cb();
-			vt100_param_reset();
+			vt100_param.count = 0;
 		}
 		
 		break;
 	}
 	
-	/* is it not found */
+	/* no attached callback found */
 	if(i->cb == 0)
 	{
 		/* if we are at start state, store it in buffer */
@@ -38,11 +38,10 @@ control()
 		{
 			vt100_buffer_putchar();
 		}
-		
-		/* assuming this as paramter */
-		else if(! vt100_param_add())
+		else
 		{
-			return;
+			/* assuming this as paramter */
+			vt100_param_add();
 		}
 	}
 	else if(i->cb != (callback_t)1)

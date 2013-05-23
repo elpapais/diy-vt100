@@ -11,60 +11,81 @@ void keyboard_ps2_data_decode()
 	{
 		case 0xF0:
 			/* some key released */
-			keyboard_ps2.make = FALSE;
+			keyboard_ps2.mode &= ~KEYBOARD_PS2_MODE_MAKE;
 		return;
 		
 		case 0xE0:
 			/* behaviour modifier */
-			keyboard_ps2.modifier = TRUE;
+			keyboard_ps2.mode |= KEYBOARD_PS2_MODE_MODIFIER;
 		return;
 		
 		case 0x12: /* left SHIFT */
 		case 0x59: /* right SHIFT */
-			keyboard_ps2.latch_shift = keyboard_ps2.make;
+			if(keyboard_ps2.mode & KEYBOARD_PS2_MODE_MAKE)
+			{
+				keyboard_ps2.mode |= KEYBOARD_PS2_MODE_LATCH_SHIFT;
+			}
+			else
+			{
+				keyboard_ps2.mode &= ~KEYBOARD_PS2_MODE_LATCH_SHIFT;
+			}
 		break;
 		
 		/* right CTRL : <modifier> 0x14 */
 		case 0x14: /* left CTRL */
-			keyboard_ps2.latch_ctrl = keyboard_ps2.make;
+			if(keyboard_ps2.mode & KEYBOARD_PS2_MODE_MAKE)
+			{
+				keyboard_ps2.mode |= KEYBOARD_PS2_MODE_LATCH_CTRL;
+			}
+			else
+			{
+				keyboard_ps2.mode &= ~KEYBOARD_PS2_MODE_LATCH_CTRL;
+			}
 		break;
 		
 		/* right ALT : <modifier> 0x11 */
 		case 0x11: /* left ALT */
-			keyboard_ps2.latch_alt = keyboard_ps2.make;
+			if(keyboard_ps2.mode & KEYBOARD_PS2_MODE_MAKE)
+			{
+				keyboard_ps2.mode |= KEYBOARD_PS2_MODE_LATCH_ALT;
+			}
+			else
+			{
+				keyboard_ps2.mode &= ~KEYBOARD_PS2_MODE_LATCH_ALT;
+			}
 		break;
 		
 		/* including modifier version */
 		case 0x1F: /* left GUI */
-			//keyboard_ps2.latch_gui = keyboard_ps2.make;
+			
 		break;
 		
 		/* caps */
 		case 0x58:
-			if(keyboard_ps2.make)
+			if(keyboard_ps2.mode & KEYBOARD_PS2_MODE_MAKE)
 			{
 				/* flip caps */
-				keyboard_ps2.latch_caps ^= 0x01;
+				keyboard_ps2.mode ^= KEYBOARD_PS2_MODE_LATCH_CAPS;
 			}
 		break;
 		
 		default:
-			if(keyboard_ps2.make)
+			if(keyboard_ps2.mode & KEYBOARD_PS2_MODE_MAKE)
 			{
-				return keyboard_ps2_resolve_scancode(keyboard_ps2.data);
+				keyboard_ps2_resolve_scancode(keyboard_ps2.data);
 			}
 		break;
 	}
 	
-	keyboard_ps2.make = TRUE;
-	keyboard_ps2.modifier = FALSE;
+	keyboard_ps2.mode |= KEYBOARD_PS2_MODE_MAKE;
+	keyboard_ps2.mode &= ~KEYBOARD_PS2_MODE_MODIFIER;
 }
 
 void keyboard_ps2_resolve_scancode()
 {
 	register uint8_t ch = 0;
 	
-	if(keyboard_ps2.modifier)
+	if(keyboard_ps2.mode & KEYBOARD_PS2_MODE_MODIFIER)
 	{
 		switch (keyboard_ps2.data)
 		{
@@ -119,25 +140,41 @@ void keyboard_ps2_resolve_scancode()
 	}
 	else if(keyboard_ps2.data < KEYBOARD_PS2_KEYMAP_SIZE)
 	{
-		ch = keyboard_ps2_scancode_en[keyboard_ps2.data][keyboard_ps2.latch_shift];
+		ch = keyboard_ps2_scancode_en[keyboard_ps2.data][ (keyboard_ps2.mode & KEYBOARD_PS2_MODE_LATCH_SHIFT) ? 1 : 0 ];
 		
-		/* caps lock feature, turn character to opposite case */
-		if(keyboard_ps2.latch_caps)
+		if('a' <= ch && ch <= 'z')
 		{
-			if('a' <= ch && ch <= 'z' )
+			/* we have small letters (ctrl or caps latched)*/
+			if(keyboard_ps2.mode & (KEYBOARD_PS2_MODE_LATCH_CTRL | KEYBOARD_PS2_MODE_LATCH_CAPS))
 			{
+				/* convert to capital letter */
 				ch -= 'a' - 'A';
 			}
-			else if('A' <= ch && ch <= 'Z')
+		}
+		else if('A' <= ch && ch <= 'Z')
+		{
+			/* we have capital letters (ctrl not latched && caps latched)*/
+			if(keyboard_ps2.mode & (KEYBOARD_PS2_MODE_LATCH_CTRL | KEYBOARD_PS2_MODE_LATCH_CAPS) == KEYBOARD_PS2_MODE_LATCH_CAPS)
 			{
+				/* convert to small letter */
 				ch += 'a' - 'A';
 			}
+		}
+		/* some other char */
+		else if(keyboard_ps2.mode & KEYBOARD_PS2_MODE_LATCH_CTRL)
+		{
+			/* cannot handle this condition currently */
+			return;
+		}
+		
+		if(keyboard_ps2.mode & KEYBOARD_PS2_MODE_LATCH_CTRL)
+		{
+			ch -= 'A' - 1;
 		}
 	}
 	
 	if(ch)
 	{
 		uart_send(ch);
-		//cqueue_push(&uart_cqueue_rx, ch);
 	}
 }

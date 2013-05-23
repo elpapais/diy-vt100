@@ -9,7 +9,7 @@ MCU=msp430g2553
 
 # c compiler
 CC=$(PREFIX)gcc
-CFLAGS=-Os -mmcu=$(MCU) -I$(INCLUDE_DIR)
+CFLAGS=-O2 -mmcu=$(MCU) -I$(INCLUDE_DIR)
 
 MSPDEBUG=mspdebug
 DFLAGS=rf2500

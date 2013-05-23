@@ -37,7 +37,7 @@ void usci0_RX_interrupt()
 
 void usci0_TX_interrupt()
 {
-	if(cqueue_count(uart_cqueue_tx))
+	if(uart_cqueue_tx.count)
 	{
 		UCA0TXBUF = cqueue_pop(&uart_cqueue_tx);
 	}
