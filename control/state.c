@@ -3,6 +3,7 @@
 const struct __control
 control_opensquarebracket[] = //[
 {
+	control_select		(ASCII_ESCAPE, control_C1),
 	func_call			('D', vt100_cursor_backward, 1, 1),
 	func_call			('B', vt100_cursor_down, 1, 1),
 	func_call			('C', vt100_cursor_forward, 1, 1),
@@ -25,6 +26,7 @@ control_opensquarebracket[] = //[
 const struct __control
 control_hash[] = //#
 {
+	control_select		(ASCII_ESCAPE, control_C1),
 	func_call_noparam	('3', vt100_double_height_tophalf),
 	func_call_noparam	('4', vt100_double_height_bottomhalf),
 	func_call_noparam	('5', vt100_double_width),
@@ -55,11 +57,12 @@ const struct __control
 control_C0[] = 
 {
 	control_select		(ASCII_ESCAPE, control_C1),
-	func_call_noparam	(ASCII_BELL, vt100_bell),
+	func_call_noparam	(ASCII_BELL, vt100_audio_bell),
 	func_call_noparam	(ASCII_TAB, vt100_tabulation_goto_next),
-	func_call_noparam	(ASCII_BS, vt100_backspace),
+	func_call			(ASCII_BS, vt100_cursor_backward, 1, 1),
 	/* TODO: LNM: newline mode, no mode, default applied */
 	func_call_noparam	(ASCII_LF, vt100_buffer_newrow),
+	char_ignore			(ASCII_CR),
 	char_ignore			(ASCII_DEL),
 	char_ignore			(ASCII_NULL),
 	//func_call_noparam(ASCII_ENQ, vt100_identity), is ASCII_ENQ alias of ESC Z ??
@@ -69,11 +72,13 @@ control_C0[] =
 const struct __control
 control_open_smallbracket[] =
 {
+	control_select		(ASCII_ESCAPE, control_C1),
 	control_end()
 };
 
 const struct __control
 control_close_smallbracket[] =
 {
+	control_select		(ASCII_ESCAPE, control_C1),
 	control_end()
 };

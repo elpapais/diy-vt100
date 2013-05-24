@@ -15,6 +15,6 @@ struct __vt100_param
 
 extern struct __vt100_param vt100_param;
 
-void vt100_param_add();			/* add values in increment order of rx data */
-void vt100_param_default(uint8_t, uint8_t);
+void vt100_param_add();
+void vt100_param_default(register uint8_t pcount, register uint8_t pdefault);
 #endif

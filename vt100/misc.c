@@ -13,7 +13,8 @@ void vt100_init()
 	/* TODO: support offline mode */
 	/* TODO: support Keyboard lock */
 	
-	vt100_param_default(1, 2);
+	vt100_param.count = 1;
+	vt100_param.data[0] = 2;
 	vt100_buffer_erase();
 }
 

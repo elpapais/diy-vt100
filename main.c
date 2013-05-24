@@ -46,7 +46,7 @@ msp430_init()
 	WDTCTL = WDTPW + WDTHOLD;
 	
 	/* If calibration constant erased */
-	if (CALBC1_16MHZ == 0xFF)
+	if(CALBC1_16MHZ == 0xFF)
 	{
 		/* do not load, trap CPU!! */								
 		while(1);

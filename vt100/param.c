@@ -26,16 +26,22 @@ void vt100_param_add()
 	//}
 }
 
-void vt100_param_default(uint8_t pcount, uint8_t default_value)
+void vt100_param_default(register uint8_t pcount, register uint8_t pdefault)
 {
-	if(pcount >= vt100_param.count)
+	/* reduce or expand param according to control.arg.param {*/
+	
+	/* chop of extra param */
+	if(vt100_param.count > pcount)
 	{
 		vt100_param.count = pcount;
-		return;
 	}
-	
-	while(pcount > vt100_param.count)
+	else
 	{
-		vt100_param.data[pcount--] = default_value;
+		/* pad in some default param */
+		while(vt100_param.count < pcount)
+		{
+			vt100_param.data[vt100_param.count++] = pdefault;
+		}
 	}
+	/* } */
 }

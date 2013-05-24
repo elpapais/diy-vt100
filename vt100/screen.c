@@ -31,16 +31,6 @@ void vt100_screen_printchar(register row_t i, register col_t j, register bool_t 
 	{
 		send = font_simple_get(vt100_buffer[i][j].data, k);
 		
-		if(vt100_buffer[i][j].prop & VT100_BUFFER_PROP_INVERSE)
-		{
-			send ^= 0xFF;
-		}
-		
-		if(vt100_buffer[i][j].prop & VT100_BUFFER_PROP_UNDERLINE)
-		{
-			send ^= 0x80;
-		}
-		
 		if(vt100_buffer[i][0].prop & VT100_BUFFER_PROP_DOUBLE_HEIGHT_TOP)
 		{
 			tmp = send;
@@ -91,6 +81,16 @@ void vt100_screen_printchar(register row_t i, register col_t j, register bool_t 
 		}
 		
 		if(has_cursor)
+		{
+			send ^= 0x80;
+		}
+		
+		if(vt100_buffer[i][j].prop & VT100_BUFFER_PROP_INVERSE)
+		{
+			send ^= 0xFF;
+		}
+		
+		if(vt100_buffer[i][j].prop & VT100_BUFFER_PROP_UNDERLINE)
 		{
 			send ^= 0x80;
 		}
