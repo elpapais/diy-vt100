@@ -14,6 +14,8 @@ void port2_init()
 	P1DIR |= BIT6;
 	P1OUT &= ~BIT6;
 	
+	keyboard_ps2.index = -2;
+	
 	/* interrupt goes to pin2_interrupt() */
 }
 

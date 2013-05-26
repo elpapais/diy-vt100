@@ -15,41 +15,6 @@
 #define KEYBOARD_PS2_DATA BIT3
 #define KEYBOARD_PS2_CLK BIT4
 
-/* derivative: http://www.pjrc.com/teensy/td_libs_PS2Keyboard.html */
-
-/* scancodes */
-#define KEYBOARD_PS2_TAB						ASCII_HT //9
-#define KEYBOARD_PS2_ENTER						ASCII_LF //13
-#define KEYBOARD_PS2_BACKSPACE					ASCII_BS //08
-#define KEYBOARD_PS2_ESCAPE						ASCII_ESCAPE //27
-#define KEYBOARD_PS2_INSERT						0
-#define KEYBOARD_PS2_DELETE						ASCII_DEL //127
-#define KEYBOARD_PS2_HOME						0
-#define KEYBOARD_PS2_END						0
-#define KEYBOARD_PS2_PAGEUP						25
-#define KEYBOARD_PS2_PAGEDOWN					26
-#define KEYBOARD_PS2_UPARROW					11
-#define KEYBOARD_PS2_LEFTARROW					8
-#define KEYBOARD_PS2_DOWNARROW					10
-#define KEYBOARD_PS2_RIGHTARROW					21
-#define KEYBOARD_PS2_F1							0
-#define KEYBOARD_PS2_F2							0
-#define KEYBOARD_PS2_F3							0
-#define KEYBOARD_PS2_F4							0
-#define KEYBOARD_PS2_F5							0
-#define KEYBOARD_PS2_F6							0
-#define KEYBOARD_PS2_F7							0
-#define KEYBOARD_PS2_F8							0
-#define KEYBOARD_PS2_F9							0
-#define KEYBOARD_PS2_F10						0
-#define KEYBOARD_PS2_F11						0
-#define KEYBOARD_PS2_F12						0
-#define KEYBOARD_PS2_SCROLL						0
-
-#define KEYBOARD_PS2_KEYMAP_SIZE 136
-
-#define keyboard_ps2_scancode_char(ch1, ch2) {ch1, ch2}
-
 #define KEYBOARD_PS2_MODE_LATCH_CTRL BIT0
 #define KEYBOARD_PS2_MODE_LATCH_NUM BIT1
 #define KEYBOARD_PS2_MODE_LATCH_ALT BIT2
@@ -57,8 +22,10 @@
 #define KEYBOARD_PS2_MODE_LATCH_SHIFT BIT4
 #define KEYBOARD_PS2_MODE_PARITY BIT5
 #define KEYBOARD_PS2_MODE_MODIFIER BIT6
-#define KEYBOARD_PS2_MODE_MAKE BIT7
+#define KEYBOARD_PS2_MODE_BREAK BIT7
 //#define KEYBOARD_PS2_MODE_LATCH_GUI
+
+#define KEYBOARD_PS2_ENTER ASCII_LF
 
 struct __keyboard_ps2
 {
@@ -67,11 +34,40 @@ struct __keyboard_ps2
 	uint8_t data;
 };
 
-extern struct __keyboard_ps2 keyboard_ps2;
-extern const uint8_t keyboard_ps2_scancode_en[KEYBOARD_PS2_KEYMAP_SIZE][2];
+#define KEYBOARD_PS2_KEYMAP_SIZE 136
 
-void keyboard_ps2_init();
+#define keyboard_ps2_scancode_num(ch, chalt) {0, {ch, chalt}}
+#define keyboard_ps2_scancode_special(ch, chalt) {0, {ch, chalt}}
+#define keyboard_ps2_scancode_alpha(ch, chalt) {(callback_t)1, {ch, chalt}}
+#define keyboard_ps2_scancode_callback(cb) {cb, {0, 0}}
+#define keyboard_ps2_scancode_ignore() {0, {0, 0}}
+
+struct __keyboard_ps2_scancode
+{
+	/*
+	 * 0 = do not exists
+	 * 1 = character is affected by caps status
+	 * other = call
+	 */
+	callback_t callback;
+	
+	/* 0:main, 1:replacement */
+	uint8_t ch[2];
+};
+
+extern struct __keyboard_ps2 keyboard_ps2;
+extern const struct __keyboard_ps2_scancode keyboard_ps2_scancode_en[KEYBOARD_PS2_KEYMAP_SIZE];
+
 void keyboard_ps2_data_decode();
-void keyboard_ps2_resolve_scancode();
+
+void keyboard_ps2_scancode_callback_numlock();
+void keyboard_ps2_scancode_callback_ctrl();
+void keyboard_ps2_scancode_callback_shift();
+void keyboard_ps2_scancode_callback_caps();
+void keyboard_ps2_scancode_callback_alt();
+void keyboard_ps2_scancode_callback_f4();
+void keyboard_ps2_scancode_callback_f3();
+void keyboard_ps2_scancode_callback_f2();
+void keyboard_ps2_scancode_callback_f1();
 
 #endif

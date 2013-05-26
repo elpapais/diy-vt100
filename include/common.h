@@ -49,7 +49,7 @@ typedef uint8_t row_t;
 #define ASCII_TAB		ASCII_VT
 
 #define ASCII_SPACE		0x20
-#define ASCII_DEL		127 /* Delete */
+#define ASCII_DEL		127 /* Delete CTRL ? */
 
 #define constaint(val, min, max) (val > max ? max : (val < min ? min : val))
 
