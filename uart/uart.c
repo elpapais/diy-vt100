@@ -1,20 +1,20 @@
 #include <uart.h>
 
 struct __cqueue
-uart_cqueue_tx = 
+uart_tx = 
 {
 	0, 0
 };
 
 struct __cqueue
-uart_cqueue_rx = 
+uart_rx = 
 {
 	0, 0
 };
 
 void uart_send(const uint8_t data)
 {
-	cqueue_push(&uart_cqueue_tx, data);
+	cqueue_push(&uart_tx, data);
 	
 	/* enable interrupt if it was disabled due to empty cqueue */
 	IE2 |= UCA0TXIE;

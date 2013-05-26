@@ -3,12 +3,12 @@
 #include <splash.h>
 #include <vt100/vt100.h>
 #include <hardware/timerA.h>
-#include <hardware/usci0.h>
 #include <hardware/port2.h>
+#include <hardware/usciA.h>
 
 void msp430_init();
 
-int
+void
 main()
 {
 	msp430_init();
@@ -17,26 +17,25 @@ main()
 	
 	splash();
 	
-	usci0_init();
+	usciA_init();
 	timerA_init();
 	port2_init();
 
-	while(TRUE)
-	{
+	loop:
+		vt100_cursor_draw();
+		
 		_BIS_SR(LPM1_bits + GIE);
 		
 		/* screen refresh { */
-		while(uart_cqueue_rx.count)
+		while(uart_rx.count)
 		{
-			vt100_param.pass = cqueue_pop(&uart_cqueue_rx);
+			vt100_param.pass = cqueue_pop(&uart_rx);
 			control();
 		}
 		
 		vt100_screen_refresh();
 		/* } */
-		
-		vt100_cursor_draw();
-	}
+	goto loop;
 }
 
 void
@@ -48,8 +47,8 @@ msp430_init()
 	/* If calibration constant erased */
 	if(CALBC1_16MHZ == 0xFF)
 	{
-		/* do not load, trap CPU!! */								
-		while(1);
+		/* go in low power mode!! */							
+		_BIS_SR(LPM4_bits);
 	}
 	
 	/*
@@ -57,7 +56,10 @@ msp430_init()
 	 * SMCLK @ 4MHz
 	 */
 	
-	DCOCTL = CALDCO_16MHZ;  /* Set DCO step and modulation */
-	BCSCTL1 = CALBC1_16MHZ; /* Set range */
+	/* Set DCO step and modulation */
+	DCOCTL = CALDCO_16MHZ;
+	
+	/* Set range */ 
+	BCSCTL1 = CALBC1_16MHZ;
 	BCSCTL2 = DIVS_2;
 }

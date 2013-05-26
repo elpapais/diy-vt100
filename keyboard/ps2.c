@@ -169,7 +169,7 @@ void keyboard_ps2_resolve_scancode()
 		
 		if(keyboard_ps2.mode & KEYBOARD_PS2_MODE_LATCH_CTRL)
 		{
-			ch -= (ch - '@') & ~BIT7;
+			ch = (ch - '@') & ~BIT7;
 		}
 	}
 	

@@ -4,6 +4,7 @@
 #include <common.h>
 #include <cqueue.h>
 #include <keyboard/ps2.h>
+#include <uart.h>
 
 void port2_init();
 void port2_interrupt()__attribute__((interrupt(PORT2_VECTOR)));

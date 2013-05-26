@@ -58,6 +58,9 @@ typedef uint8_t row_t;
 
 typedef void (* callback_t)();
 
+#define F_CPU 16000000
+#define __delay_us(t) __delay_cycles(t * (F_CPU/1000000))
+
 typedef uint8_t bool_t;
 
 #endif

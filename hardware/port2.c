@@ -6,10 +6,10 @@ void port2_init()
 	KEYBOARD_PS2_PREN |= KEYBOARD_PS2_DATA | KEYBOARD_PS2_CLK;
 	KEYBOARD_PS2_POUT |= KEYBOARD_PS2_DATA | KEYBOARD_PS2_CLK;
 	
+	KEYBOARD_PS2_PIFG &= ~KEYBOARD_PS2_CLK;
+	
 	KEYBOARD_PS2_PIES |= KEYBOARD_PS2_CLK;
 	KEYBOARD_PS2_PIE |= KEYBOARD_PS2_CLK;
-	
-	KEYBOARD_PS2_PIFG &= ~KEYBOARD_PS2_CLK;
 	
 	P1DIR |= BIT6;
 	P1OUT &= ~BIT6;
@@ -40,6 +40,7 @@ void port2_interrupt()
 		case 6:
 		case 7:
 			/* data */
+			
 			if(KEYBOARD_PS2_PIN & KEYBOARD_PS2_DATA)
 			{
 				keyboard_ps2.data |= (1 << keyboard_ps2.index);
