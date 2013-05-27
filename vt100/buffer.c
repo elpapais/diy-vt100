@@ -196,19 +196,8 @@ vt100_buffer_erase()
 		break;
 		
 		case 1:
-			/* Clear from top of screen to current position */
-		
-			for(i=0; i < vt100_cursor.row; i++)
-			{
-				for(j=0; j < VT100_WIDTH; j++)
-				{
-					vt100_buffer[i][j].data = 0;
-					vt100_buffer[i][j].prop &= VT100_BUFFER_PROP_TAB;
-				}
-				
-				vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
-			}
 			
+		
 			/* current row, coloum 0 - current col */
 			for(j=0; j <= vt100_cursor.col; j++)
 			{
@@ -217,35 +206,56 @@ vt100_buffer_erase()
 			}
 			
 			vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
+		
+			
+			
+			if(vt100_param.pass == 'J')
+			{
+				/* Clear from top of screen to current position */
+				for(i=0; i < vt100_cursor.row; i++)
+				{
+					for(j=0; j < VT100_WIDTH; j++)
+					{
+						vt100_buffer[i][j].data = 0;
+						vt100_buffer[i][j].prop &= VT100_BUFFER_PROP_TAB;
+					}
+					
+					vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
+				}
+			}
 		break;
 		
 		case 2:
 			/* clear the full screen */
 			
 			nokia1100_clear();
-	
-			register uint8_t clearprop;
 			
-			/* clear the double width option */
-			clearprop = (vt100_param.pass == 'J' ? 
-							~(VT100_BUFFER_PROP_BOLD | VT100_BUFFER_PROP_INVERSE | VT100_BUFFER_PROP_UNDERLINE | VT100_BUFFER_PROP_DOUBLE_WIDTH) : 
-							~(VT100_BUFFER_PROP_BOLD | VT100_BUFFER_PROP_INVERSE | VT100_BUFFER_PROP_UNDERLINE));
-
-			for(i = 0; i < VT100_HEIGHT; i++)
-			{
-				vt100_buffer[i][0].data = 0;
-				vt100_buffer[i][0].prop &= clearprop;
-				vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
-				
-				for(j = 1; j < VT100_WIDTH; j++)
-				{
-					vt100_buffer[i][j].data = 0;
-					vt100_buffer[i][j].prop &= VT100_BUFFER_PROP_TAB;
-				}
-			}
-
 			if(vt100_param.pass == 'K')
 			{
+				for(j = 0; j < VT100_WIDTH; j++)
+				{
+					vt100_buffer[vt100_cursor.row][j].data = 0;
+					vt100_buffer[vt100_cursor.row][j].prop &= VT100_BUFFER_PROP_TAB;
+				}
+				vt100_buffer[vt100_cursor.row][0].prop |= VT100_BUFFER_PROP_TOUCH;
+			}
+			else
+			{ //J
+				for(i = 0; i < VT100_HEIGHT; i++)
+				{
+					vt100_buffer[i][0].data = 0;
+					
+					/* clear the double width option */
+					vt100_buffer[i][0].prop &= ~VT100_BUFFER_PROP_DOUBLE_WIDTH;
+					vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
+					
+					for(j = 1; j < VT100_WIDTH; j++)
+					{
+						vt100_buffer[i][j].data = 0;
+						vt100_buffer[i][j].prop &= VT100_BUFFER_PROP_TAB;
+					}
+				}
+				
 				vt100_cursor.col = 0;
 				vt100_cursor.row = 0;
 			}
@@ -254,4 +264,9 @@ vt100_buffer_erase()
 		//default:
 			//ignore
 	}
+}
+
+void vt100_buffer_carragereturn()
+{
+	vt100_cursor.col = 0;
 }

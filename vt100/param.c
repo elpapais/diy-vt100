@@ -26,10 +26,10 @@ void vt100_param_add()
 	//}
 }
 
-void vt100_param_default(register uint8_t pcount, register uint8_t pdefault)
+void vt100_param_default(uint8_t pcount, uint8_t pdefault)
 {
 	/* chop of extra param */
-	if(vt100_param.count > pcount)
+	if(vt100_param.count >= pcount)
 	{
 		vt100_param.count = pcount;
 	}

@@ -17,9 +17,15 @@
 #define VT100_SETTING_MODE_ATTR_UNDERLINE BIT5
 #define VT100_SETTING_MODE_ATTR_BLINK BIT6
 
+/* compaitble mode(0:vt52, 1:ansi) */
+#define VT100_SETTING_MODE_COMPATIBLE BIT7
+
+/* cursor key mode(0:reset, 1:set) */
+#define VT100_SETTING_MODE_CURSOR_KEY BIT8
+
 struct __vt100_setting
 {
-	uint8_t mode;
+	uint16_t mode;
 	struct __vt100_cursor cursor_bkp;
 };
 

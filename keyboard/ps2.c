@@ -2,14 +2,17 @@
 
 struct __keyboard_ps2 keyboard_ps2;
 
+static inline void keyboard_ps2_scancode_arrow(const uint8_t cursor);
+static inline void keyboard_ps2_scancode_keypad(const uint8_t ascii, const uint8_t appmode, const uint8_t cursor);
+
 void
 keyboard_ps2_data_decode()
 {
 	register uint8_t ch = 0;
 	
-	if(keyboard_ps2.data < KEYBOARD_PS2_KEYMAP_SIZE)
+	if(keyboard_ps2.param < KEYBOARD_PS2_SCANCODE_SIZE)
 	{
-		switch((uint16_t)keyboard_ps2_scancode_en[keyboard_ps2.data].callback)
+		switch((uint16_t)keyboard_ps2_scancode_en[keyboard_ps2.param].callback)
 		{
 			case 1:
 				if(keyboard_ps2.mode & (KEYBOARD_PS2_MODE_LATCH_CTRL | KEYBOARD_PS2_MODE_LATCH_CAPS) == KEYBOARD_PS2_MODE_LATCH_CAPS)
@@ -28,7 +31,7 @@ keyboard_ps2_data_decode()
 					ch ^= 1;
 				}
 				
-				ch = keyboard_ps2_scancode_en[keyboard_ps2.data].ch[ch];
+				ch = keyboard_ps2_scancode_en[keyboard_ps2.param].ch[ch];
 				
 				if(keyboard_ps2.mode & KEYBOARD_PS2_MODE_LATCH_CTRL)
 				{
@@ -39,7 +42,7 @@ keyboard_ps2_data_decode()
 			break;
 			
 			default:
-				keyboard_ps2_scancode_en[keyboard_ps2.data].callback();
+				keyboard_ps2_scancode_en[keyboard_ps2.param].callback();
 			break;
 		}
 		
@@ -47,7 +50,7 @@ keyboard_ps2_data_decode()
 	}
 	else
 	{
-		switch(keyboard_ps2.data)
+		switch(keyboard_ps2.param)
 		{
 			case 0xF0:
 				/* some key released */
@@ -61,48 +64,41 @@ keyboard_ps2_data_decode()
 	}
 }
 
-#define keyboard_ps2_scancode_callback_f(inc) \
-	vt100_param.count = 3; \
-	vt100_param.data[0] = ASCII_ESCAPE; \
-	vt100_param.data[1] = 'O'; \
-	vt100_param.data[2] = 'O' + inc; \
-	uart_send_param_direct()
+static void
+keyboard_ps2_scancode_callback_f(const uint8_t ident)
+{
+	uart_send_escape();
+
+	if(vt100_setting.mode & VT100_SETTING_MODE_COMPATIBLE)
+	{
+		uart_send('O');
+	}
+	
+	uart_send(ident);
+}
 
 void
 keyboard_ps2_scancode_callback_f1()
 {
-	keyboard_ps2_scancode_callback_f(1);
+	keyboard_ps2_scancode_callback_f('P');
 }
 
 void
 keyboard_ps2_scancode_callback_f2()
 {
-	keyboard_ps2_scancode_callback_f(2);
+	keyboard_ps2_scancode_callback_f('Q');
 }
 
 void
 keyboard_ps2_scancode_callback_f3()
 {
-	keyboard_ps2_scancode_callback_f(3);
+	keyboard_ps2_scancode_callback_f('R');
 }
 
 void
 keyboard_ps2_scancode_callback_f4()
 {
-	keyboard_ps2_scancode_callback_f(4);
-}
-
-void
-keyboard_ps2_scancode_callback_alt()
-{
-	if(keyboard_ps2.mode & KEYBOARD_PS2_MODE_BREAK)
-	{
-		keyboard_ps2.mode &= ~KEYBOARD_PS2_MODE_LATCH_ALT;
-	}
-	else
-	{
-		keyboard_ps2.mode |= KEYBOARD_PS2_MODE_LATCH_ALT;
-	}
+	keyboard_ps2_scancode_callback_f('S');
 }
 
 void
@@ -127,7 +123,6 @@ keyboard_ps2_scancode_callback_shift()
 	else
 	{
 		keyboard_ps2.mode |= KEYBOARD_PS2_MODE_LATCH_SHIFT;
-		
 	}
 }
 
@@ -146,12 +141,132 @@ keyboard_ps2_scancode_callback_ctrl()
 }
 
 void
-keyboard_ps2_scancode_callback_numlock()
+keyboard_ps2_scancode_callback_keypad_0()
 {
-	/* numlock status modify */
-	if(!(keyboard_ps2.mode & KEYBOARD_PS2_MODE_BREAK))
+	keyboard_ps2_scancode_keypad('0', 'p', 0);
+}
+
+void
+keyboard_ps2_scancode_callback_keypad_1()
+{
+	keyboard_ps2_scancode_keypad('1', 'q', 0);
+}
+
+void
+keyboard_ps2_scancode_callback_keypad_2()
+{
+	keyboard_ps2_scancode_keypad('2', 'r', 'B');
+}
+
+void
+keyboard_ps2_scancode_callback_keypad_3()
+{
+	keyboard_ps2_scancode_keypad('3', 's', 0);
+}
+
+void
+keyboard_ps2_scancode_callback_keypad_4()
+{
+	keyboard_ps2_scancode_keypad('4', 't', 'D');
+}
+
+void
+keyboard_ps2_scancode_callback_keypad_5()
+{
+	keyboard_ps2_scancode_keypad('5', 'u', 0);
+}
+
+void
+keyboard_ps2_scancode_callback_keypad_6()
+{
+	keyboard_ps2_scancode_keypad('6', 'v', 'C');
+}
+
+void
+keyboard_ps2_scancode_callback_keypad_7()
+{
+	keyboard_ps2_scancode_keypad('7', 'w', 0);
+}
+
+void
+keyboard_ps2_scancode_callback_keypad_8()
+{
+	keyboard_ps2_scancode_keypad('2', 'x', 'A');
+}
+
+void
+keyboard_ps2_scancode_callback_keypad_9()
+{
+	keyboard_ps2_scancode_keypad('9', 'y', 0);
+}
+
+void
+keyboard_ps2_scancode_callback_keypad_dot()
+{
+	keyboard_ps2_scancode_keypad('.', 'n', 0);
+}
+
+void
+keyboard_ps2_scancode_callback_keypad_dash()
+{
+	keyboard_ps2_scancode_keypad('-', 'm', 0);
+}
+
+void
+keyboard_ps2_scancode_callback_enter()
+{
+	if(keyboard_ps2.mode & KEYBOARD_PS2_MODE_BREAK)
 	{
-		/* flip numlock */
-		keyboard_ps2.mode ^= KEYBOARD_PS2_MODE_LATCH_NUM;
+		return;
 	}
+	
+	if(
+		keyboard_ps2.mode & KEYBOARD_PS2_MODE_MODIFIER
+		&& vt100_setting.mode & VT100_SETTING_MODE_KEYPAD
+	)
+	{
+		/* keypad enter */
+		uart_send_escape();
+		uart_send((vt100_setting.mode & VT100_SETTING_MODE_COMPATIBLE) ? 'O' : '?');
+		uart_send('M');
+	}
+	else
+	{
+		uart_send_enter();
+	}
+}
+
+static inline void
+keyboard_ps2_scancode_keypad(const uint8_t ascii, const uint8_t appmode, const uint8_t arrow)
+{
+	if(keyboard_ps2.mode & KEYBOARD_PS2_MODE_BREAK)
+	{
+		return;
+	}
+	
+	if(keyboard_ps2.mode & KEYBOARD_PS2_MODE_MODIFIER)
+	{
+		if(arrow)
+		{
+			keyboard_ps2_scancode_arrow(arrow);
+		}
+	}
+	else if(vt100_setting.mode & VT100_SETTING_MODE_KEYPAD)
+	{
+		uart_send(ascii);
+	}
+	else
+	{
+		uart_send_escape();
+		uart_send((vt100_setting.mode & VT100_SETTING_MODE_COMPATIBLE) ? 'O' : '?');
+		uart_send(appmode);
+	}
+}
+
+static inline void
+keyboard_ps2_scancode_arrow(const uint8_t ident)
+{
+	uart_send_escape();
+	uart_send('[');
+	uart_send(ident);
 }

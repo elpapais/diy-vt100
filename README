@@ -1,4 +1,14 @@
 DIY-VT100
 =========
 
-a vt100 clone
+a vt100 hardware clone
+
+send a login prompt on diy-vt100:
+$sudo agetty /dev/ttyACM0 9600 vt100
+
+now login using username,password
+
+then type following commands
+$stty cols 16 rows 8
+$lines=8
+$cols=16

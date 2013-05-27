@@ -14,19 +14,19 @@ main()
 	msp430_init();
 	port1_init();
 	vt100_init();
-	
-	splash();
-	
 	usciA_init();
 	timerA_init();
 	port2_init();
-
-	loop:
-		vt100_cursor_draw();
+	
+	splash();
+	
+	__loop:
+		while(keyboard_ps2.data_queue.count)
+		{
+			keyboard_ps2.param = cqueue_pop(&keyboard_ps2.data_queue);
+			keyboard_ps2_data_decode();
+		}
 		
-		_BIS_SR(LPM1_bits + GIE);
-		
-		/* screen refresh { */
 		while(uart_rx.count)
 		{
 			vt100_param.pass = cqueue_pop(&uart_rx);
@@ -34,8 +34,11 @@ main()
 		}
 		
 		vt100_screen_refresh();
-		/* } */
-	goto loop;
+		
+		vt100_cursor_draw();
+		
+		_BIS_SR(LPM1_bits + GIE);
+	goto __loop;
 }
 
 void

@@ -5,13 +5,11 @@
 #include <cqueue.h>
 #include <common.h>
 
-#define uart_send_ESCseq(str) uart_send(ASCII_ESCAPE);uart_send_string(str)
-
 void uart_send(const uint8_t data);
-void uart_send_int(uint8_t val);
-void uart_send_string(char *str);
-void uart_send_param(uint8_t before, uint8_t after, uint8_t default_value);
-void uart_send_param_direct();
+void uart_send_uint8(uint8_t val);
+
+#define uart_send_enter() uart_send(ASCII_LF)
+#define uart_send_escape() uart_send(ASCII_ESCAPE)
 
 extern struct __cqueue uart_rx;
 extern struct __cqueue uart_tx;

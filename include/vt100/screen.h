@@ -9,6 +9,6 @@
 
 void vt100_screen_refresh();
 void vt100_screen_clear();
-void vt100_screen_printchar(register row_t i, register col_t j, register bool_t has_cursor);
+void vt100_screen_printchar(row_t i,col_t j,bool_t has_cursor);
 
 #endif

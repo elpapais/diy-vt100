@@ -13,27 +13,22 @@ void port2_init()
 	
 	P1DIR |= BIT6;
 	P1OUT &= ~BIT6;
-	
-	keyboard_ps2.index = -2;
-	
 	/* interrupt goes to pin2_interrupt() */
 }
 
 void port2_interrupt()
 {
 	P1OUT ^= BIT6;
-
-	keyboard_ps2.index++;
+	
+	KEYBOARD_PS2_PIFG &= ~KEYBOARD_PS2_CLK;
 	
 	switch(keyboard_ps2.index)
 	{
-		case -1:
+		case 0:
 			/* start bit */
-			keyboard_ps2.data = 0;
 			//keyboard_ps2.mode &= ~KEYBOARD_PS2_MODE_PARITY;
 		break;
 		
-		case 0:
 		case 1:
 		case 2:
 		case 3:
@@ -41,16 +36,17 @@ void port2_interrupt()
 		case 5:
 		case 6:
 		case 7:
+		case 8:
 			/* data */
-			
+			keyboard_ps2.data >>= 1;
 			if(KEYBOARD_PS2_PIN & KEYBOARD_PS2_DATA)
 			{
-				keyboard_ps2.data |= (1 << keyboard_ps2.index);
+				keyboard_ps2.data |= BIT7;
 				//keyboard_ps2.mode ^= KEYBOARD_PS2_MODE_PARITY;
 			}
 		break;
 		
-		case 8:
+		case 9:
 			//if((!(KEYBOARD_PS2_PIN & KEYBOARD_PS2_DATA)) == (!keyboard_ps2.mode & KEYBOARD_PS2_MODE_PARITY))
 			//{
 				//parity error
@@ -58,14 +54,14 @@ void port2_interrupt()
 			//}
 		break;
 		
-		case 9:
+		case 10:
 			/* STOP bit */
-			keyboard_ps2_data_decode();
+			cqueue_push(&keyboard_ps2.data_queue, keyboard_ps2.data);
 			
 		default:
-			keyboard_ps2.index = -2;
-		break;
+			keyboard_ps2.index = 0;
+		return;
 	}
 	
-	KEYBOARD_PS2_PIFG &= ~KEYBOARD_PS2_CLK;
+	keyboard_ps2.index++;
 }

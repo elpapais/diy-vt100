@@ -1,6 +1,6 @@
 #include <keyboard/ps2.h>
 
-const struct __keyboard_ps2_scancode keyboard_ps2_scancode_en[KEYBOARD_PS2_KEYMAP_SIZE] =
+const struct __keyboard_ps2_scancode keyboard_ps2_scancode_en[KEYBOARD_PS2_SCANCODE_SIZE] =
 {
 	keyboard_ps2_scancode_ignore	(),
 	keyboard_ps2_scancode_ignore	(), /* KEYBOARD_PS2_F9 */
@@ -19,7 +19,7 @@ const struct __keyboard_ps2_scancode keyboard_ps2_scancode_en[KEYBOARD_PS2_KEYMA
 	keyboard_ps2_scancode_special	('`', '~'),
 	keyboard_ps2_scancode_ignore	(),
 	keyboard_ps2_scancode_ignore	(),
-	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_alt), /* left alt */
+	keyboard_ps2_scancode_ignore	(), /* left alt */
 	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_shift), /* left shift */
 	keyboard_ps2_scancode_ignore	(),
 	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_ctrl), /* left ctrl */
@@ -92,7 +92,7 @@ const struct __keyboard_ps2_scancode keyboard_ps2_scancode_en[KEYBOARD_PS2_KEYMA
 	keyboard_ps2_scancode_ignore	(),
 	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_caps),
 	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_shift), /* right shift */
-	keyboard_ps2_scancode_special	(KEYBOARD_PS2_ENTER, KEYBOARD_PS2_ENTER),
+	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_enter),
 	keyboard_ps2_scancode_special	(']', '}'),
 	keyboard_ps2_scancode_ignore	(),
 	keyboard_ps2_scancode_special	('\\', '|'),
@@ -107,31 +107,31 @@ const struct __keyboard_ps2_scancode keyboard_ps2_scancode_en[KEYBOARD_PS2_KEYMA
 	keyboard_ps2_scancode_special	(ASCII_BS, ASCII_BS),
 	keyboard_ps2_scancode_ignore	(),
 	keyboard_ps2_scancode_ignore	(),
-	keyboard_ps2_scancode_num		('1', '1'),
+	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_keypad_1),
 	keyboard_ps2_scancode_ignore	(),
-	keyboard_ps2_scancode_num		('4', '4'),
-	keyboard_ps2_scancode_num		('7', '7'),
+	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_keypad_4),
+	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_keypad_7),
 	keyboard_ps2_scancode_ignore	(),
 	keyboard_ps2_scancode_ignore	(),
 	keyboard_ps2_scancode_ignore	(),
-	keyboard_ps2_scancode_num		('0', '0'),
-	keyboard_ps2_scancode_special	('.', '.'),
-	keyboard_ps2_scancode_num		('2', '2'),
-	keyboard_ps2_scancode_num		('5', '5'),
-	keyboard_ps2_scancode_num		('6', '6'),
-	keyboard_ps2_scancode_num		('8', '8'),
+	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_keypad_0),
+	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_keypad_dot),
+	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_keypad_2),
+	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_keypad_5),
+	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_keypad_6),
+	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_keypad_8),
 	keyboard_ps2_scancode_special	(ASCII_ESCAPE, ASCII_ESCAPE),
-	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_numlock),
+	keyboard_ps2_scancode_ignore	(), /* num lock */
 	keyboard_ps2_scancode_ignore	(), /* KEYBOARD_PS2_F11 */
 	keyboard_ps2_scancode_special	('+', '+'),
-	keyboard_ps2_scancode_num		('3', '3'),
-	keyboard_ps2_scancode_special	('-', '-'),
+	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_keypad_3),
+	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_keypad_dash),
 	keyboard_ps2_scancode_special	('*', '*'),
-	keyboard_ps2_scancode_num		('9', '9'),
-	keyboard_ps2_scancode_ignore	(), /* KEYBOARD_PS2_SCROLL */
-	keyboard_ps2_scancode_ignore	(),
-	keyboard_ps2_scancode_ignore	(),
-	keyboard_ps2_scancode_ignore	(),
-	keyboard_ps2_scancode_ignore	(),
-	keyboard_ps2_scancode_ignore	(), /* KEYBOARD_PS2_F7 */
+	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_keypad_9),
+//	keyboard_ps2_scancode_ignore	(), /* KEYBOARD_PS2_SCROLL */
+//	keyboard_ps2_scancode_ignore	(),
+//	keyboard_ps2_scancode_ignore	(),
+//	keyboard_ps2_scancode_ignore	(),
+//	keyboard_ps2_scancode_ignore	(),
+//	keyboard_ps2_scancode_ignore	(), /* KEYBOARD_PS2_F7 */
 };

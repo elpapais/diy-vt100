@@ -6,6 +6,8 @@ vt100_screen_refresh()
 	register row_t i;
 	register col_t j;
 	
+	vt100_buffer[vt100_cursor.row][0].prop |= VT100_BUFFER_PROP_TOUCH;
+	
 	for(i=0; i < VT100_HEIGHT; i++)
 	{
 		if(vt100_buffer[i][0].prop & VT100_BUFFER_PROP_TOUCH)
@@ -22,7 +24,7 @@ vt100_screen_refresh()
 	}
 }
 
-void vt100_screen_printchar(register row_t i, register col_t j, register bool_t has_cursor)
+void vt100_screen_printchar(row_t i, col_t j, bool_t has_cursor)
 {
 	register uint8_t k;
 	uint8_t send, tmp;
@@ -80,9 +82,9 @@ void vt100_screen_printchar(register row_t i, register col_t j, register bool_t 
 			}
 		}
 		
-		if(has_cursor)
+		if(vt100_buffer[i][j].prop & VT100_BUFFER_PROP_UNDERLINE)
 		{
-			send ^= 0x80;
+			send |= 0x80;
 		}
 		
 		if(vt100_buffer[i][j].prop & VT100_BUFFER_PROP_INVERSE)
@@ -90,7 +92,7 @@ void vt100_screen_printchar(register row_t i, register col_t j, register bool_t 
 			send ^= 0xFF;
 		}
 		
-		if(vt100_buffer[i][j].prop & VT100_BUFFER_PROP_UNDERLINE)
+		if(has_cursor)
 		{
 			send ^= 0x80;
 		}

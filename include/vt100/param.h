@@ -16,5 +16,5 @@ struct __vt100_param
 extern struct __vt100_param vt100_param;
 
 void vt100_param_add();
-void vt100_param_default(register uint8_t pcount, register uint8_t pdefault);
+void vt100_param_default(uint8_t pcount, uint8_t pdefault);
 #endif

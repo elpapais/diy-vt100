@@ -8,8 +8,8 @@ control_opensquarebracket[] = //[
 	func_call			('B', vt100_cursor_down, 1, 1),
 	func_call			('C', vt100_cursor_forward, 1, 1),
 	func_call			('A', vt100_cursor_up, 1, 1),
-	func_call			('H', vt100_cursor_position, 2, 1),
-	func_call			('f', vt100_cursor_position, 2, 1),
+	func_call			('H', vt100_cursor_position, 2, 0),
+	func_call			('f', vt100_cursor_position, 2, 0),
 	func_call_noparam	('c', vt100_report_identity),
 	func_call			('q', vt100_led_load, VT100_PARAM_QUEUE_SIZE, 0),
 	func_call			('r', vt100_margin_set_topbottom, 2, 0),
@@ -35,7 +35,7 @@ control_hash[] = //#
 };
 
 const struct __control
-control_C1[] = 
+control_C1[] = //ESC
 {
 	control_select		(ASCII_ESCAPE, control_C1),
 	control_select		('[', control_opensquarebracket),
@@ -62,7 +62,7 @@ control_C0[] =
 	func_call			(ASCII_BS, vt100_cursor_backward, 1, 1),
 	/* TODO: LNM: newline mode, no mode, default applied */
 	func_call_noparam	(ASCII_LF, vt100_buffer_newrow),
-	char_ignore			(ASCII_CR),
+	func_call_noparam	(ASCII_CR, vt100_buffer_carragereturn),
 	char_ignore			(ASCII_DEL),
 	char_ignore			(ASCII_NULL),
 	//func_call_noparam(ASCII_ENQ, vt100_identity), is ASCII_ENQ alias of ESC Z ??

@@ -46,10 +46,17 @@ typedef uint8_t row_t;
 #define ASCII_XOFF 		ASCII_DC3
 #define ASCII_ESCAPE 	ASCII_ESC
 #define ASCII_BELL		ASCII_BEL
-#define ASCII_TAB		ASCII_VT
+#define ASCII_TAB		ASCII_HT
 
 #define ASCII_SPACE		0x20
 #define ASCII_DEL		127 /* Delete CTRL ? */
+
+#define EXTASCII_BOX_TOPLEFT 0xDA
+#define EXTASCII_BOX_TOPRIGHT 0xBF
+#define EXTASCII_BOX_BOTLEFT 0xC0
+#define EXTASCII_BOX_BOTRIGHT 0xD9
+#define EXTASCII_BOX_HORZ 0xC4
+#define EXTASCII_BOX_VERT 0xB3
 
 #define constaint(val, min, max) (val > max ? max : (val < min ? min : val))
 
@@ -57,9 +64,6 @@ typedef uint8_t row_t;
 #define FALSE 0
 
 typedef void (* callback_t)();
-
-#define F_CPU 16000000
-#define __delay_us(t) __delay_cycles(t * (F_CPU/1000000))
 
 typedef uint8_t bool_t;
 

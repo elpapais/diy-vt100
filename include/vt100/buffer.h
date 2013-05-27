@@ -37,8 +37,9 @@ void vt100_buffer_newrow();
 void vt100_buffer_shiftup();
 void vt100_buffer_shiftdown();
 
-#define vt100_buffer_clear_char(r, c) vt100_buffer[(r)][(c)].data = 0;vt100_buffer[(r)][(c)].prop = 0
 void vt100_buffer_fill_E();
 void vt100_buffer_erase();
+
+void vt100_buffer_carragereturn();
 
 #endif
