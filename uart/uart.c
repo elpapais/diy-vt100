@@ -13,11 +13,19 @@ void uart_send(const uint8_t data)
 
 void uart_send_uint8(uint8_t val)
 {
-	/* send the number from heighest digit place to lowest digit place (recursively) */
-	if(val > 9)
+	uint8_t tmp = val / 100;
+	
+	if(tmp)
 	{
-		uart_send_uint8(val/10);
-		val %= 10;
+		uart_send('0' + tmp);
+		val -= tmp * 100;
+	}
+
+	tmp = val / 10;
+	if(tmp)
+	{
+		uart_send('0' + tmp);
+		val -= tmp * 10;
 	}
 	
 	uart_send('0' + val);
