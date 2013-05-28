@@ -11,6 +11,7 @@ void msp430_init();
 void
 main()
 {
+	uint8_t data = 0;
 	msp430_init();
 	port1_init();
 	vt100_init();
@@ -19,6 +20,8 @@ main()
 	port2_init();
 	
 	splash();
+
+	vt100_setting.mode |= VT100_SETTING_MODE_CURSOR_DESIGN;
 	
 	__loop:
 		while(keyboard_ps2.data_queue.count)
@@ -34,8 +37,6 @@ main()
 		}
 		
 		vt100_screen_refresh();
-		
-		vt100_cursor_draw();
 		
 		_BIS_SR(LPM1_bits + GIE);
 	goto __loop;
@@ -55,8 +56,8 @@ msp430_init()
 	}
 	
 	/*
-	 * MCLK  @ 16MHz
-	 * SMCLK @ 4MHz
+	 * MCLK  @ 8MHz
+	 * SMCLK @ 1MHz
 	 */
 	
 	/* Set DCO step and modulation */

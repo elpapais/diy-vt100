@@ -8,14 +8,16 @@ static inline void keyboard_ps2_scancode_keypad(const uint8_t ascii, const uint8
 void
 keyboard_ps2_data_decode()
 {
-	register uint8_t ch = 0;
+	uint8_t ch = 0;
 	
 	if(keyboard_ps2.param < KEYBOARD_PS2_SCANCODE_SIZE)
 	{
 		switch((uint16_t)keyboard_ps2_scancode_en[keyboard_ps2.param].callback)
 		{
 			case 1:
-				if(keyboard_ps2.mode & (KEYBOARD_PS2_MODE_LATCH_CTRL | KEYBOARD_PS2_MODE_LATCH_CAPS) == KEYBOARD_PS2_MODE_LATCH_CAPS)
+				if(keyboard_ps2.mode & (KEYBOARD_PS2_MODE_LATCH_CTRL | 
+										KEYBOARD_PS2_MODE_LATCH_CAPS) 
+					== KEYBOARD_PS2_MODE_LATCH_CAPS)
 				{
 					ch = 1;
 				}
@@ -26,7 +28,8 @@ keyboard_ps2_data_decode()
 					break;
 				}
 				
-				if(keyboard_ps2.mode & (KEYBOARD_PS2_MODE_LATCH_CTRL | KEYBOARD_PS2_MODE_LATCH_SHIFT))
+				if(keyboard_ps2.mode & (KEYBOARD_PS2_MODE_LATCH_CTRL
+										| KEYBOARD_PS2_MODE_LATCH_SHIFT))
 				{
 					ch ^= 1;
 				}
@@ -46,7 +49,8 @@ keyboard_ps2_data_decode()
 			break;
 		}
 		
-		keyboard_ps2.mode &= ~(KEYBOARD_PS2_MODE_BREAK | KEYBOARD_PS2_MODE_MODIFIER);
+		keyboard_ps2.mode &= ~(KEYBOARD_PS2_MODE_BREAK 
+								| KEYBOARD_PS2_MODE_MODIFIER);
 	}
 	else
 	{
@@ -65,7 +69,7 @@ keyboard_ps2_data_decode()
 }
 
 static void
-keyboard_ps2_scancode_callback_f(const uint8_t ident)
+keyboard_ps2_scancode_fn(const uint8_t ident)
 {
 	uart_send_escape();
 
@@ -80,25 +84,25 @@ keyboard_ps2_scancode_callback_f(const uint8_t ident)
 void
 keyboard_ps2_scancode_callback_f1()
 {
-	keyboard_ps2_scancode_callback_f('P');
+	keyboard_ps2_scancode_fn('P');
 }
 
 void
 keyboard_ps2_scancode_callback_f2()
 {
-	keyboard_ps2_scancode_callback_f('Q');
+	keyboard_ps2_scancode_fn('Q');
 }
 
 void
 keyboard_ps2_scancode_callback_f3()
 {
-	keyboard_ps2_scancode_callback_f('R');
+	keyboard_ps2_scancode_fn('R');
 }
 
 void
 keyboard_ps2_scancode_callback_f4()
 {
-	keyboard_ps2_scancode_callback_f('S');
+	keyboard_ps2_scancode_fn('S');
 }
 
 void
@@ -237,7 +241,8 @@ keyboard_ps2_scancode_callback_enter()
 }
 
 static inline void
-keyboard_ps2_scancode_keypad(const uint8_t ascii, const uint8_t appmode, const uint8_t arrow)
+keyboard_ps2_scancode_keypad(const uint8_t ascii, const uint8_t appmode,
+							const uint8_t arrow)
 {
 	if(keyboard_ps2.mode & KEYBOARD_PS2_MODE_BREAK)
 	{
@@ -253,13 +258,13 @@ keyboard_ps2_scancode_keypad(const uint8_t ascii, const uint8_t appmode, const u
 	}
 	else if(vt100_setting.mode & VT100_SETTING_MODE_KEYPAD)
 	{
-		uart_send(ascii);
-	}
-	else
-	{
 		uart_send_escape();
 		uart_send((vt100_setting.mode & VT100_SETTING_MODE_COMPATIBLE) ? 'O' : '?');
 		uart_send(appmode);
+	}
+	else
+	{
+		uart_send(ascii);
 	}
 }
 

@@ -26,6 +26,4 @@ void vt100_cursor_save();
 void vt100_cursor_up_with_scrolldown();
 void vt100_cursor_down_with_scrollup();
 
-void vt100_cursor_draw();
-
 #endif

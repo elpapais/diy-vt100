@@ -57,7 +57,7 @@ void port2_interrupt()
 		case 10:
 			/* STOP bit */
 			cqueue_push(&keyboard_ps2.data_queue, keyboard_ps2.data);
-			
+			__bic_status_register_on_exit(LPM1_bits);
 		default:
 			keyboard_ps2.index = 0;
 		return;

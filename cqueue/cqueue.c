@@ -2,7 +2,7 @@
 
 uint8_t cqueue_pop(struct __cqueue *queue)
 {
-	register uint8_t data = queue->data[queue->start++];
+	uint8_t data = queue->data[queue->start++];
 	
 	/* NOTE: using AND instead of %(modulo) */
 	queue->start &= CQUEUE_MOD;
@@ -20,7 +20,7 @@ void cqueue_push(struct __cqueue *queue, const uint8_t data)
 	}
 	
 	/* NOTE: using AND instead of %(modulo) */
-	register uint8_t end = (queue->start + queue->count) & CQUEUE_MOD;
+	uint8_t end = (queue->start + queue->count) & CQUEUE_MOD;
 	
 	queue->data[end] = data;
 	queue->count++;

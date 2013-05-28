@@ -23,6 +23,9 @@
 /* cursor key mode(0:reset, 1:set) */
 #define VT100_SETTING_MODE_CURSOR_KEY BIT8
 
+/* cursor design (0: underline, 1:block) */
+#define VT100_SETTING_MODE_CURSOR_DESIGN BIT9
+
 struct __vt100_setting
 {
 	uint16_t mode;

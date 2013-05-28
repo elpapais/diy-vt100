@@ -1,9 +1,26 @@
 #include <nokia1100.h>
 
+#define NOKIA1100_ONLY_CLKTRANSITION() \
+		NOKIA1100_POUT &= ~NOKIA1100_CLK; \
+		 NOKIA1100_POUT |= NOKIA1100_CLK
+
+#define NOKIA1100_CLKTRANSITION_WITHDATA(data, bit) \
+		NOKIA1100_POUT &= ~NOKIA1100_CLK; \
+		if (data & bit) \
+		{ \
+			NOKIA1100_POUT |= NOKIA1100_MOSI; \
+		} \
+		else \
+		{ \
+			NOKIA1100_POUT &= ~NOKIA1100_MOSI; \
+		} \
+		 \
+		NOKIA1100_POUT |= NOKIA1100_CLK
+
 void
 nokia1100_clear()
-{	
-	register uint16_t i = NOKIA1100_SCREEN_LOOP_SIZE;
+{
+	uint16_t i = NOKIA1100_SCREEN_LOOP_SIZE;
 	
 	nokia1100_showpixel_off();
 	nokia1100_gotoyx(0,0);
@@ -13,23 +30,20 @@ nokia1100_clear()
 	/* send 0x00 in brust mode */
 	while(i--)
 	{
-#define NOKIA1100_CLOCK_TRANSITION() NOKIA1100_POUT &= ~NOKIA1100_CLK; \
-									 NOKIA1100_POUT |= NOKIA1100_CLK
-
 		NOKIA1100_POUT |= NOKIA1100_MOSI;
 		
-		NOKIA1100_CLOCK_TRANSITION();
+		NOKIA1100_ONLY_CLKTRANSITION();
 
 		NOKIA1100_POUT &= ~NOKIA1100_MOSI;
 
-		NOKIA1100_CLOCK_TRANSITION();
-		NOKIA1100_CLOCK_TRANSITION();
-		NOKIA1100_CLOCK_TRANSITION();
-		NOKIA1100_CLOCK_TRANSITION();
-		NOKIA1100_CLOCK_TRANSITION();
-		NOKIA1100_CLOCK_TRANSITION();
-		NOKIA1100_CLOCK_TRANSITION();
-		NOKIA1100_CLOCK_TRANSITION();
+		NOKIA1100_ONLY_CLKTRANSITION();
+		NOKIA1100_ONLY_CLKTRANSITION();
+		NOKIA1100_ONLY_CLKTRANSITION();
+		NOKIA1100_ONLY_CLKTRANSITION();
+		NOKIA1100_ONLY_CLKTRANSITION();
+		NOKIA1100_ONLY_CLKTRANSITION();
+		NOKIA1100_ONLY_CLKTRANSITION();
+		NOKIA1100_ONLY_CLKTRANSITION();
 	}
 	
 	/* Disable display LCD */
@@ -51,12 +65,11 @@ nokia1100_init()
 	nokia1100_gotox(0);
 }
 
-/* only used to send data */
+/* only used to send data in one go */
 void
-nokia1100_send_data_brustmode(const uint8_t send[], const uint16_t size)
-{	
-	uint16_t i;
-	uint8_t count;
+nokia1100_send_data(const uint8_t *data_array, const uint8_t size)
+{
+	uint8_t i;
 	uint8_t data;
 	
 	NOKIA1100_POUT &= ~NOKIA1100_CLK;
@@ -64,63 +77,44 @@ nokia1100_send_data_brustmode(const uint8_t send[], const uint16_t size)
 	
 	for(i=0; i < size; i++)
 	{
-		count=8;
-		data = send[i];
+		data = data_array[i];
 		NOKIA1100_POUT |= NOKIA1100_MOSI;
 		NOKIA1100_POUT |= NOKIA1100_CLK;
-	
-		while(count--)
-		{
-			NOKIA1100_POUT &= ~NOKIA1100_CLK;
-		
-			if (data & 0x01)
-			{
-				NOKIA1100_POUT |= NOKIA1100_MOSI;
-			}
-			else
-			{
-				NOKIA1100_POUT &= ~NOKIA1100_MOSI;
-			}
-			
-			NOKIA1100_POUT |= NOKIA1100_CLK;
-		
-			data >>= 1;
-		}
+
+		NOKIA1100_CLKTRANSITION_WITHDATA(data, BIT7);
+		NOKIA1100_CLKTRANSITION_WITHDATA(data, BIT6);
+		NOKIA1100_CLKTRANSITION_WITHDATA(data, BIT5);
+		NOKIA1100_CLKTRANSITION_WITHDATA(data, BIT4);
+		NOKIA1100_CLKTRANSITION_WITHDATA(data, BIT3);
+		NOKIA1100_CLKTRANSITION_WITHDATA(data, BIT2);
+		NOKIA1100_CLKTRANSITION_WITHDATA(data, BIT1);
+		NOKIA1100_CLKTRANSITION_WITHDATA(data, BIT0);
 		
 		NOKIA1100_POUT &= ~NOKIA1100_CLK;
 	}
 	
-	/* Disable display LCD */
 	NOKIA1100_POUT |= NOKIA1100_SS;
 }
 
 void
-nokia1100_send(uint16_t send)
+nokia1100_send_cmd(const uint8_t data)
 {
-	uint8_t count=9;
-	
 	NOKIA1100_POUT &= ~NOKIA1100_CLK;
 	NOKIA1100_POUT &= ~NOKIA1100_SS;
 
-	/* send data */
-	while (count--)
-	{
-		NOKIA1100_POUT &= ~NOKIA1100_CLK;
-		
-		if (send & 0x0100)
-		{
-			NOKIA1100_POUT |= NOKIA1100_MOSI;
-		}
-		else
-		{
-			NOKIA1100_POUT &= ~NOKIA1100_MOSI;
-		}
-		
-		NOKIA1100_POUT |= NOKIA1100_CLK;
-		
-		send <<= 1;
-	}
-   
-	/* Disable display LCD */
+	NOKIA1100_POUT &= ~NOKIA1100_MOSI;
+	NOKIA1100_POUT |= NOKIA1100_CLK;
+
+	NOKIA1100_CLKTRANSITION_WITHDATA(data, BIT7);
+	NOKIA1100_CLKTRANSITION_WITHDATA(data, BIT6);
+	NOKIA1100_CLKTRANSITION_WITHDATA(data, BIT5);
+	NOKIA1100_CLKTRANSITION_WITHDATA(data, BIT4);
+	NOKIA1100_CLKTRANSITION_WITHDATA(data, BIT3);
+	NOKIA1100_CLKTRANSITION_WITHDATA(data, BIT2);
+	NOKIA1100_CLKTRANSITION_WITHDATA(data, BIT1);
+	NOKIA1100_CLKTRANSITION_WITHDATA(data, BIT0);
+	
+	NOKIA1100_POUT &= ~NOKIA1100_CLK;
+	
 	NOKIA1100_POUT |= NOKIA1100_SS;
 }

@@ -15,8 +15,6 @@
 
 #include <common.h>
 
-//yellow[10] gray blue green
-
 /*
   PIN configuration:
   
@@ -39,12 +37,6 @@
      PIN 7: VDD
      PIN 8: LED+
      PIN 9: Unused
-
-	MSP_CONNECTION: 
-	RESET 	= RESET
-	SS 		= P1.0 
-	MOSI 	= P1.1
-	CLK 	= P1.2
 */
 
 #define NOKIA1100_PDIR P2DIR
@@ -59,8 +51,8 @@
 
 void nokia1100_clear();
 void nokia1100_init();
-void nokia1100_send(uint16_t type);
-void nokia1100_send_data_brustmode(const uint8_t send[], const uint16_t size);
+void nokia1100_send_cmd(const uint8_t data);
+void nokia1100_send_data(const uint8_t *data_array, const uint8_t size);
 
 #define nokia1100_gotoy(addr) \
 			nokia1100_send_cmd(0xB0/* VERT ADDR */ | (addr & 0x0F))
@@ -75,12 +67,6 @@ void nokia1100_send_data_brustmode(const uint8_t send[], const uint16_t size);
 						
 #define nokia1100_setinitrow_zero() \
 			nokia1100_send_cmd(0x40  /* INITAL DISPLAY LINE */| 0x00)
-
-#define nokia1100_send_data(data) \
-			nokia1100_send(0x0100 | data)
-
-#define nokia1100_send_cmd(data) \
-			nokia1100_send(0x0000 | data)
 
 #define nokia1100_showpixel_on() \
 			nokia1100_send_cmd(0xAE /* DISPLAY POWER */ | 0x01)

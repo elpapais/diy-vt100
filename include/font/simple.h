@@ -4,6 +4,6 @@
 #include <common.h>
 
 extern const uint8_t font_simple_table[256][6];
-uint8_t font_simple_get(uint8_t,uint8_t);
+#define font_simple_get(num, part) (font_simple_table[num][part])
 
 #endif
