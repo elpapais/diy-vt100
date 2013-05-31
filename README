@@ -6,6 +6,10 @@ a vt100 hardware clone
 for screenshots see:
 	docs/screenshoot/
 
+support for setup A/B
+current Switch at P1.3 dont show setup
+F5 to show setup, 5 to change A <-> B, and F6 to exit are only supported
+
 send a login prompt on diy-vt100:
 $sudo agetty /dev/ttyACM0 9600 vt100
 
