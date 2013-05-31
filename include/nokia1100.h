@@ -39,13 +39,6 @@
      PIN 9: Unused
 */
 
-#define NOKIA1100_PDIR P2DIR
-#define NOKIA1100_POUT P2OUT
-
-#define NOKIA1100_SS 	BIT0
-#define NOKIA1100_MOSI 	BIT1
-#define NOKIA1100_CLK 	BIT2
-
 /* settings */
 #define NOKIA1100_INIT_CONTRAST 0x7F
 
@@ -54,25 +47,27 @@ void nokia1100_init();
 void nokia1100_send_cmd(const uint8_t data);
 void nokia1100_send_data(const uint8_t *data_array, const uint8_t size);
 
-#define nokia1100_gotoy(addr) \
-			nokia1100_send_cmd(0xB0/* VERT ADDR */ | (addr & 0x0F))
+/* VERT ADDR */
+#define nokia1100_gotoy(addr) nokia1100_send_cmd(0xB0 | (addr & 0x0F))
 
 #define nokia1100_gotox(addr) \
-			nokia1100_send_cmd(0x00/* HORZ ADDR LSB */ | (addr & 0x0F)); \
-			nokia1100_send_cmd(0x18/* HORZ ADDR MSB */ | ( (addr>>4)))
+			/* HORZ ADDR LSB */ \
+			nokia1100_send_cmd(0x00 | (addr & 0x0F)); \
+			/* HORZ ADDR MSB */ \
+			nokia1100_send_cmd(0x18 | ( (addr>>4)))
 
 #define nokia1100_gotoyx(yaddr, xaddr) \
 			nokia1100_gotoy(yaddr); \
 			nokia1100_gotox(xaddr)
-						
-#define nokia1100_setinitrow_zero() \
-			nokia1100_send_cmd(0x40  /* INITAL DISPLAY LINE */| 0x00)
 
-#define nokia1100_showpixel_on() \
-			nokia1100_send_cmd(0xAE /* DISPLAY POWER */ | 0x01)
+/* INITAL DISPLAY LINE */
+#define nokia1100_setinitrow_zero()	nokia1100_send_cmd(0x40  | 0x00)
 
-#define nokia1100_showpixel_off() \
-			nokia1100_send_cmd(0xAE/* DISPLAY POWER */ | 0x00); 
+/* DISPLAY POWER */
+#define nokia1100_showpixel_on() nokia1100_send_cmd(0xAE | 0x01)
+
+/* DISPLAY POWER */
+#define nokia1100_showpixel_off() nokia1100_send_cmd(0xAE | 0x00); 
 
 #define nokia1100_power_on() \
 			nokia1100_showpixel_on(); \
@@ -87,36 +82,39 @@ void nokia1100_send_data(const uint8_t *data_array, const uint8_t size);
 			nokia1100_showpixel_off(); \
 			nokia1100_allpixel_off()
 
-#define nokia1100_invertpixel_on() \
-			nokia1100_send_cmd(0xA6/* PIXEL INVERT */ | 0x01)
+/* PIXEL INVERT */
+#define nokia1100_invertpixel_on() 	nokia1100_send_cmd(0xA6 | 0x01)
 
-#define nokia1100_invertpixel_off() \
-			nokia1100_send_cmd(0xA6/* PIXEL INVERT */ | 0x00)
+/* PIXEL INVERT */
+#define nokia1100_invertpixel_off() nokia1100_send_cmd(0xA6 | 0x00)
 
-#define nokia1100_allpixel_on() \
-			nokia1100_send_cmd(0xA4 /* PIXEL ALL */ | 0x01)
+/* PIXEL ALL */
+#define nokia1100_allpixel_on() nokia1100_send_cmd(0xA4 | 0x01)
 
-#define nokia1100_allpixel_off() 	\
-			nokia1100_send_cmd(0xA4/* PIXEL ALL */ | 0x00)
+/* PIXEL ALL */
+#define nokia1100_allpixel_off() nokia1100_send_cmd(0xA4 | 0x00)
 
 #define nokia1100_contrast(value) \
-			nokia1100_send_cmd(0x20 /* VOP-MSB */ | (value >> 5)); \
-			nokia1100_send_cmd(0x80 /* VOP-LSB */ | (value & 0x1F)) 
+			/* VOP-MSB */ \
+			nokia1100_send_cmd(0x20 | (value >> 5)); \
+			/* VOP-LSB */ \
+			nokia1100_send_cmd(0x80 | (value & 0x1F)) 
 
-#define nokia1100_chargepump_on() \
-			nokia1100_send_cmd(0x2F/* CHARGE PUMP CONTROL */)
+/* CHARGE PUMP CONTROL */
+#define nokia1100_chargepump_on() nokia1100_send_cmd(0x2F)
 
+/* CHARGE PUMP */
 #define nokia1100_chargepump(value) \
-			nokia1100_send_cmd(0x3D /* CHARGE PUMP */); \
+			nokia1100_send_cmd(0x3D ); \
 			nokia1100_send_cmd(value & 0x03)
 
-#define nokia1100_chargepump_off() \
-			nokia1100_send_cmd(0x28 /* CHARGE PUMP CONTROL */ | 0x02)
+/* CHARGE PUMP CONTROL */
+#define nokia1100_chargepump_off() nokia1100_send_cmd(0x28 | 0x02)
 
-#define nokia1100_addressingmode_vertical() \
-			nokia1100_send_cmd(0xAA /* RAM ADDRESSING */ | 0x01)
+/* RAM ADDRESSING */
+#define nokia1100_addressingmode_vertical() nokia1100_send_cmd(0xAA  | 0x01)
 
-#define nokia1100_addressingmode_horizontal() \
-			nokia1100_send_cmd(0xAA /* RAM ADDRESSING */ | 0x00)
+/* RAM ADDRESSING */
+#define nokia1100_addressingmode_horizontal() nokia1100_send_cmd(0xAA | 0x00)
 
 #endif /* _NOKIA1100_H_ */

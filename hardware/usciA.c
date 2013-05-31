@@ -1,4 +1,6 @@
 #include <hardware/usciA.h>
+#include <cqueue.h>
+#include <uart.h>
 
 void usciA_init()
 {
@@ -28,7 +30,7 @@ void usciA_init()
 /* push received data to uart buffer */
 void usciA_RX_interrupt()
 {
-	cqueue_push(&uart_rx, UCA0RXBUF);
+	uart_rx_push(UCA0RXBUF);
 	/* TODO: XON/XOFF sending for preventing overflow on when count == 16 */
 	
 	/* exit sleep mode to refresh screen */
@@ -37,9 +39,9 @@ void usciA_RX_interrupt()
 
 void usciA_TX_interrupt()
 {
-	if(uart_tx.count)
+	if(uart_tx_count())
 	{
-		UCA0TXBUF = cqueue_pop(&uart_tx);
+		UCA0TXBUF = uart_tx_pop();
 	}
 	else
 	{

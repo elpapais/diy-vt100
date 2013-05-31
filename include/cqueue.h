@@ -14,6 +14,6 @@ struct __cqueue
 
 void cqueue_push(struct __cqueue *, const uint8_t);
 uint8_t cqueue_pop(struct __cqueue *);
-void cqueue_overflow(struct __cqueue *queue);
+void cqueue_overflow(struct __cqueue *);
 
 #endif

@@ -1,27 +1,40 @@
 #include <msp430.h>
 #include <common.h>
-#include <splash.h>
-#include <vt100/vt100.h>
+
 #include <hardware/timerA.h>
+#include <hardware/port1.h>
 #include <hardware/port2.h>
 #include <hardware/usciA.h>
+#include <keyboard/ps2.h>
+
+#include <splash.h>
+#include <param.h>
+#include <uart.h>
+#include <nokia1100.h>
+#include <state.h>
+#include <vt100/misc.h>
+#include <vt100/screen.h>
+
 
 void msp430_init();
 
 void
 main()
 {
-	uint8_t data = 0;
+	/* hardware dependent code */
 	msp430_init();
 	port1_init();
-	vt100_init();
+	port2_init();
 	usciA_init();
 	timerA_init();
-	port2_init();
 	
+	/* no hardware dependent code */
+	nokia1100_init();
+	vt100_init();
+	uart_init();
+	
+	/* show splash screen */
 	splash();
-
-	vt100_setting.mode |= VT100_SETTING_MODE_CURSOR_DESIGN;
 	
 	__loop:
 		while(keyboard_ps2.data_queue.count)
@@ -30,10 +43,10 @@ main()
 			keyboard_ps2_data_decode();
 		}
 		
-		while(uart_rx.count)
+		while(uart_rx_count())
 		{
-			vt100_param.pass = cqueue_pop(&uart_rx);
-			control();
+			param.pass = uart_rx_pop();
+			state_do();
 		}
 		
 		vt100_screen_refresh();
@@ -56,8 +69,8 @@ msp430_init()
 	}
 	
 	/*
-	 * MCLK  @ 8MHz
-	 * SMCLK @ 1MHz
+	 * MCLK  @ 16MHz
+	 * SMCLK @ 4MHz
 	 */
 	
 	/* Set DCO step and modulation */

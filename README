@@ -3,6 +3,9 @@ DIY-VT100
 
 a vt100 hardware clone
 
+for screenshots see:
+	docs/screenshoot/
+
 send a login prompt on diy-vt100:
 $sudo agetty /dev/ttyACM0 9600 vt100
 

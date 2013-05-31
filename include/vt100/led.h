@@ -2,7 +2,6 @@
 #define _VT100_LED_H_
 
 #include <common.h>
-#include <vt100/param.h>
 
 #define VT100_LED_PDIR P1DIR
 #define VT100_LED_POUT P1OUT

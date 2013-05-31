@@ -34,6 +34,6 @@ void cqueue_overflow(struct __cqueue *queue)
 	while(1)
 	{
 		P1OUT ^= BIT0;
-		__delay_cycles(600000);
+		__delay_cycles(6553500);
 	}
 }

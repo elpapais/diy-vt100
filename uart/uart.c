@@ -1,14 +1,19 @@
 #include <uart.h>
 
 struct __cqueue
-uart_tx, uart_rx;
+uart_tx, uart_rx, *uart_tx_ptr;
+
+void uart_init()
+{
+	uart_loopback_disable();
+}
 
 void uart_send(const uint8_t data)
 {
-	cqueue_push(&uart_tx, data);
+	uart_tx_push(data);
 	
 	/* enable interrupt if it was disabled due to empty cqueue */
-	IE2 |= UCA0TXIE;
+	usciA_tx_interrupt_enable();
 }
 
 void uart_send_uint8(uint8_t val)

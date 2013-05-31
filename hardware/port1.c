@@ -1,11 +1,32 @@
 #include <hardware/port1.h>
+#include <setup.h>
+
+bool_t button;
 
 void port1_init()
 {
-	/* output port */
-	NOKIA1100_PDIR |= NOKIA1100_SS | NOKIA1100_CLK | NOKIA1100_MOSI;
-	NOKIA1100_POUT |= NOKIA1100_SS;
+	P1DIR |= SETUP_BUTTON; 
 	
-	/* init code for nokia1100 */
-	nokia1100_init();
+	P1IE |=  SETUP_BUTTON;
+	P1IES |= SETUP_BUTTON;
+	P1REN |= SETUP_BUTTON;
+	P1IFG &= ~SETUP_BUTTON;
+	
+	/* interrupt goes to port1_interrupt() */
+}
+
+void port1_interrupt()
+{
+	if(button)
+	{
+		setup_enter();
+	}
+	else
+	{
+		setup_exit();
+	}
+	
+	button ^= TRUE;
+	
+	P1IFG &= ~SETUP_BUTTON;
 }

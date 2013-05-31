@@ -1,6 +1,13 @@
 #include <vt100/misc.h>
+#include <vt100/cursor.h>
+#include <param.h>
+#include <vt100/buffer.h>
+#include <vt100/state.h>
+#include <vt100/bell.h>
+#include <vt100/led.h>
+#include <state.h>
 
-struct __vt100_setting vt100_setting;
+uint8_t vt100_setting;
 
 void vt100_init()
 {
@@ -13,9 +20,11 @@ void vt100_init()
 	/* TODO: support offline mode */
 	/* TODO: support Keyboard lock */
 	
-	vt100_param.count = 1;
-	vt100_param.data[0] = 2;
+	param.count = 1;
+	param.data[0] = 2;
 	vt100_buffer_erase();
+	
+	state_current = (struct __state *)vt100_state_C0;
 }
 
 bool_t __is_vt100_malfunctioning()
@@ -42,13 +51,13 @@ vt100_setting_save(void *src, uint8_t size)
 void
 vt100_keypad_appmode()
 {
-	vt100_setting.mode |= VT100_SETTING_MODE_KEYPAD;
+	vt100_setting |= VT100_SETTING_KEYPAD;
 }
 
 void
 vt100_keypad_nummode()
 {
-	vt100_setting.mode &= ~VT100_SETTING_MODE_KEYPAD;
+	vt100_setting &= ~VT100_SETTING_KEYPAD;
 }
 
 void 

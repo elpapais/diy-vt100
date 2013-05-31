@@ -1,26 +1,35 @@
 #include <hardware/port2.h>
+#include <cqueue.h>
+#include <keyboard/ps2.h>
+#include <uart.h>
 
 void port2_init()
 {
-	KEYBOARD_PS2_PDIR &= ~(KEYBOARD_PS2_DATA | KEYBOARD_PS2_CLK);
-	KEYBOARD_PS2_PREN |= KEYBOARD_PS2_DATA | KEYBOARD_PS2_CLK;
-	KEYBOARD_PS2_POUT |= KEYBOARD_PS2_DATA | KEYBOARD_PS2_CLK;
+	P2DIR &= ~(KEYBOARD_PS2_DATA | KEYBOARD_PS2_CLK);
+	P2REN |= KEYBOARD_PS2_DATA | KEYBOARD_PS2_CLK;
+	P2OUT |= KEYBOARD_PS2_DATA | KEYBOARD_PS2_CLK;
 	
-	KEYBOARD_PS2_PIFG &= ~KEYBOARD_PS2_CLK;
+	P2IFG &= ~KEYBOARD_PS2_CLK;
 	
-	KEYBOARD_PS2_PIES |= KEYBOARD_PS2_CLK;
-	KEYBOARD_PS2_PIE |= KEYBOARD_PS2_CLK;
+	P2IES |= KEYBOARD_PS2_CLK;
+	P2IE |= KEYBOARD_PS2_CLK;
 	
+	/* interrupt goes to pin2_interrupt() */
+
+	/* output port */
+	P2DIR |= NOKIA1100_SS | NOKIA1100_CLK | NOKIA1100_MOSI;
+	P2OUT |= NOKIA1100_SS;
+
+	/* debugging */
 	P1DIR |= BIT6;
 	P1OUT &= ~BIT6;
-	/* interrupt goes to pin2_interrupt() */
 }
 
 void port2_interrupt()
 {
 	P1OUT ^= BIT6;
 	
-	KEYBOARD_PS2_PIFG &= ~KEYBOARD_PS2_CLK;
+	P2IFG &= ~KEYBOARD_PS2_CLK;
 	
 	switch(keyboard_ps2.index)
 	{
@@ -39,7 +48,7 @@ void port2_interrupt()
 		case 8:
 			/* data */
 			keyboard_ps2.data >>= 1;
-			if(KEYBOARD_PS2_PIN & KEYBOARD_PS2_DATA)
+			if(P2IN & KEYBOARD_PS2_DATA)
 			{
 				keyboard_ps2.data |= BIT7;
 				//keyboard_ps2.mode ^= KEYBOARD_PS2_MODE_PARITY;

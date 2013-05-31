@@ -1,27 +1,24 @@
-#ifndef _VT100_BUFFER_H_
-#define _VT100_BUFFER_H_
+#ifndef _VT100_CHAR_H_
+#define _VT100_CHAR_H_
 
 #include <common.h>
 #include <nokia1100.h>
-#include <vt100/param.h>
-#include <vt100/misc.h>
-#include <vt100/cursor.h>
 
 #define VT100_WIDTH NOKIA1100_COLOUMN
 #define VT100_HEIGHT NOKIA1100_ROW
 
-#define VT100_BUFFER_PROP_BOLD BIT0
-#define VT100_BUFFER_PROP_UNDERLINE BIT1
-#define VT100_BUFFER_PROP_INVERSE BIT2
+#define VT100_CHAR_PROP_BOLD BIT0
+#define VT100_CHAR_PROP_UNDERLINE BIT1
+#define VT100_CHAR_PROP_INVERSE BIT2
 
 /* row use only */
-#define VT100_BUFFER_PROP_TOUCH BIT3
-#define VT100_BUFFER_PROP_DOUBLE_HEIGHT_BOTTOM BIT4
-#define VT100_BUFFER_PROP_DOUBLE_HEIGHT_TOP BIT5
-#define VT100_BUFFER_PROP_DOUBLE_WIDTH BIT6
+#define VT100_CHAR_PROP_TOUCH BIT3
+#define VT100_CHAR_PROP_DOUBLE_HEIGHT_BOTTOM BIT4
+#define VT100_CHAR_PROP_DOUBLE_HEIGHT_TOP BIT5
+#define VT100_CHAR_PROP_DOUBLE_WIDTH BIT6
 
 /* coloumn use only */
-#define VT100_BUFFER_PROP_TAB BIT7
+#define VT100_CHAR_PROP_TAB BIT7
 
 struct __vt100_char
 {
@@ -41,5 +38,7 @@ void vt100_buffer_fill_E();
 void vt100_buffer_erase();
 
 void vt100_buffer_carragereturn();
+
+void vt100_buffer_copy(const struct __vt100_char buffer[VT100_HEIGHT][VT100_WIDTH]);
 
 #endif

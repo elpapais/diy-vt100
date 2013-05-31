@@ -1,4 +1,8 @@
 #include <vt100/buffer.h>
+#include <nokia1100.h>
+#include <param.h>
+#include <vt100/misc.h>
+#include <vt100/cursor.h>
 
 struct __vt100_char
 vt100_buffer[VT100_HEIGHT][VT100_WIDTH];
@@ -8,14 +12,14 @@ void
 vt100_buffer_putchar()
 {
 	/* show control symbol in caret notation */
-	if(vt100_param.pass < ASCII_SPACE)
+	if(param.pass < ASCII_SPACE)
 	{
 		/* print special char */
-		uint8_t tmp = vt100_param.pass;
-		vt100_param.pass = '^';
+		uint8_t tmp = param.pass;
+		param.pass = '^';
 		vt100_buffer_putchar();
 		
-		vt100_param.pass = ('@' + tmp) & ~BIT7;
+		param.pass = ('@' + tmp) & ~BIT7;
 	}
 	
 	if(!(vt100_cursor.row < VT100_HEIGHT))
@@ -25,27 +29,27 @@ vt100_buffer_putchar()
 		vt100_cursor.col = 0;
 	}
 	
-	vt100_buffer[vt100_cursor.row][vt100_cursor.col].data = vt100_param.pass;
+	vt100_buffer[vt100_cursor.row][vt100_cursor.col].data = param.pass;
 	
 	vt100_buffer[vt100_cursor.row][vt100_cursor.col].prop = 0;
 	
-	if(vt100_setting.mode & VT100_SETTING_MODE_ATTR_BOLD)
+	if(vt100_setting & VT100_SETTING_ATTR_BOLD)
 	{
-		vt100_buffer[vt100_cursor.row][vt100_cursor.col].prop |= VT100_BUFFER_PROP_BOLD;
+		vt100_buffer[vt100_cursor.row][vt100_cursor.col].prop |= VT100_CHAR_PROP_BOLD;
 	}
 	
-	if(vt100_setting.mode & VT100_SETTING_MODE_ATTR_UNDERLINE)
+	if(vt100_setting & VT100_SETTING_ATTR_UNDERLINE)
 	{
-		vt100_buffer[vt100_cursor.row][vt100_cursor.col].prop |= VT100_BUFFER_PROP_UNDERLINE;
+		vt100_buffer[vt100_cursor.row][vt100_cursor.col].prop |= VT100_CHAR_PROP_UNDERLINE;
 	}
 	
-	if(vt100_setting.mode & VT100_SETTING_MODE_ATTR_INVERSE)
+	if(vt100_setting & VT100_SETTING_ATTR_INVERSE)
 	{
-		vt100_buffer[vt100_cursor.row][vt100_cursor.col].prop |= VT100_BUFFER_PROP_INVERSE;
+		vt100_buffer[vt100_cursor.row][vt100_cursor.col].prop |= VT100_CHAR_PROP_INVERSE;
 	}
 	
 	/* TODO: blink not supported */
-	vt100_buffer[vt100_cursor.row][0].prop |= VT100_BUFFER_PROP_TOUCH;
+	vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_TOUCH;
 	
 	vt100_cursor.col++;
 	
@@ -59,7 +63,7 @@ vt100_buffer_putchar()
 void
 vt100_buffer_newrow()
 {
-	vt100_buffer[vt100_cursor.row][0].prop |= VT100_BUFFER_PROP_TOUCH;
+	vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_TOUCH;
 	vt100_cursor.row++;
 	
 	if(!(vt100_cursor.row < VT100_HEIGHT))
@@ -84,16 +88,16 @@ vt100_buffer_shiftup()
 		prop = vt100_buffer[0][j].prop;
 		vt100_buffer[0][j] = vt100_buffer[1][j];
 		
-		if(prop & VT100_BUFFER_PROP_TAB)
+		if(prop & VT100_CHAR_PROP_TAB)
 		{
-			vt100_buffer[0][j].prop |= VT100_BUFFER_PROP_TAB;
+			vt100_buffer[0][j].prop |= VT100_CHAR_PROP_TAB;
 		}
 		else
 		{
-			vt100_buffer[0][j].prop &= ~VT100_BUFFER_PROP_TAB;
+			vt100_buffer[0][j].prop &= ~VT100_CHAR_PROP_TAB;
 		}
 	}
-	vt100_buffer[0][0].prop |= VT100_BUFFER_PROP_TOUCH;
+	vt100_buffer[0][0].prop |= VT100_CHAR_PROP_TOUCH;
 	
 	/* shift up data */
 	for( i = 1; i < VT100_HEIGHT - 1; i++ )
@@ -103,7 +107,7 @@ vt100_buffer_shiftup()
 			vt100_buffer[i][j] = vt100_buffer[i+1][j];
 		}
 
-		vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
+		vt100_buffer[i][0].prop |= VT100_CHAR_PROP_TOUCH;
 	}
 	
 	/* clear last row */
@@ -113,7 +117,7 @@ vt100_buffer_shiftup()
 		vt100_buffer[i][j].prop = 0;
 	}
 	
-	vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
+	vt100_buffer[i][0].prop |= VT100_CHAR_PROP_TOUCH;
 }
 
 void
@@ -129,16 +133,16 @@ vt100_buffer_shiftdown()
 			vt100_buffer[i][j] = vt100_buffer[i-1][j];
 		}
 		
-		vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
+		vt100_buffer[i][0].prop |= VT100_CHAR_PROP_TOUCH;
 	}
 	
 	for(j = 0; j < VT100_WIDTH; j++)
 	{
 		vt100_buffer[i][j].data = 0;
-		vt100_buffer[i][j].prop &= VT100_BUFFER_PROP_TAB;
+		vt100_buffer[i][j].prop &= VT100_CHAR_PROP_TAB;
 	}
 	
-	vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
+	vt100_buffer[i][0].prop |= VT100_CHAR_PROP_TOUCH;
 }
 
 void 
@@ -149,7 +153,7 @@ vt100_buffer_fill_E()
 	
 	for(i=0; i < VT100_HEIGHT; i++)
 	{
-		vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
+		vt100_buffer[i][0].prop |= VT100_CHAR_PROP_TOUCH;
 		
 		for(j=0; j < VT100_WIDTH; j++)
 		{
@@ -158,14 +162,13 @@ vt100_buffer_fill_E()
 	}
 }
 
-
 void 
 vt100_buffer_erase()
 {
 	register row_t i;
 	register col_t j;
 
-	switch(vt100_param.data[0])
+	switch(param.data[0])
 	{
 		case 0:
 			/* clear from current position to end of line */
@@ -173,12 +176,12 @@ vt100_buffer_erase()
 			for(j=vt100_cursor.col; j < VT100_WIDTH; j++)
 			{
 				vt100_buffer[vt100_cursor.row][j].data = 0;
-				vt100_buffer[vt100_cursor.row][j].prop &= VT100_BUFFER_PROP_TAB;
+				vt100_buffer[vt100_cursor.row][j].prop &= VT100_CHAR_PROP_TAB;
 			}
 			
-			vt100_buffer[vt100_cursor.row][0].prop |= VT100_BUFFER_PROP_TOUCH;
+			vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_TOUCH;
 			
-			if(vt100_param.pass == 'J')
+			if(param.pass == 'J')
 			{
 				/* clear from (current position row + 1) to end of screen */
 				
@@ -190,7 +193,7 @@ vt100_buffer_erase()
 						vt100_buffer[i][j].prop = 0;
 					}
 					
-					vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
+					vt100_buffer[i][0].prop |= VT100_CHAR_PROP_TOUCH;
 				}
 			}
 		break;
@@ -202,14 +205,12 @@ vt100_buffer_erase()
 			for(j=0; j <= vt100_cursor.col; j++)
 			{
 				vt100_buffer[i][j].data = 0;
-				vt100_buffer[i][j].prop &= VT100_BUFFER_PROP_TAB;
+				vt100_buffer[i][j].prop &= VT100_CHAR_PROP_TAB;
 			}
 			
-			vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
-		
+			vt100_buffer[i][0].prop |= VT100_CHAR_PROP_TOUCH;
 			
-			
-			if(vt100_param.pass == 'J')
+			if(param.pass == 'J')
 			{
 				/* Clear from top of screen to current position */
 				for(i=0; i < vt100_cursor.row; i++)
@@ -217,10 +218,10 @@ vt100_buffer_erase()
 					for(j=0; j < VT100_WIDTH; j++)
 					{
 						vt100_buffer[i][j].data = 0;
-						vt100_buffer[i][j].prop &= VT100_BUFFER_PROP_TAB;
+						vt100_buffer[i][j].prop &= VT100_CHAR_PROP_TAB;
 					}
 					
-					vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
+					vt100_buffer[i][0].prop |= VT100_CHAR_PROP_TOUCH;
 				}
 			}
 		break;
@@ -230,14 +231,14 @@ vt100_buffer_erase()
 			
 			nokia1100_clear();
 			
-			if(vt100_param.pass == 'K')
+			if(param.pass == 'K')
 			{
 				for(j = 0; j < VT100_WIDTH; j++)
 				{
 					vt100_buffer[vt100_cursor.row][j].data = 0;
-					vt100_buffer[vt100_cursor.row][j].prop &= VT100_BUFFER_PROP_TAB;
+					vt100_buffer[vt100_cursor.row][j].prop &= VT100_CHAR_PROP_TAB;
 				}
-				vt100_buffer[vt100_cursor.row][0].prop |= VT100_BUFFER_PROP_TOUCH;
+				vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_TOUCH;
 			}
 			else
 			{ //J
@@ -246,13 +247,13 @@ vt100_buffer_erase()
 					vt100_buffer[i][0].data = 0;
 					
 					/* clear the double width option */
-					vt100_buffer[i][0].prop &= ~VT100_BUFFER_PROP_DOUBLE_WIDTH;
-					vt100_buffer[i][0].prop |= VT100_BUFFER_PROP_TOUCH;
+					vt100_buffer[i][0].prop &= ~VT100_CHAR_PROP_DOUBLE_WIDTH;
+					vt100_buffer[i][0].prop |= VT100_CHAR_PROP_TOUCH;
 					
 					for(j = 1; j < VT100_WIDTH; j++)
 					{
 						vt100_buffer[i][j].data = 0;
-						vt100_buffer[i][j].prop &= VT100_BUFFER_PROP_TAB;
+						vt100_buffer[i][j].prop &= VT100_CHAR_PROP_TAB;
 					}
 				}
 				
@@ -266,7 +267,24 @@ vt100_buffer_erase()
 	}
 }
 
-void vt100_buffer_carragereturn()
+void
+vt100_buffer_carragereturn()
 {
 	vt100_cursor.col = 0;
+}
+
+void
+vt100_buffer_copy(const struct __vt100_char buffer[VT100_HEIGHT][VT100_WIDTH])
+{
+	row_t i;
+	col_t j;
+	for(i=0; i < VT100_HEIGHT; i++)
+	{
+		for(j=0; j < VT100_WIDTH; j++)
+		{
+			vt100_buffer[i][j] = buffer[i][j];
+		}
+		
+		vt100_buffer[i][0].prop |= VT100_CHAR_PROP_TOUCH;
+	}
 }

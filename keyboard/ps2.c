@@ -1,4 +1,7 @@
 #include <keyboard/ps2.h>
+#include <uart.h>
+#include <vt100/misc.h>
+#include <setup.h>
 
 struct __keyboard_ps2 keyboard_ps2;
 
@@ -73,7 +76,7 @@ keyboard_ps2_scancode_fn(const uint8_t ident)
 {
 	uart_send_escape();
 
-	if(vt100_setting.mode & VT100_SETTING_MODE_COMPATIBLE)
+	if(setup.B & SETUP_B_MODE)
 	{
 		uart_send('O');
 	}
@@ -226,12 +229,12 @@ keyboard_ps2_scancode_callback_enter()
 	
 	if(
 		keyboard_ps2.mode & KEYBOARD_PS2_MODE_MODIFIER
-		&& vt100_setting.mode & VT100_SETTING_MODE_KEYPAD
+		&& vt100_setting & VT100_SETTING_KEYPAD
 	)
 	{
 		/* keypad enter */
 		uart_send_escape();
-		uart_send((vt100_setting.mode & VT100_SETTING_MODE_COMPATIBLE) ? 'O' : '?');
+		uart_send((setup.B & SETUP_B_MODE) ? 'O' : '?');
 		uart_send('M');
 	}
 	else
@@ -256,10 +259,10 @@ keyboard_ps2_scancode_keypad(const uint8_t ascii, const uint8_t appmode,
 			keyboard_ps2_scancode_arrow(arrow);
 		}
 	}
-	else if(vt100_setting.mode & VT100_SETTING_MODE_KEYPAD)
+	else if(vt100_setting & VT100_SETTING_KEYPAD)
 	{
 		uart_send_escape();
-		uart_send((vt100_setting.mode & VT100_SETTING_MODE_COMPATIBLE) ? 'O' : '?');
+		//uart_send((setup.B & SETUP_B_MODE) ? 'O' : '?');
 		uart_send(appmode);
 	}
 	else
@@ -272,6 +275,6 @@ static inline void
 keyboard_ps2_scancode_arrow(const uint8_t ident)
 {
 	uart_send_escape();
-	uart_send('[');
+	//uart_send('[');
 	uart_send(ident);
 }

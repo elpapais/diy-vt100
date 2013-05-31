@@ -1,11 +1,20 @@
 #include <vt100/report.h>
+#include <uart.h>
+#include <param.h>
+#include <vt100/misc.h>
+#include <vt100/cursor.h>
 
 void
 vt100_report_parameters()
 {
-	vt100_setting.mode = vt100_param.data[0] ? \
-			vt100_setting.mode & ~(VT100_SETTING_MODE_UNSOLIC_ALLOW) : \
-			vt100_setting.mode | VT100_SETTING_MODE_UNSOLIC_ALLOW;
+	if(param.data[0])
+	{
+		vt100_setting &= ~(VT100_SETTING_UNSOLIC_ALLOW);
+	}
+	else
+	{
+		vt100_setting |= VT100_SETTING_UNSOLIC_ALLOW;
+	}
 	
 	uart_send_escape();
 	uart_send('[');
@@ -30,7 +39,7 @@ vt100_report_DSR()
 	uart_send_escape();
 	uart_send('[');
 	
-	switch(vt100_param.data[0])
+	switch(param.data[0])
 	{
 		case 5:
 			uart_send(__is_vt100_malfunctioning() ? '0' : '3');
@@ -46,7 +55,6 @@ vt100_report_DSR()
 	}
 	uart_send('n');
 }
-
 
 void vt100_report_identity()
 {

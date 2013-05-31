@@ -1,7 +1,6 @@
 #ifndef _VT100_BELL_H_
 #define _VT100_BELL_H_
 
-#include <nokia1100.h>
 #include <common.h>
 
 #define VT100_BELL_PDIR P2DIR

@@ -1,4 +1,5 @@
 #include <vt100/bell.h>
+#include <nokia1100.h>
 
 void
 vt100_bell_init()

@@ -2,7 +2,6 @@
 #define _VT100_CURSOR_H_
 
 #include <common.h>
-#include <vt100/param.h>
 
 /* cursor position */
 struct __vt100_cursor
@@ -11,9 +10,8 @@ struct __vt100_cursor
 	col_t col;
 };
 
-#include <vt100/buffer.h>
-
 extern struct __vt100_cursor vt100_cursor;
+extern struct __vt100_cursor vt100_cursor_bkp;
 
 void vt100_cursor_position();
 void vt100_cursor_down();

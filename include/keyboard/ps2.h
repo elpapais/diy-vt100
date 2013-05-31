@@ -2,19 +2,7 @@
 #define _KEYBOARD_PS2_H_
 
 #include <common.h>
-#include <vt100/misc.h>
-#include <uart.h>
-
-#define KEYBOARD_PS2_PDIR P2DIR
-#define KEYBOARD_PS2_PIN  P2IN
-#define KEYBOARD_PS2_POUT P2OUT
-#define KEYBOARD_PS2_PIFG P2IFG
-#define KEYBOARD_PS2_PIES P2IES
-#define KEYBOARD_PS2_PIE  P2IE
-#define KEYBOARD_PS2_PREN P2REN
-
-#define KEYBOARD_PS2_DATA BIT3
-#define KEYBOARD_PS2_CLK BIT4
+#include <cqueue.h>
 
 #define KEYBOARD_PS2_MODE_LATCH_CTRL BIT0
 #define KEYBOARD_PS2_MODE_LATCH_NUM BIT1

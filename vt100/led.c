@@ -1,4 +1,5 @@
 #include <vt100/led.h>
+#include <param.h>
 
 void
 vt100_led_init()
@@ -20,9 +21,9 @@ vt100_led_load()
 {
 	uint8_t i;
 	/* TODO: support for led */
-	for(i=0; i < vt100_param.count; i++)
+	for(i=0; i < param.count; i++)
 	{
-		switch(vt100_param.data[0])
+		switch(param.data[0])
 		{
 			case 0:
 				VT100_LED_POUT &= ~(VT100_LED_L1 | VT100_LED_L2 | VT100_LED_L3 | VT100_LED_L4);
