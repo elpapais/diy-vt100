@@ -11,7 +11,7 @@
 #include <param.h>
 #include <uart.h>
 #include <nokia1100.h>
-#include <state.h>
+#include <state-machine.h>
 #include <vt100/misc.h>
 #include <vt100/screen.h>
 
@@ -32,6 +32,7 @@ main()
 	nokia1100_init();
 	vt100_init();
 	uart_init();
+	setup_init();
 	
 	/* show splash screen */
 	splash();

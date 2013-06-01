@@ -2,7 +2,7 @@
 #define _SETUP_H_
 
 #include <common.h>
-#include <state.h>
+#include <state-machine.h>
 #include <vt100/buffer.h>
 
 /* note: (FALSE|TRUE) */
@@ -45,29 +45,30 @@
 
 #define SETUP_ANSWERBACK_SIZE 20
 
-struct __setup
+struct __setup_setting
 {
 	uint8_t A;
 	uint16_t B;
 	uint8_t speed;
-	uint8_t brightness;
+	uint8_t contrast;
 	uint8_t answerback[SETUP_ANSWERBACK_SIZE];
 };
 
-#define SIZEOF_SETUP sizeof(struct __setup)
+extern bool_t setup_show;
+
+#define SIZEOF_SETUP sizeof(struct __setup_setting)
 
 const struct __vt100_char buffer_setupA[VT100_HEIGHT][VT100_WIDTH];
 const struct __vt100_char buffer_setupB[VT100_HEIGHT][VT100_WIDTH];
 
-extern const struct __setup setup;
+extern struct __setup_setting setup_setting;
 
 extern const struct __state setup_state_A[];
 extern const struct __state setup_state_B[];
 extern const struct __state setup_state_arrow[];
 extern const struct __state setup_state_arrow_select[];
 
-void setup_enter();
-void setup_exit();
+void setup();
 
 void setup_state_worker();
 void setup_switch_to_B();

@@ -1,8 +1,6 @@
 #include <hardware/port1.h>
 #include <setup.h>
 
-bool_t button;
-
 void port1_init()
 {
 	P1DIR |= SETUP_BUTTON; 
@@ -17,16 +15,6 @@ void port1_init()
 
 void port1_interrupt()
 {
-	if(button)
-	{
-		setup_enter();
-	}
-	else
-	{
-		setup_exit();
-	}
-	
-	button ^= TRUE;
-	
+	setup();
 	P1IFG &= ~SETUP_BUTTON;
 }

@@ -32,7 +32,6 @@ extern struct __vt100_char vt100_buffer[VT100_HEIGHT][VT100_WIDTH];
 void vt100_buffer_putchar();
 void vt100_buffer_shiftup();
 void vt100_buffer_shiftdown();
-void vt100_buffer_erase();
 
 void vt100_DECALN();
 

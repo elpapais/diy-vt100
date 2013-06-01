@@ -1,4 +1,4 @@
-#include <state.h>
+#include <state-machine.h>
 #include <param.h>
 
 struct __state *state_current;

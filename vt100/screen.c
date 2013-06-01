@@ -131,7 +131,7 @@ static inline uint8_t vt100_screen_designchar(const row_t i, const col_t j, cons
 		&& vt100_setting & VT100_SETTING_CURSOR_STATE 
 		&& i == vt100_cursor.row)
 	{
-		send ^= (setup.B & SETUP_B_CURSOR) ? 0x80 : 0xFF;
+		send ^= (setup_setting.B & SETUP_B_CURSOR) ? 0x80 : 0xFF;
 	}
 	
 	return send;

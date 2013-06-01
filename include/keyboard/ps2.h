@@ -57,6 +57,7 @@ void keyboard_ps2_data_decode();
 void keyboard_ps2_scancode_callback_ctrl();
 void keyboard_ps2_scancode_callback_shift();
 void keyboard_ps2_scancode_callback_caps();
+void keyboard_ps2_scancode_callback_f5();
 void keyboard_ps2_scancode_callback_f4();
 void keyboard_ps2_scancode_callback_f3();
 void keyboard_ps2_scancode_callback_f2();

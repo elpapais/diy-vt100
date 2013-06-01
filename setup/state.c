@@ -1,5 +1,7 @@
 #include <setup.h>
 #include <param.h>
+#include <nokia1100.h>
+#include <vt100/buffer.h>
 
 struct __state *setup_state_save;
 
@@ -78,12 +80,23 @@ void setup_state_worker()
 
 void setup_arrow_up()
 {
+	param.data[0] = 2;
+	vt100_ED();
+	
 	/* increase contrast */
+	setup_setting.contrast--;
+	
+	nokia1100_contrast(setup_setting.contrast);
 }
 
 void setup_arrow_down()
 {
+	param.data[0] = 2;
+	vt100_ED();
 	/* decrease contrast */
+	setup_setting.contrast++;
+	
+	nokia1100_contrast(setup_setting.contrast);
 }
 
 void setup_arrow_left()

@@ -6,7 +6,7 @@ const struct __keyboard_ps2_scancode keyboard_ps2_scancode_en[KEYBOARD_PS2_SCANC
 	keyboard_ps2_scancode_ignore	(),
 	keyboard_ps2_scancode_ignore	(), /* KEYBOARD_PS2_F9 */
 	keyboard_ps2_scancode_ignore	(),
-	keyboard_ps2_scancode_callback	(setup_enter), /* KEYBOARD_PS2_F5 */
+	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_f5), /* KEYBOARD_PS2_F5 */
 	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_f3),
 	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_f1),
 	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_f2),
@@ -14,7 +14,7 @@ const struct __keyboard_ps2_scancode keyboard_ps2_scancode_en[KEYBOARD_PS2_SCANC
 	keyboard_ps2_scancode_ignore	(),
 	keyboard_ps2_scancode_ignore	(), /* KEYBOARD_PS2_F10 */
 	keyboard_ps2_scancode_ignore	(), /* KEYBOARD_PS2_F8 */
-	keyboard_ps2_scancode_callback	(setup_exit), /* KEYBOARD_PS2_F6 */
+	keyboard_ps2_scancode_ignore	(), /* KEYBOARD_PS2_F6 */
 	keyboard_ps2_scancode_callback	(keyboard_ps2_scancode_callback_f4),
 	keyboard_ps2_scancode_special	(ASCII_TAB, ASCII_TAB),
 	keyboard_ps2_scancode_special	('`', '~'),

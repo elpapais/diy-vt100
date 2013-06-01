@@ -19,10 +19,9 @@ void vt100_init()
 	/* TODO: check power online/offline mode & keyboard connected */
 	/* TODO: support offline mode */
 	/* TODO: support Keyboard lock */
-	
-	param.count = 1;
+
 	param.data[0] = 2;
-	vt100_buffer_erase();
+	vt100_ED();
 	
 	state_current = (struct __state *)vt100_state_C0;
 }

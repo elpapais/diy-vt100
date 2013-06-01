@@ -8,7 +8,7 @@ for screenshots see:
 
 support for setup A/B
 current Switch at P1.3 dont show setup
-F5 to show setup, 5 to change A <-> B, and F6 to exit are only supported
+F5 to show/hide setup, 5 to change A <-> B, only supported
 
 send a login prompt on diy-vt100:
 $sudo agetty /dev/ttyACM0 9600 vt100
