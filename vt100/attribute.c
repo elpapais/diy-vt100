@@ -4,29 +4,33 @@
 #include <vt100/cursor.h>
 #include <param.h>
 
+/* double height line [top half] */
 void
-vt100_double_height_tophalf()
+vt100_DECDHL_top()
 {
 	/* TODO: support double height */
 	vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_TOUCH | VT100_CHAR_PROP_DOUBLE_HEIGHT_TOP;
 }
 
+/* double height line [bottom half]*/
 void
-vt100_double_height_bottomhalf()
+vt100_DECDHL_bottom()
 {
 	/* TODO: support double height */
 	vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_TOUCH | VT100_CHAR_PROP_DOUBLE_HEIGHT_BOTTOM;
 }
 
+/* double width line */
 void 
-vt100_double_width()
+vt100_DECDWL()
 {
 	/* TODO: support double width */
 	vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_TOUCH | VT100_CHAR_PROP_DOUBLE_WIDTH;
 }
 
+/* select graphics rendition */
 void 
-vt100_attribute_select()
+vt100_SGR()
 {
 	uint8_t i;
 	for(i=0; i < param.count; i++)

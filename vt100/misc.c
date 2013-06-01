@@ -5,7 +5,7 @@
 #include <vt100/state.h>
 #include <vt100/bell.h>
 #include <vt100/led.h>
-#include <state.h>
+#include <state-machine.h>
 
 uint8_t vt100_setting;
 
@@ -32,8 +32,9 @@ bool_t __is_vt100_malfunctioning()
 	return FALSE;
 }
 
+/* invoke self confidence test */
 void 
-vt100_invoke_confidence_test()
+vt100_DECTST()
 {
 	/* TODO: test the terminal */
 }
@@ -48,20 +49,23 @@ vt100_setting_save(void *src, uint8_t size)
 {
 }
 
+/* keypad application mode */
 void
-vt100_keypad_appmode()
+vt100_DECKPAM()
 {
 	vt100_setting |= VT100_SETTING_KEYPAD;
 }
 
+/* keypad numberic mode */
 void
-vt100_keypad_nummode()
+vt100_DECKPNM()
 {
 	vt100_setting &= ~VT100_SETTING_KEYPAD;
 }
 
+/* reset to inital state (as on power on) */
 void 
-vt100_to_reset_state()
+vt100_RIS()
 {
 	/* TODO: set vt100 to reset state  */
 }

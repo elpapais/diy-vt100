@@ -24,3 +24,8 @@ vt100_visual_bell()
 	__delay_cycles(10000);
 	nokia1100_allpixel_off();
 }
+
+void vt100_BEL()
+{
+	vt100_audio_bell();
+}

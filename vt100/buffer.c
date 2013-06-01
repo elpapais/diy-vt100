@@ -61,21 +61,6 @@ vt100_buffer_putchar()
 }
 
 void
-vt100_buffer_newrow()
-{
-	vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_TOUCH;
-	vt100_cursor.row++;
-	
-	if(!(vt100_cursor.row < VT100_HEIGHT))
-	{
-		vt100_buffer_shiftup();
-		vt100_cursor.row = VT100_HEIGHT - 1;
-	}
-	
-	vt100_cursor.col = 0;
-}
-
-void
 vt100_buffer_shiftup()
 {
 	register row_t i;
@@ -145,8 +130,11 @@ vt100_buffer_shiftdown()
 	vt100_buffer[i][0].prop |= VT100_CHAR_PROP_TOUCH;
 }
 
+/* screen alignment display 
+ * fill E everywhere in buffer
+ */
 void 
-vt100_buffer_fill_E()
+vt100_DECALN()
 {
 	register row_t i;
 	register col_t j;
@@ -160,6 +148,16 @@ vt100_buffer_fill_E()
 			vt100_buffer[i][j].data = 'E';
 		}
 	}
+}
+
+void vt100_ED()
+{
+	vt100_buffer_erase();
+}
+
+void vt100_EL()
+{
+	vt100_buffer_erase();
 }
 
 void 
@@ -268,8 +266,29 @@ vt100_buffer_erase()
 }
 
 void
-vt100_buffer_carragereturn()
+vt100_CR()
 {
+	vt100_cursor.col = 0;
+}
+
+void
+vt100_LF()
+{
+	vt100_NEL();
+}
+
+void
+vt100_NEL()
+{
+	vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_TOUCH;
+	vt100_cursor.row++;
+	
+	if(!(vt100_cursor.row < VT100_HEIGHT))
+	{
+		vt100_buffer_shiftup();
+		vt100_cursor.row = VT100_HEIGHT - 1;
+	}
+	
 	vt100_cursor.col = 0;
 }
 

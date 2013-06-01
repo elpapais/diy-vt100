@@ -1,7 +1,8 @@
 #include <vt100/margin.h>
 
+/* set top bottom margin */
 void 
-vt100_margin_set_topbottom()
+vt100_DECSTBM()
 {
 	/* TODO: support margin */
 }

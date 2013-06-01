@@ -10,5 +10,6 @@
 void vt100_bell_init();
 void vt100_audio_bell();
 void vt100_visual_bell();
+void vt100_BEL();
 
 #endif

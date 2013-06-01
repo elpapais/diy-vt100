@@ -1,8 +1,8 @@
 #ifndef _VT100_TAB_H_
 #define _VT100_TAB_H_
 
-void vt100_tabulation_clear();
-void vt100_tabulation_set();
-void vt100_tabulation_goto_next();
+void vt100_TBC();
+void vt100_HTS();
+void vt100_HT();
 
 #endif

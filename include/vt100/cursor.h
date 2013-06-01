@@ -13,15 +13,18 @@ struct __vt100_cursor
 extern struct __vt100_cursor vt100_cursor;
 extern struct __vt100_cursor vt100_cursor_bkp;
 
-void vt100_cursor_position();
-void vt100_cursor_down();
-void vt100_cursor_up();
-void vt100_cursor_forward();
-void vt100_cursor_backward();
-void vt100_cursor_restore();
-void vt100_cursor_save();
+/* these are somewhat same thing */
+#define vt100_HVP vt100_CUP
 
-void vt100_cursor_up_with_scrolldown();
-void vt100_cursor_down_with_scrollup();
+void vt100_CUP();
+void vt100_CUD();
+void vt100_CUU();
+void vt100_CUF();
+void vt100_CUB();
+void vt100_DECRC();
+void vt100_DECSC();
+
+void vt100_RI();
+void vt100_IND();
 
 #endif

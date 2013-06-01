@@ -23,6 +23,6 @@
 #define VT100_LED_L4 		VT100_LED7
 
 void vt100_led_init();
-void vt100_led_load();
+void vt100_DECLL();
 
 #endif

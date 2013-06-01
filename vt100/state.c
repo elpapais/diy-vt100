@@ -1,4 +1,4 @@
-#include <state.h>
+#include <state-machine.h>
 #include <param.h>
 
 #include <vt100/attribute.h>
@@ -19,12 +19,12 @@ vt100_state_C0[] =
 	state_noparam	(0, vt100_state_worker),
 	
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
-	state_noparam	(ASCII_BELL, vt100_audio_bell),
-	state_noparam	(ASCII_TAB, vt100_tabulation_goto_next),
-	state_param		(ASCII_BS, vt100_cursor_backward, 1, 1),
+	state_noparam	(ASCII_BELL, vt100_BEL),
+	state_noparam	(ASCII_TAB, vt100_HT),
+	state_param		(ASCII_BS, vt100_CUB, 1, 1),
 	/* TODO: LNM: newline mode, no mode, default applied */
-	state_noparam	(ASCII_LF, vt100_buffer_newrow),
-	state_noparam	(ASCII_CR, vt100_buffer_carragereturn),
+	state_noparam	(ASCII_LF, vt100_LF),
+	state_noparam	(ASCII_CR, vt100_CR),
 	state_ignore	(ASCII_DEL),
 	state_ignore	(ASCII_NULL),
 	//func_call_noparam(ASCII_ENQ, vt100_identity), is ASCII_ENQ alias of ESC Z ??
@@ -39,16 +39,16 @@ vt100_state_C1[] = //ESC
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
 	state_select	('[', vt100_state_opensquarebracket),
 	state_select	('#', vt100_state_hash),
-	state_noparam	('Z', vt100_report_identity),
-	state_noparam	('=', vt100_keypad_appmode),
-	state_noparam	('>', vt100_keypad_nummode),
-	state_noparam	('8', vt100_cursor_restore),
-	state_noparam	('7', vt100_cursor_save),
-	state_noparam	('H', vt100_tabulation_set),
-	state_noparam	('D', vt100_cursor_down_with_scrollup),
-	state_noparam	('E', vt100_buffer_newrow),
-	state_noparam	('M', vt100_cursor_up_with_scrolldown),
-	state_noparam	('c', vt100_to_reset_state),
+	state_noparam	('Z', vt100_DECID),
+	state_noparam	('=', vt100_DECKPAM),
+	state_noparam	('>', vt100_DECKPNM),
+	state_noparam	('8', vt100_DECRC),
+	state_noparam	('7', vt100_DECSC),
+	state_noparam	('H', vt100_HTS),
+	state_noparam	('D', vt100_IND),
+	state_noparam	('E', vt100_NEL),
+	state_noparam	('M', vt100_RI),
+	state_noparam	('c', vt100_RIS),
 	state_end		()
 };
 
@@ -76,22 +76,22 @@ vt100_state_opensquarebracket[] = //[
 	state_noparam	(0, vt100_state_worker),
 	
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
-	state_param		('D', vt100_cursor_backward, 1, 1),
-	state_param		('B', vt100_cursor_down, 1, 1),
-	state_param		('C', vt100_cursor_forward, 1, 1),
-	state_param		('A', vt100_cursor_up, 1, 1),
-	state_param		('H', vt100_cursor_position, 2, 0),
-	state_param		('f', vt100_cursor_position, 2, 0),
-	state_noparam	('c', vt100_report_identity),
-	state_param		('q', vt100_led_load, PARAM_QUEUE_SIZE, 0),
-	state_param		('r', vt100_margin_set_topbottom, 2, 0),
-	state_noparam	('y', vt100_invoke_confidence_test),
-	state_param		('J', vt100_buffer_erase, 1, 0),
-	state_param		('K', vt100_buffer_erase, 1, 0),
-	state_param		('m', vt100_attribute_select, PARAM_QUEUE_SIZE, 0),
-	state_param		('n', vt100_report_DSR, 1, 0),
-	state_param		('x', vt100_report_parameters, 1, 0),
-	state_param		('g', vt100_tabulation_clear, 1,0),
+	state_param		('D', vt100_CUB, 1, 1),
+	state_param		('B', vt100_CUD, 1, 1),
+	state_param		('C', vt100_CUF, 1, 1),
+	state_param		('A', vt100_CUU, 1, 1),
+	state_param		('H', vt100_CUP, 2, 0),
+	state_param		('f', vt100_HVP, 2, 0),
+	state_noparam	('c', vt100_DECID),
+	state_param		('q', vt100_DECLL, PARAM_QUEUE_SIZE, 0),
+	state_param		('r', vt100_DECSTBM, 2, 0),
+	state_noparam	('y', vt100_DECTST),
+	state_param		('J', vt100_ED, 1, 0),
+	state_param		('K', vt100_EL, 1, 0),
+	state_param		('m', vt100_SGR, PARAM_QUEUE_SIZE, 0),
+	state_param		('n', vt100_DSR, 1, 0),
+	state_param		('x', vt100_DECREPTPARAM, 1, 0),
+	state_param		('g', vt100_TBC, 1,0),
 	state_end		()
 };
 
@@ -101,10 +101,10 @@ vt100_state_hash[] = //#
 	state_noparam	(0, vt100_state_worker),
 	
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
-	state_noparam	('3', vt100_double_height_tophalf),
-	state_noparam	('4', vt100_double_height_bottomhalf),
-	state_noparam	('5', vt100_double_width),
-	state_noparam	('8', vt100_buffer_fill_E),
+	state_noparam	('3', vt100_DECDHL_top),
+	state_noparam	('4', vt100_DECDHL_bottom),
+	state_noparam	('5', vt100_DECDWL),
+	state_noparam	('8', vt100_DECALN),
 	state_end		()
 };
 

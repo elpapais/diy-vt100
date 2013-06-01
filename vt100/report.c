@@ -4,8 +4,9 @@
 #include <vt100/misc.h>
 #include <vt100/cursor.h>
 
+/* report terminal parameter (requested via DECREQTPARAM) */
 void
-vt100_report_parameters()
+vt100_DECREPTPARAM()
 {
 	if(param.data[0])
 	{
@@ -34,7 +35,7 @@ vt100_report_parameters()
 
 /* device status report */
 void
-vt100_report_DSR()
+vt100_DSR()
 {
 	uart_send_escape();
 	uart_send('[');
@@ -42,21 +43,25 @@ vt100_report_DSR()
 	switch(param.data[0])
 	{
 		case 5:
+			/* report status 
+			 * sending using DSR control sequence */
 			uart_send(__is_vt100_malfunctioning() ? '0' : '3');
 		break;
 		
 		case 6:
+			/* report active position 
+			 * sending using CPR control sequence */
 			uart_send_uint8(vt100_cursor.row);
 			uart_send(';');
 			uart_send_uint8(vt100_cursor.col);
 		break;
-		//default:
-			//problem
 	}
 	uart_send('n');
 }
 
-void vt100_report_identity()
+/* report device ID
+ * identify terminal */
+void vt100_DECID()
 {
 	uart_send_escape();
 	uart_send('[');

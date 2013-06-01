@@ -16,8 +16,10 @@ vt100_led_init()
 	VT100_LED_POUT |= VT100_LED_ONLINE;
 }
 
+
+/* load led's */
 void 
-vt100_led_load()
+vt100_DECLL()
 {
 	uint8_t i;
 	/* TODO: support for led */

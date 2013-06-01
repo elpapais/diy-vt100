@@ -18,13 +18,13 @@
 
 extern uint8_t vt100_setting;
 
-void vt100_keypad_appmode();
-void vt100_keypad_nummode();
-void vt100_to_reset_state();
+void vt100_DECKPAM();
+void vt100_DECKPNM();
+void vt100_RIS();
 void vt100_init();
 
 bool_t __is_vt100_malfunctioning();
 
-void vt100_invoke_confidence_test();
+void vt100_DECTST();
 
 #endif

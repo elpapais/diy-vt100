@@ -4,7 +4,8 @@
 #include <param.h>
 #include <setup.h>
 
-void vt100_tabulation_clear()
+/* tabulation clear */
+void vt100_TBC()
 {
 	uint8_t i;
 	
@@ -28,12 +29,14 @@ void vt100_tabulation_clear()
 	}
 }
 
-void vt100_tabulation_set()
+/* horizontal tabulation set */
+void vt100_HTS()
 {
 	vt100_buffer[0][vt100_cursor.col].prop |= VT100_CHAR_PROP_TAB;
 }
 
-void vt100_tabulation_goto_next()
+/* give a horizontal tab */
+void vt100_HT()
 {
 	register col_t j;
 	

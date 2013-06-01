@@ -1,7 +1,7 @@
 #ifndef _VT100_STATE_H_
 #define _VT100_STATE_H_
 
-#include <state.h>
+#include <state-machine.h>
 
 extern const struct __state vt100_state_C0[];
 extern const struct __state vt100_state_C1[];

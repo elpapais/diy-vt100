@@ -30,14 +30,18 @@ struct __vt100_char
 extern struct __vt100_char vt100_buffer[VT100_HEIGHT][VT100_WIDTH];
 
 void vt100_buffer_putchar();
-void vt100_buffer_newrow();
 void vt100_buffer_shiftup();
 void vt100_buffer_shiftdown();
-
-void vt100_buffer_fill_E();
 void vt100_buffer_erase();
 
-void vt100_buffer_carragereturn();
+void vt100_DECALN();
+
+void vt100_LF();
+void vt100_NEL();
+void vt100_CR();
+
+void vt100_ED();
+void vt100_EL();
 
 void vt100_buffer_copy(const struct __vt100_char buffer[VT100_HEIGHT][VT100_WIDTH]);
 
