@@ -55,46 +55,55 @@ setup_state_arrow_select[] =
 
 void setup_state_worker()
 {	
-	/* ignore missing */
-	if(state_iterate->cb == 0)
+	switch((int)state_iterate->cb)
 	{
+		case 0:
+		case 1:
+			/* ignore (missing or instructed to ignored) */
+			if(!(state_current == setup_state_A) 
+				&& !(state_current == setup_state_B))
+			{
+				state_current = setup_state_save;
+			}
 		return;
-	}
-	
-	if(state_current == setup_state_arrow_select
-	|| state_current == setup_state_arrow)
-	{
-		state_current = setup_state_save;
-	}
-	else if(state_iterate->cb == (callback_t)1)
-	{
-		/* for setup_state_B | setup_state_A */
-		setup_state_save = state_current;
-		state_current = (struct __state *)state_iterate->arg.state;	
-	}
-	else
-	{
-		state_iterate->cb();
+		
+		case 2:
+			if(state_current == setup_state_A 
+				|| state_current == setup_state_B)
+			{
+				setup_state_save = state_current;
+				state_current = (struct __state *)state_iterate->arg.state;
+			}
+		break;
+		
+		default:
+			state_iterate->cb();
+			
+			/* restore state */
+			state_current = setup_state_save;
+		break;
 	}
 }
 
 void setup_arrow_up()
 {
-	param.data[0] = 2;
-	vt100_ED();
-	
 	/* increase contrast */
-	setup_setting.contrast--;
+	
+	if(setup_setting.contrast < NOKIA1100_CONTRAST_MAX)
+	{
+		setup_setting.contrast++;
+	}
 	
 	nokia1100_contrast(setup_setting.contrast);
 }
 
 void setup_arrow_down()
 {
-	param.data[0] = 2;
-	vt100_ED();
 	/* decrease contrast */
-	setup_setting.contrast++;
+	if(setup_setting.contrast > NOKIA1100_CONTRAST_MIN)
+	{
+		setup_setting.contrast--;
+	}
 	
 	nokia1100_contrast(setup_setting.contrast);
 }

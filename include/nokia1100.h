@@ -39,6 +39,9 @@
      PIN 9: Unused
 */
 
+#define NOKIA1100_CONTRAST_MAX 0xFF
+#define NOKIA1100_CONTRAST_MIN 0
+
 /* settings */
 #define NOKIA1100_INIT_CONTRAST 0x7F
 
