@@ -1,4 +1,4 @@
-update=Tue 04 Jun 2013 02:09:51 AM IST
+update=Tue 04 Jun 2013 02:47:33 AM IST
 last_client=eeschema
 [eeschema]
 version=1
@@ -66,3 +66,4 @@ LibName31=embedded-microcontrollers
 LibName32=nokia1100_lcd
 LibName33=capteurs
 LibName34=minidin_6
+LibName35=transistor
