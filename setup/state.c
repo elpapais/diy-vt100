@@ -2,8 +2,10 @@
 #include <param.h>
 #include <nokia1100.h>
 #include <vt100/buffer.h>
+#include <hardware/timer1_A3.h>
 
 struct __state *setup_state_save;
+uint8_t setup_setting_number;
 
 const struct __state
 setup_state_A[] = 
@@ -60,52 +62,37 @@ void setup_state_worker()
 		case 0:
 		case 1:
 			/* ignore (missing or instructed to ignored) */
-			if(!(state_current == setup_state_A) 
-				&& !(state_current == setup_state_B))
-			{
-				state_current = setup_state_save;
-			}
 		return;
 		
 		case 2:
-			if(state_current == setup_state_A 
-				|| state_current == setup_state_B)
-			{
-				setup_state_save = state_current;
-				state_current = (struct __state *)state_iterate->arg.state;
-			}
+			state_current = (struct __state *)state_iterate->arg.state;
 		break;
 		
 		default:
-			state_iterate->cb();
-			
 			/* restore state */
 			state_current = setup_state_save;
+			
+			state_iterate->cb();
 		break;
 	}
 }
 
 void setup_arrow_up()
 {
-	/* increase contrast */
-	
-	if(setup_setting.contrast < NOKIA1100_CONTRAST_MAX)
+	/* increase brightness */
+	if(setup_setting.brightness < TIMER1_A3_PWM_MAX)
 	{
-		setup_setting.contrast++;
+		timer1_A3_pwm(++setup_setting.brightness);
 	}
-	
-	nokia1100_contrast(setup_setting.contrast);
 }
 
 void setup_arrow_down()
 {
-	/* decrease contrast */
-	if(setup_setting.contrast > NOKIA1100_CONTRAST_MIN)
+	/* decrease brightness */
+	if(setup_setting.brightness > TIMER1_A3_PWM_MIN)
 	{
-		setup_setting.contrast--;
+		timer1_A3_pwm(--setup_setting.brightness);
 	}
-	
-	nokia1100_contrast(setup_setting.contrast);
 }
 
 void setup_arrow_left()
@@ -130,12 +117,16 @@ void setup_B_flip()
 
 void setup_switch_to_A()
 {
+	setup_setting_number = 0;
 	state_current = (struct __state *)setup_state_A;
+	setup_state_save = (struct __state *)setup_state_A;
 	vt100_buffer_copy(buffer_setupA);
 }
 
 void setup_switch_to_B()
 {
+	setup_setting_number = 0;
 	state_current = (struct __state *)setup_state_B;
+	setup_state_save = (struct __state *)setup_state_B;
 	vt100_buffer_copy(buffer_setupB);
 }

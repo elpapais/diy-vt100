@@ -4,13 +4,15 @@
 #include <common.h>
 
 /* === for keyboard === */
-#define KEYBOARD_PS2_DATA BIT3
-#define KEYBOARD_PS2_CLK BIT4
+#define KEYBOARD_PS2_DATA BIT0
+#define KEYBOARD_PS2_CLK BIT1
+
+/* NOTE: using p2.2 for timer1_A3 PWM for LCD */
 
 /* === for nokia ==== */
-#define NOKIA1100_SS 	BIT0
-#define NOKIA1100_MOSI 	BIT1
-#define NOKIA1100_CLK 	BIT2
+#define NOKIA1100_SS 	BIT3
+#define NOKIA1100_MOSI 	BIT4
+#define NOKIA1100_CLK 	BIT5
 
 #define nokia1100_ss_high() (P2OUT |= NOKIA1100_SS)
 #define nokia1100_ss_low() (P2OUT &= ~NOKIA1100_SS)

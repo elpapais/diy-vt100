@@ -235,10 +235,10 @@ keyboard_ps2_scancode_callback_keypad_dot()
 		uart_send(ASCII_DEL);
 	}
 	/* send accoring to Keypad mode */
-	else if(vt100_setting & VT100_SETTING_KEYPAD)
+	else if(vt100_setting & VT100_SETTING_DECKPAM)
 	{
 		uart_send_escape();
-		//uart_send((setup.B & SETUP_B_MODE) ? 'O' : '?');
+		uart_send((setup_setting.B & SETUP_B_MODE) ? 'O' : '?');
 		/* appmode = 'n' */
 		uart_send('n');
 	}
@@ -265,7 +265,7 @@ keyboard_ps2_scancode_callback_enter()
 	
 	if(
 		keyboard_ps2.mode & KEYBOARD_PS2_MODE_MODIFIER
-		&& vt100_setting & VT100_SETTING_KEYPAD
+		&& vt100_setting & VT100_SETTING_DECKPAM
 	)
 	{
 		/* keypad enter */
@@ -297,10 +297,10 @@ keyboard_ps2_scancode_keypad(const uint8_t ascii, const uint8_t appmode,
 		}
 	}
 	/* send accoring to Keypad mode */
-	else if(vt100_setting & VT100_SETTING_KEYPAD)
+	else if(vt100_setting & VT100_SETTING_DECKPAM)
 	{
 		uart_send_escape();
-		//uart_send((setup.B & SETUP_B_MODE) ? 'O' : '?');
+		uart_send((setup_setting.B & SETUP_B_MODE) ? 'O' : '?');
 		uart_send(appmode);
 	}
 	else
@@ -314,6 +314,12 @@ static inline void
 keyboard_ps2_scancode_arrow(const uint8_t ident)
 {
 	uart_send_escape();
-	//uart_send('[');
+	
+	/* are in ANSI Mode ? */
+	if(setup_setting.B & SETUP_B_MODE)
+	{
+		uart_send( (vt100_setting & VT100_SETTING_DECCKM) ? 'O' : '[');
+	}
+	
 	uart_send(ident);
 }

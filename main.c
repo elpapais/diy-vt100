@@ -1,7 +1,8 @@
 #include <msp430.h>
 #include <common.h>
 
-#include <hardware/timerA.h>
+#include <hardware/timer1_A3.h>
+#include <hardware/timer0_A3.h>
 #include <hardware/port1.h>
 #include <hardware/port2.h>
 #include <hardware/usciA.h>
@@ -26,7 +27,8 @@ main()
 	port1_init();
 	port2_init();
 	usciA_init();
-	timerA_init();
+	timer0_A3_init();
+	timer1_A3_init();
 	
 	/* no hardware dependent code */
 	nokia1100_init();

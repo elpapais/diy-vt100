@@ -38,28 +38,18 @@ vt100_DECTST()
 	/* TODO: test the terminal */
 }
 
-void
-vt100_setting_load(void *dest, uint8_t size)
-{	
-}
-
-void
-vt100_setting_save(void *src, uint8_t size)
-{
-}
-
 /* keypad application mode */
 void
 vt100_DECKPAM()
 {
-	vt100_setting |= VT100_SETTING_KEYPAD;
+	vt100_setting |= VT100_SETTING_DECKPAM;
 }
 
 /* keypad numberic mode */
 void
 vt100_DECKPNM()
 {
-	vt100_setting &= ~VT100_SETTING_KEYPAD;
+	vt100_setting &= ~VT100_SETTING_DECKPAM;
 }
 
 /* reset to inital state (as on power on) */
@@ -67,4 +57,10 @@ void
 vt100_RIS()
 {
 	/* TODO: set vt100 to reset state  */
+}
+
+void
+vt100_DECCKM()
+{
+	vt100_setting |= VT100_SETTING_DECCKM;
 }

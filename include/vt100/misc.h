@@ -3,18 +3,23 @@
 
 #include <common.h>
 
-/* Application  Mode :1 , Keypad Mode:0 */
-#define VT100_SETTING_KEYPAD BIT0
+/* Keypad Application Mode */
+#define VT100_SETTING_DECKPAM BIT0
+
+/* Cursor Keys Mode */
+#define VT100_SETTING_DECCKM BIT1
+
 /* unsolicited allowed are allowed by computer */
-#define VT100_SETTING_UNSOLIC_ALLOW BIT1
+#define VT100_SETTING_UNSOLIC_ALLOW BIT2
+
 /* cursor current state */
-#define VT100_SETTING_CURSOR_STATE BIT2
+#define VT100_SETTING_CURSOR_STATE BIT3
 
 /* Attributes */
-#define VT100_SETTING_ATTR_BOLD BIT3
-#define VT100_SETTING_ATTR_INVERSE BIT4
-#define VT100_SETTING_ATTR_UNDERLINE BIT5
-#define VT100_SETTING_ATTR_BLINK BIT6
+#define VT100_SETTING_ATTR_BOLD BIT4
+#define VT100_SETTING_ATTR_INVERSE BIT5
+#define VT100_SETTING_ATTR_UNDERLINE BIT6
+#define VT100_SETTING_ATTR_BLINK BIT7
 
 extern uint8_t vt100_setting;
 

@@ -1,7 +1,7 @@
 #include <setup.h>
 #include <uart.h>
 #include <vt100/state.h>
-#include <nokia1100.h>
+#include <hardware/timer1_A3.h>
 
 struct __setup_setting
 setup_setting;
@@ -26,7 +26,7 @@ const struct __vt100_char buffer_setupB[VT100_HEIGHT][VT100_WIDTH] =
 
 void setup_init()
 {
-	setup_setting.contrast = NOKIA1100_INIT_CONTRAST;
+	setup_setting.brightness = TIMER1_A3_PWM_INIT;
 }
 
 void setup()

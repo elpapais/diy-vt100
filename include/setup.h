@@ -50,7 +50,7 @@ struct __setup_setting
 	uint8_t A;
 	uint16_t B;
 	uint8_t speed;
-	uint8_t contrast;
+	uint8_t brightness;
 	uint8_t answerback[SETUP_ANSWERBACK_SIZE];
 };
 
