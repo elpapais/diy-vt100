@@ -221,7 +221,32 @@ keyboard_ps2_scancode_callback_keypad_9()
 void
 keyboard_ps2_scancode_callback_keypad_dot()
 {
-	keyboard_ps2_scancode_keypad('.', 'n', 0);
+	/* below code is a modified version of *keypad()
+	 * any future update to it , are also carried here too */
+	 
+	 if(keyboard_ps2.mode & KEYBOARD_PS2_MODE_BREAK)
+	{
+		return;
+	}
+	
+	/* arrow key pressed */
+	if(keyboard_ps2.mode & KEYBOARD_PS2_MODE_MODIFIER)
+	{
+		uart_send(ASCII_DEL);
+	}
+	/* send accoring to Keypad mode */
+	else if(vt100_setting & VT100_SETTING_KEYPAD)
+	{
+		uart_send_escape();
+		//uart_send((setup.B & SETUP_B_MODE) ? 'O' : '?');
+		/* appmode = 'n' */
+		uart_send('n');
+	}
+	else
+	{
+		/* send simple ascii code (ascii = '.') */
+		uart_send('.');
+	}
 }
 
 void
@@ -263,7 +288,7 @@ keyboard_ps2_scancode_keypad(const uint8_t ascii, const uint8_t appmode,
 		return;
 	}
 	
-	/* keypad keys pressed */
+	/* arrow key pressed */
 	if(keyboard_ps2.mode & KEYBOARD_PS2_MODE_MODIFIER)
 	{
 		if(arrow)

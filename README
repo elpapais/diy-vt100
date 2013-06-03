@@ -1,10 +1,12 @@
 DIY-VT100
 =========
 
-a vt100 hardware clone
+a vt100 hardware clone using msp430
 
 for screenshots see:
 	docs/screenshoot/
+
+freenode: #diy-vt100
 
 support for setup A/B
 current Switch at P1.3 dont show setup
