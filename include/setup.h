@@ -4,6 +4,7 @@
 #include <common.h>
 #include <state-machine.h>
 #include <vt100/buffer.h>
+#include <msp430.h>
 
 /* note: (FALSE|TRUE) */
 
@@ -36,12 +37,12 @@
 #define SETUP_B_AUTO_X 		BIT7
 #define SETUP_B_SHIFTED 	BIT8
 #define SETUP_B_WRAPAROUND 	BIT9
-#define SETUP_B_NEWLINE 	BIT10
-#define SETUP_B_INTERLACE 	BIT11
-#define SETUP_B_PARITYSENSE BIT12
-#define SETUP_B_PARITY 		BIT13
-#define SETUP_B_BPC 		BIT14
-#define SEUTP_B_POWER 		BIT15 /* ignore */
+#define SETUP_B_NEWLINE 	BITA
+#define SETUP_B_INTERLACE 	BITB
+#define SETUP_B_PARITYSENSE BITC
+#define SETUP_B_PARITY 		BITD
+#define SETUP_B_BPC 		BITE
+#define SETUP_B_POWER 		BITF /* ignore */
 
 #define SETUP_ANSWERBACK_SIZE 20
 
@@ -62,22 +63,24 @@ const struct __vt100_char buffer_setupA[VT100_HEIGHT][VT100_WIDTH];
 const struct __vt100_char buffer_setupB[VT100_HEIGHT][VT100_WIDTH];
 
 extern struct __setup_setting setup_setting;
+extern uint8_t setup_type_current;
+extern uint8_t setup_setting_number;
 
-extern const struct __state setup_state_A[];
-extern const struct __state setup_state_B[];
+extern const struct __state setup_state_type[];
 extern const struct __state setup_state_arrow[];
 extern const struct __state setup_state_arrow_select[];
 
 void setup();
 
-void setup_state_worker();
-void setup_switch_to_B();
-void setup_switch_to_A();
-void setup_B_flip();
-void setup_A_flip();
+void setup_new_value(row_t row, col_t col, bool_t val, uint8_t value_no);
+void setup_A_refresh();
+void setup_B_refresh();
+void setup_switch();
+void setup_value_flip();
 void setup_arrow_right();
 void setup_arrow_left();
 void setup_arrow_down();
 void setup_arrow_up();
+void setup_state_worker();
 
 #endif
