@@ -20,8 +20,8 @@ extern const struct __state setup_state_arrow_select[];
 
 void setup();
 
-void setup_print_value(row_t row, col_t col, bool_t val, uint8_t value_no);
 void setup_A_refresh();
+
 void setup_B_refresh();
 void setup_switch();
 void setup_value_flip();

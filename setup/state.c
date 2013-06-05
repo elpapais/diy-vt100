@@ -2,6 +2,7 @@
 #include <param.h>
 #include <nokia1100.h>
 #include <vt100/buffer.h>
+#include <vt100/cursor.h>
 #include <hardware/timer1_A3.h>
 #include <setting.h>
 
@@ -105,10 +106,11 @@ void setup_value_flip()
 {
 	/* flip values in setup, 5 was pressed */
 	
+	/* limit to 16 only */
+	setup_setting_number &= 0x0F;
+	
 	if(setup_type_current == 'B')
 	{
-		setup_setting_number &= 0x0F;
-		
 		switch(setup_setting_number)
 		{
 			/* box 1 */
@@ -182,6 +184,11 @@ void setup_value_flip()
 		
 		setup_B_refresh();
 	}
+	else
+	{
+		setting_tabs ^= 1 << setup_setting_number;
+		setup_A_refresh();
+	}
 }
 
 void setup_switch()
@@ -204,54 +211,47 @@ void setup_switch()
 
 void setup_B_refresh()
 {
-	/* limit to 16 only */
-	setup_setting_number &= 0x0F;
+	row_t i;
+	col_t j;
+	uint8_t value_no = 0;
+	bool_t readed_values[16] =
+	{
+		setting_read(SETTING_CURSOR), setting_read(SETTING_DECSCNM), setting_read(SETTING_DECARM), setting_read(SETTING_DECSCLM),
+		setting_read(SETTING_MARGINBELL), setting_read(SETTING_KEYCLICK), setting_read(SETTING_DECANM), setting_read(SETTING_AUTOX),
+		setting_read(SETTING_SHIFTED), setting_read(SETTING_DECAWM), setting_read(SETTING_LNM), setting_read(SETTING_DECINLM),
+		setting_read(SETTING_PARITYSENSE), setting_read(SETTING_PARITY), setting_read(SETTING_BPC), /*setting_read(SETTING_POWER) */ 0
+	};
 	
-	setup_print_value(6, 2, setting_read(SETTING_CURSOR), 0 );
-	setup_print_value(6, 3, setting_read(SETTING_DECSCNM), 1);
-	setup_print_value(6, 4, setting_read(SETTING_DECARM), 2);
-	setup_print_value(6, 5, setting_read(SETTING_DECSCLM), 3);
-	
-	setup_print_value(6, 9, setting_read(SETTING_MARGINBELL), 4);
-	setup_print_value(6, 10, setting_read(SETTING_KEYCLICK), 5);
-	setup_print_value(6, 11, setting_read(SETTING_DECANM), 6);
-	setup_print_value(6, 12, setting_read(SETTING_AUTOX), 7);
-	
-	setup_print_value(7, 2, setting_read(SETTING_SHIFTED), 8);
-	setup_print_value(7, 3, setting_read(SETTING_DECAWM), 9);
-	setup_print_value(7, 4, setting_read(SETTING_LNM), 10);
-	setup_print_value(7, 5, setting_read(SETTING_DECINLM), 11);
-	
-	setup_print_value(7, 9, setting_read(SETTING_PARITYSENSE), 12);
-	setup_print_value(7, 10, setting_read(SETTING_PARITY), 13);
-	setup_print_value(7, 11, setting_read(SETTING_BPC), 14);
-	setup_print_value(7, 12, 0 /* setting_read(SETTING_POWER) */, 15);
+	for(i = 6; i < 8; i++)
+	{
+		for(j=2; j < 13; j++)
+		{
+			if(j > 5 && j < 9)
+			{
+				continue;
+			}
+			
+			vt100_buffer[i][j].data = readed_values[value_no] ? '1' : '0';
+			
+			if(value_no++ == setup_setting_number)
+			{
+				vt100_cursor.row = i;
+				vt100_cursor.col = j;
+			}
+		}
+		
+		vt100_buffer[i][0].prop |= VT100_CHAR_PROP_TOUCH;
+	}
 }
 
 void setup_A_refresh()
 {
+	col_t j;
+	vt100_cursor.row = 6;
+	vt100_cursor.col = setup_setting_number;
 	
-}
-
-void setup_print_value(row_t row, col_t col, bool_t val, uint8_t value_no)
-{
-	vt100_buffer[row][0].prop |= VT100_CHAR_PROP_TOUCH;
-	
-	if(value_no == setup_setting_number)
+	for(j=0; j < 16; j++)
 	{
-		vt100_buffer[row][col].prop &= ~VT100_CHAR_PROP_INVERSE;
-	}
-	else
-	{
-		vt100_buffer[row][col].prop |= VT100_CHAR_PROP_INVERSE;
-	}
-	
-	if(val)
-	{
-		vt100_buffer[row][col].data = '1';
-	}
-	else
-	{
-		vt100_buffer[row][col].data = '0';
-	}
+		vt100_buffer[6][j].data = (setting_tabs & (1 << j)) ? 'T' : ' ';
+	}		
 }

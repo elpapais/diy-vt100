@@ -63,6 +63,7 @@ extern const struct __setting_nvr setting_nvr;
 
 extern uint8_t setting_brightness;
 extern uint8_t setting_speed;
+extern uint16_t setting_tabs;
 
 extern uint16_t setting_nvr_bits;
 extern uint16_t setting_vr_bits;
