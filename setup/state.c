@@ -91,6 +91,9 @@ void setup_arrow_left()
 	/* select left value */
 	setup_setting_number--;
 	
+	/* limit to 16 only */
+	setup_setting_number &= 0x0F;
+	
 	(setup_type_current == 'B') ? setup_B_refresh() : setup_A_refresh();
 }
 
@@ -99,16 +102,15 @@ void setup_arrow_right()
 	/* select right value */
 	setup_setting_number++;
 	
+	/* limit to 16 only */
+	setup_setting_number &= 0x0F;
+	
 	(setup_type_current == 'B') ? setup_B_refresh() : setup_A_refresh();
 }
 
 void setup_value_flip()
 {
 	/* flip values in setup, 5 was pressed */
-	
-	/* limit to 16 only */
-	setup_setting_number &= 0x0F;
-	
 	if(setup_type_current == 'B')
 	{
 		switch(setup_setting_number)
