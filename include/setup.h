@@ -21,7 +21,6 @@ extern const struct __state setup_state_arrow_select[];
 void setup();
 
 void setup_A_refresh();
-
 void setup_B_refresh();
 void setup_switch();
 void setup_value_flip();

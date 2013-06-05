@@ -186,7 +186,7 @@ void setup_value_flip()
 	}
 	else
 	{
-		setting_tabs ^= 1 << setup_setting_number;
+		setting_tab_flip(setup_setting_number);
 		setup_A_refresh();
 	}
 }
@@ -252,6 +252,6 @@ void setup_A_refresh()
 	
 	for(j=0; j < 16; j++)
 	{
-		vt100_buffer[6][j].data = (setting_tabs & (1 << j)) ? 'T' : ' ';
+		vt100_buffer[6][j].data = setting_tab_read(j) ? 'T' : ' ';
 	}		
 }

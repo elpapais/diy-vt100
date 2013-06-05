@@ -96,6 +96,12 @@ extern uint16_t setting_vr_bits;
 #define __setting_high(var, no) (var |= __SETTING_GENERATE_BITMASK(no))
 #define __setting_low(var, no) (var &= ~__SETTING_GENERATE_BITMASK(no))
 
+#define setting_tab_high(pos) (setting_tabs |= (1 << (pos)))
+#define setting_tab_low(pos) (setting_tabs &= ~(1 << (pos)))
+#define setting_tab_read(pos) (setting_tabs & (1 << (pos)))
+#define setting_tab_flip(pos) (setting_tabs ^= (1 << (pos)))
+#define setting_tab_clearall() (setting_tabs = 0)
+
 void setting_load();
 void setting_save();
 

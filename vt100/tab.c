@@ -3,6 +3,7 @@
 #include <vt100/cursor.h>
 #include <param.h>
 #include <setup.h>
+#include <setting.h>
 
 /* tabulation clear */
 void vt100_TBC()
@@ -13,39 +14,32 @@ void vt100_TBC()
 	{
 		case 0:
 			/* clear the horizontal tab stop at the current position */
-			vt100_buffer[0][vt100_cursor.col].prop &= VT100_CHAR_PROP_TAB;
+			setting_tab_low(vt100_cursor.col);
 		break;
 
 		case 3:
 			/* clear all horizontal tab stops */
-			for(i=0; i < VT100_WIDTH; i++)
-			{
-				vt100_buffer[0][i].prop &= VT100_CHAR_PROP_TAB;
-			}
+			setting_tab_clearall();
 		break;
-		
-		//default:
-			//ignored
 	}
 }
 
 /* horizontal tabulation set */
 void vt100_HTS()
 {
-	vt100_buffer[0][vt100_cursor.col].prop |= VT100_CHAR_PROP_TAB;
+	setting_tab_high(vt100_cursor.col);
 }
 
 /* give a horizontal tab */
 void vt100_HT()
 {
-	register col_t j;
+	col_t j;
 	
 	for(j = vt100_cursor.col; j < VT100_WIDTH; j++)
 	{
-		if(vt100_buffer[0][j].prop & VT100_CHAR_PROP_TAB)
+		if(setting_tab_read(j))
 		{
 			vt100_cursor.col = j;
-			break;
 		}
 	}
 }

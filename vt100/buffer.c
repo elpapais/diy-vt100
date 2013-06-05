@@ -65,22 +65,11 @@ vt100_buffer_shiftup()
 {
 	register row_t i;
 	register col_t j;
-	uint8_t prop;
 	
 	/* save first row tab setting */
 	for(j = 0; j < VT100_WIDTH; j++)
 	{
-		prop = vt100_buffer[0][j].prop;
 		vt100_buffer[0][j] = vt100_buffer[1][j];
-		
-		if(prop & VT100_CHAR_PROP_TAB)
-		{
-			vt100_buffer[0][j].prop |= VT100_CHAR_PROP_TAB;
-		}
-		else
-		{
-			vt100_buffer[0][j].prop &= ~VT100_CHAR_PROP_TAB;
-		}
 	}
 	vt100_buffer[0][0].prop |= VT100_CHAR_PROP_TOUCH;
 	
@@ -124,7 +113,7 @@ vt100_buffer_shiftdown()
 	for(j = 0; j < VT100_WIDTH; j++)
 	{
 		vt100_buffer[i][j].data = 0;
-		vt100_buffer[i][j].prop &= VT100_CHAR_PROP_TAB;
+		vt100_buffer[i][j].prop = 0;
 	}
 	
 	vt100_buffer[i][0].prop |= VT100_CHAR_PROP_TOUCH;
@@ -181,7 +170,7 @@ void vt100_ED()
 				for(j=0; j < VT100_WIDTH; j++)
 				{
 					vt100_buffer[i][j].data = 0;
-					vt100_buffer[i][j].prop &= VT100_CHAR_PROP_TAB;
+					vt100_buffer[i][j].prop = 0;
 				}
 				
 				vt100_buffer[i][0].prop |= VT100_CHAR_PROP_TOUCH;
@@ -191,7 +180,7 @@ void vt100_ED()
 			for(j=0; j <= vt100_cursor.col; j++)
 			{
 				vt100_buffer[vt100_cursor.row][j].data = 0;
-				vt100_buffer[vt100_cursor.row][j].prop &= VT100_CHAR_PROP_TAB;
+				vt100_buffer[vt100_cursor.row][j].prop = 0;
 			}
 			
 			vt100_buffer[i][0].prop |= VT100_CHAR_PROP_TOUCH;
@@ -215,7 +204,7 @@ void vt100_ED()
 				for(j = 1; j < VT100_WIDTH; j++)
 				{
 					vt100_buffer[i][j].data = 0;
-					vt100_buffer[i][j].prop &= VT100_CHAR_PROP_TAB;
+					vt100_buffer[i][j].prop = 0;
 				}
 			}
 			
@@ -236,7 +225,7 @@ void vt100_EL()
 			for(j=vt100_cursor.col; j < VT100_WIDTH; j++)
 			{
 				vt100_buffer[vt100_cursor.row][j].data = 0;
-				vt100_buffer[vt100_cursor.row][j].prop &= VT100_CHAR_PROP_TAB;
+				vt100_buffer[vt100_cursor.row][j].prop = 0;
 			}
 			
 		break;
@@ -246,7 +235,7 @@ void vt100_EL()
 			for(j=0; j <= vt100_cursor.col; j++)
 			{
 				vt100_buffer[vt100_cursor.row][j].data = 0;
-				vt100_buffer[vt100_cursor.row][j].prop &= VT100_CHAR_PROP_TAB;
+				vt100_buffer[vt100_cursor.row][j].prop = 0;
 			}
 		break;
 		
@@ -255,7 +244,7 @@ void vt100_EL()
 			for(j = 0; j < VT100_WIDTH; j++)
 			{
 				vt100_buffer[vt100_cursor.row][j].data = 0;
-				vt100_buffer[vt100_cursor.row][j].prop &= VT100_CHAR_PROP_TAB;
+				vt100_buffer[vt100_cursor.row][j].prop = 0;
 			}
 		break;
 	}
