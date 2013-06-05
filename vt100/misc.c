@@ -6,8 +6,7 @@
 #include <vt100/bell.h>
 #include <vt100/led.h>
 #include <state-machine.h>
-
-uint8_t vt100_setting;
+#include <setting.h>
 
 void vt100_init()
 {
@@ -42,14 +41,15 @@ vt100_DECTST()
 void
 vt100_DECKPAM()
 {
-	vt100_setting |= VT100_SETTING_DECKPAM;
-}
-
-/* keypad numberic mode */
-void
-vt100_DECKPNM()
-{
-	vt100_setting &= ~VT100_SETTING_DECKPAM;
+	if(param.data[0])
+	{
+		setting_high(SETTING_DECKPAM);
+	}
+	else
+	{
+		setting_low(SETTING_DECKPAM);
+	}
+	
 }
 
 /* reset to inital state (as on power on) */
@@ -59,8 +59,26 @@ vt100_RIS()
 	/* TODO: set vt100 to reset state  */
 }
 
+/* cursor key mode */
 void
 vt100_DECCKM()
 {
-	vt100_setting |= VT100_SETTING_DECCKM;
+	setting_high(SETTING_DECCKM);
+}
+
+/* screen in reverse vedio mode */
+void vt100_DECSCNM()
+{
+	if(param.data[0])
+	{
+		setting_high(SETTING_DECSCNM);
+		nokia1100_invertpixel_on();
+	}
+	else
+	{
+		setting_low(SETTING_DECSCNM);
+		nokia1100_invertpixel_off();
+	}
+	
+	
 }

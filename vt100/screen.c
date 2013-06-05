@@ -4,7 +4,7 @@
 #include <vt100/misc.h>
 #include <vt100/buffer.h>
 #include <vt100/cursor.h>
-#include <setup.h>
+#include <setting.h>
 
 /* must be 2^x , x>1, x <= VT100_WIDTH  */
 #define VT100_SCREEN_BUFFER_SIZE (NOKIA1100_WIDTH_CHAR*4)
@@ -128,10 +128,10 @@ static inline uint8_t vt100_screen_designchar(const row_t i, const col_t j, cons
 	}
 	
 	if(j == vt100_cursor.col
-		&& vt100_setting & VT100_SETTING_CURSOR_STATE 
+		&& setting_read(SETTING__CURSOR_STATE) 
 		&& i == vt100_cursor.row)
 	{
-		send ^= (setup_setting.B & SETUP_B_CURSOR) ? 0x80 : 0xFF;
+		send ^= setting_read(SETTING_CURSOR) ? 0x80 : 0xFF;
 	}
 	
 	return send;

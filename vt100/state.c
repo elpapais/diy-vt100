@@ -40,8 +40,8 @@ vt100_state_C1[] = //ESC
 	state_select	('[', vt100_state_opensquarebracket),
 	state_select	('#', vt100_state_hash),
 	state_noparam	('Z', vt100_DECID),
-	state_noparam	('=', vt100_DECKPAM),
-	state_noparam	('>', vt100_DECKPNM),
+	state_param		('=', vt100_DECKPAM, 1, 1),
+	state_param		('>', vt100_DECKPAM, 1, 0),
 	state_noparam	('8', vt100_DECRC),
 	state_noparam	('7', vt100_DECSC),
 	state_noparam	('H', vt100_HTS),
@@ -105,6 +105,16 @@ vt100_state_hash[] = //#
 	state_noparam	('4', vt100_DECDHL_bottom),
 	state_noparam	('5', vt100_DECDWL),
 	state_noparam	('8', vt100_DECALN),
+	state_end		()
+};
+
+const struct __state
+vt100_state_question[] = //?
+{
+	state_noparam	(0, vt100_state_worker),
+	
+	//state_noparam	('l', vt100_DEC_l),
+	//state_noparam	('h', vt100_DEC_h),
 	state_end		()
 };
 

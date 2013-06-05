@@ -2,6 +2,7 @@
 #include <uart.h>
 #include <vt100/misc.h>
 #include <setup.h>
+#include <setting.h>
 
 struct __keyboard_ps2 keyboard_ps2;
 
@@ -76,7 +77,7 @@ keyboard_ps2_scancode_fn(const uint8_t ident)
 {
 	uart_send_escape();
 
-	if(setup_setting.B & SETUP_B_MODE)
+	if(setting_read(SETTING_DECANM))
 	{
 		uart_send('O');
 	}
@@ -235,10 +236,10 @@ keyboard_ps2_scancode_callback_keypad_dot()
 		uart_send(ASCII_DEL);
 	}
 	/* send accoring to Keypad mode */
-	else if(vt100_setting & VT100_SETTING_DECKPAM)
+	else if(setting_read(SETTING_DECKPAM))
 	{
 		uart_send_escape();
-		uart_send((setup_setting.B & SETUP_B_MODE) ? 'O' : '?');
+		uart_send(setting_read(SETTING_DECANM) ? 'O' : '?');
 		/* appmode = 'n' */
 		uart_send('n');
 	}
@@ -265,12 +266,12 @@ keyboard_ps2_scancode_callback_enter()
 	
 	if(
 		keyboard_ps2.mode & KEYBOARD_PS2_MODE_MODIFIER
-		&& vt100_setting & VT100_SETTING_DECKPAM
+		&& setting_read(SETTING_DECKPAM)
 	)
 	{
 		/* keypad enter */
 		uart_send_escape();
-		uart_send((setup_setting.B & SETUP_B_MODE) ? 'O' : '?');
+		uart_send(setting_read(SETTING_DECANM) ? 'O' : '?');
 		uart_send('M');
 	}
 	else
@@ -297,10 +298,10 @@ keyboard_ps2_scancode_keypad(const uint8_t ascii, const uint8_t appmode,
 		}
 	}
 	/* send accoring to Keypad mode */
-	else if(vt100_setting & VT100_SETTING_DECKPAM)
+	else if(setting_read(SETTING_DECKPAM))
 	{
 		uart_send_escape();
-		uart_send((setup_setting.B & SETUP_B_MODE) ? 'O' : '?');
+		uart_send(setting_read(SETTING_DECANM) ? 'O' : '?');
 		uart_send(appmode);
 	}
 	else
@@ -316,9 +317,9 @@ keyboard_ps2_scancode_arrow(const uint8_t ident)
 	uart_send_escape();
 	
 	/* are in ANSI Mode ? */
-	if(setup_setting.B & SETUP_B_MODE)
+	if(setting_read(SETTING_DECANM))
 	{
-		uart_send( (vt100_setting & VT100_SETTING_DECCKM) ? 'O' : '[');
+		uart_send( setting_read(SETTING_DECCKM) ? 'O' : '[');
 	}
 	
 	uart_send(ident);

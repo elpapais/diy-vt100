@@ -1,6 +1,6 @@
 #include <vt100/attribute.h>
 #include <vt100/buffer.h>
-#include <vt100/misc.h>
+#include <setting.h>
 #include <vt100/cursor.h>
 #include <param.h>
 
@@ -38,30 +38,27 @@ vt100_SGR()
 		switch(param.data[i])
 		{
 			case 0:
-				vt100_setting &= ~(VT100_SETTING_ATTR_BOLD | 
-										VT100_SETTING_ATTR_INVERSE | 
-										VT100_SETTING_ATTR_BLINK | 
-										VT100_SETTING_ATTR_UNDERLINE);
+				setting_low(SETTING__ATTR_BOLD);
+				setting_low(SETTING__ATTR_INVERSE);
+				setting_low(SETTING__ATTR_BLINK);
+				setting_low(SETTING__ATTR_UNDERLINE);
 			break;
 			
 			case 1:
-				vt100_setting |= VT100_SETTING_ATTR_BOLD;
+				setting_high(SETTING__ATTR_BOLD);
 			break;
 			
 			case 4:
-				vt100_setting |= VT100_SETTING_ATTR_UNDERLINE;
+				setting_high(SETTING__ATTR_UNDERLINE);
 			break;
 			
 			case 5:
-				vt100_setting |= VT100_SETTING_ATTR_BLINK;
+				setting_high(SETTING__ATTR_BLINK);
 			break;
 			
 			case 7:
-				vt100_setting |= VT100_SETTING_ATTR_INVERSE;
+				setting_high(SETTING__ATTR_INVERSE);
 			break;
-			
-			//default:
-				//ignored
 		}
 	}
 }

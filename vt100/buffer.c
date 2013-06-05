@@ -1,7 +1,7 @@
 #include <vt100/buffer.h>
 #include <nokia1100.h>
 #include <param.h>
-#include <vt100/misc.h>
+#include <setting.h>
 #include <vt100/cursor.h>
 
 struct __vt100_char
@@ -33,17 +33,17 @@ vt100_buffer_putchar()
 	
 	vt100_buffer[vt100_cursor.row][vt100_cursor.col].prop = 0;
 	
-	if(vt100_setting & VT100_SETTING_ATTR_BOLD)
+	if(setting_read(SETTING__ATTR_BOLD))
 	{
 		vt100_buffer[vt100_cursor.row][vt100_cursor.col].prop |= VT100_CHAR_PROP_BOLD;
 	}
 	
-	if(vt100_setting & VT100_SETTING_ATTR_UNDERLINE)
+	if(setting_read(SETTING__ATTR_UNDERLINE))
 	{
 		vt100_buffer[vt100_cursor.row][vt100_cursor.col].prop |= VT100_CHAR_PROP_UNDERLINE;
 	}
 	
-	if(vt100_setting & VT100_SETTING_ATTR_INVERSE)
+	if(setting_read(SETTING__ATTR_INVERSE))
 	{
 		vt100_buffer[vt100_cursor.row][vt100_cursor.col].prop |= VT100_CHAR_PROP_INVERSE;
 	}

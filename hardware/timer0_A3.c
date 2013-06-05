@@ -1,5 +1,5 @@
 #include <hardware/timer0_A3.h>
-#include <vt100/misc.h>
+#include <setting.h>
 
 /* note on naming convention
  * timerX_YZ
@@ -30,7 +30,7 @@ void timer0_A3_init()
 
 void timer0_A0_interrupt()
 {
-	vt100_setting ^= VT100_SETTING_CURSOR_STATE;
+	setting_flip(SETTING__CURSOR_STATE);
 	
 	/* exit sleep mode to refresh screen */
 	__bic_status_register_on_exit(LPM1_bits);

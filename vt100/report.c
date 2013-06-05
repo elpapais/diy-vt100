@@ -1,7 +1,7 @@
 #include <vt100/report.h>
 #include <uart.h>
 #include <param.h>
-#include <vt100/misc.h>
+#include <setting.h>
 #include <vt100/cursor.h>
 
 /* report terminal parameter (requested via DECREQTPARAM) */
@@ -10,11 +10,11 @@ vt100_DECREPTPARAM()
 {
 	if(param.data[0])
 	{
-		vt100_setting &= ~(VT100_SETTING_UNSOLIC_ALLOW);
+		setting_low(SETTING__UNSOLIC);
 	}
 	else
 	{
-		vt100_setting |= VT100_SETTING_UNSOLIC_ALLOW;
+		setting_high(SETTING__UNSOLIC);
 	}
 	
 	uart_send_escape();

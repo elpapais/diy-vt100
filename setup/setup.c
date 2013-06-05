@@ -2,9 +2,7 @@
 #include <uart.h>
 #include <vt100/state.h>
 #include <hardware/timer1_A3.h>
-
-struct __setup_setting
-setup_setting;
+#include <setting.h>
 
 bool_t setup_show;
 
@@ -30,7 +28,7 @@ const struct __vt100_char buffer_setupB[VT100_HEIGHT][VT100_WIDTH] =
 
 void setup_init()
 {
-	setup_setting.brightness = TIMER1_A3_PWM_INIT;
+	setting_brightness = TIMER1_A3_PWM_INIT;
 }
 
 void setup()
