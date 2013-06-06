@@ -2,8 +2,6 @@
 #include <hardware/timer1_A3.h>
 #include <setting.h>
 
-//const uint8_t 
-
 const struct __setting flash_setting = 
 {
 	.brightness = TIMER1_A3_PWM_INIT

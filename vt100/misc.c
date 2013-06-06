@@ -93,3 +93,91 @@ void vt100_ENQ()
 		uart_send(setting.answerback[i]);
 	}
 }
+
+void vt100_mode_high()
+{
+	switch(param.data[0])
+	{
+		case 1:
+			setting_high(SETTING_DECCKM);
+		break;
+		
+		case 3:
+			setting_high(SETTING_DECCOLM);
+		break;
+		
+		case 4:
+			setting_high(SETTING_DECSCLM);
+		break;
+		
+		case 5:
+			setting_high(SETTING_DECSCNM);
+		break;
+		
+		case 6:
+			setting_high(SETTING_DECCOM);
+		break;
+		
+		case 7:
+			setting_high(SETTING_DECAWM);
+		break;
+		
+		case 8:
+			setting_high(SETTING_DECARM);
+		break;
+		
+		case 9:
+			setting_high(SETTING_DECINLM);
+		break;
+		
+		case 20:
+			setting_high(SETTING_LNM);
+		break;
+	}
+}
+
+void vt100_mode_low()
+{
+	switch(param.data[0])
+	{
+		case 1:
+			setting_low(SETTING_DECCKM);
+		break;
+		
+		case 2:
+			setting_low(SETTING_DECANM);
+		break;
+		
+		case 3:
+			setting_low(SETTING_DECCOLM);
+		break;
+		
+		case 4:
+			setting_low(SETTING_DECSCLM);
+		break;
+		
+		case 5:
+			setting_low(SETTING_DECSCNM);
+		break;
+		
+		case 6:
+			setting_low(SETTING_DECCOM);
+		break;
+		
+		case 7:
+			setting_low(SETTING_DECAWM);
+		break;
+		
+		case 8:
+			setting_low(SETTING_DECARM);
+		break;
+		
+		case 9:
+			setting_low(SETTING_DECINLM);
+		break;
+		
+		case 20:
+			setting_low(SETTING_LNM);
+		break;
+	}
+}

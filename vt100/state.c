@@ -22,7 +22,6 @@ vt100_state_C0[] =
 	state_noparam	(ASCII_BELL, vt100_BEL),
 	state_noparam	(ASCII_TAB, vt100_HT),
 	state_param		(ASCII_BS, vt100_CUB, 1, 1),
-	/* TODO: LNM: newline mode, no mode, default applied */
 	state_noparam	(ASCII_LF, vt100_LF),
 	state_noparam	(ASCII_CR, vt100_CR),
 	state_ignore	(ASCII_DEL),
@@ -92,6 +91,7 @@ vt100_state_opensquarebracket[] = //[
 	state_param		('n', vt100_DSR, 1, 0),
 	state_param		('x', vt100_DECREPTPARAM, 1, 0),
 	state_param		('g', vt100_TBC, 1,0),
+	state_param		('h', vt100_mode_high, 1, 0),
 	state_end		()
 };
 
@@ -113,8 +113,8 @@ vt100_state_question[] = //?
 {
 	state_noparam	(0, vt100_state_worker),
 	
-	//state_noparam	('l', vt100_DEC_l),
-	//state_noparam	('h', vt100_DEC_h),
+	state_param		('l', vt100_mode_low, 1, 0),
+	state_param		('h', vt100_mode_high, 1, 0),
 	state_end		()
 };
 
