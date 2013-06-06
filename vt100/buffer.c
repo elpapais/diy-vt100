@@ -290,7 +290,7 @@ vt100_buffer_copy(const struct __vt100_char buffer[VT100_HEIGHT][VT100_WIDTH])
 		{
 			vt100_buffer[i][j] = buffer[i][j];
 		}
-		
-		vt100_buffer[i][0].prop |= VT100_CHAR_PROP_TOUCH;
 	}
+	
+	vt100_screen_refresh();
 }

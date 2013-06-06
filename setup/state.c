@@ -17,6 +17,7 @@ setup_state_type[] =
 	state_select	(ASCII_ESCAPE, setup_state_arrow),
 	state_noparam	('5', setup_switch),
 	state_noparam	('6', setup_value_flip),
+	state_noparam	(ASCII_DC3, setup_saving), /* CTRL-S pressed */
 	state_end()
 };
 
@@ -71,18 +72,18 @@ void setup_state_worker()
 void setup_arrow_up()
 {
 	/* increase brightness */
-	if(setting_brightness < TIMER1_A3_PWM_MAX)
+	if(setting.brightness < TIMER1_A3_PWM_MAX)
 	{
-		timer1_A3_pwm(++setting_brightness);
+		timer1_A3_pwm(++setting.brightness);
 	}
 }
 
 void setup_arrow_down()
 {
 	/* decrease brightness */
-	if(setting_brightness > TIMER1_A3_PWM_MIN)
+	if(setting.brightness > TIMER1_A3_PWM_MIN)
 	{
-		timer1_A3_pwm(--setting_brightness);
+		timer1_A3_pwm(--setting.brightness);
 	}
 }
 
@@ -111,85 +112,88 @@ void setup_arrow_right()
 void setup_value_flip()
 {
 	/* flip values in setup, 5 was pressed */
-	if(setup_type_current == 'B')
+	
+	switch(setup_type_current)
 	{
-		switch(setup_setting_number)
-		{
-			/* box 1 */
-			case 0:
-				setting_flip(SETTING_CURSOR);
-			break;
+		case 'B':
+			switch(setup_setting_number)
+			{
+				/* box 1 */
+				case 0:
+					setting_flip(SETTING_CURSOR);
+				break;
+				
+				case 1:
+					setting_flip(SETTING_DECSCNM);
+				break;
+				
+				case 2:
+					setting_flip(SETTING_DECARM);
+				break;
+				
+				case 3:
+					setting_flip(SETTING_DECSCLM);
+				break;
+				
+				/* box 2 */
+				case 4:
+					setting_flip(SETTING_MARGINBELL);
+				break;
+				
+				case 5:
+					setting_flip(SETTING_KEYCLICK);
+				break;
+				
+				case 6:
+					setting_flip(SETTING_DECANM);
+				break;
+				
+				case 7:
+					setting_flip(SETTING_AUTOX);
+				break;
+				
+				/* box 3 */
+				case 8:
+					setting_flip(SETTING_SHIFTED);
+				break;
+				
+				case 9:
+					setting_flip(SETTING_DECAWM);
+				break;
+				
+				case 10:
+					setting_flip(SETTING_LNM);
+				break;
+				
+				case 11:
+					setting_flip(SETTING_DECINLM);
+				break;
+				
+				/* box 4 */
+				case 12:
+					setting_flip(SETTING_PARITYSENSE);
+				break;
+				
+				case 13:
+					setting_flip(SETTING_PARITY);
+				break;
+				
+				case 14:
+					setting_flip(SETTING_BPC);
+				break;
+				
+				case 15:
+					/* setting_flip(SETTING_POWER); */
+				break;
+			}
 			
-			case 1:
-				setting_flip(SETTING_DECSCNM);
-			break;
-			
-			case 2:
-				setting_flip(SETTING_DECARM);
-			break;
-			
-			case 3:
-				setting_flip(SETTING_DECSCLM);
-			break;
-			
-			/* box 2 */
-			case 4:
-				setting_flip(SETTING_MARGINBELL);
-			break;
-			
-			case 5:
-				setting_flip(SETTING_KEYCLICK);
-			break;
-			
-			case 6:
-				setting_flip(SETTING_DECANM);
-			break;
-			
-			case 7:
-				setting_flip(SETTING_AUTOX);
-			break;
-			
-			/* box 3 */
-			case 8:
-				setting_flip(SETTING_SHIFTED);
-			break;
-			
-			case 9:
-				setting_flip(SETTING_DECAWM);
-			break;
-			
-			case 10:
-				setting_flip(SETTING_LNM);
-			break;
-			
-			case 11:
-				setting_flip(SETTING_DECINLM);
-			break;
-			
-			/* box 4 */
-			case 12:
-				setting_flip(SETTING_PARITYSENSE);
-			break;
-			
-			case 13:
-				setting_flip(SETTING_PARITY);
-			break;
-			
-			case 14:
-				setting_flip(SETTING_BPC);
-			break;
-			
-			case 15:
-				/* setting_flip(SETTING_POWER); */
-			break;
-		}
+			setup_B_refresh();
+		break;
 		
-		setup_B_refresh();
-	}
-	else
-	{
-		setting_tab_flip(setup_setting_number);
-		setup_A_refresh();
+		case 'A':
+			setting_tab_flip(setup_setting_number);
+			setup_A_refresh();
+		break;
 	}
 }
 
@@ -197,17 +201,19 @@ void setup_switch()
 {
 	setup_setting_number = 0;
 	
-	if(setup_type_current == 'B')
+	switch(setup_type_current)
 	{
-		setup_type_current = 'A';
-		vt100_buffer_copy(buffer_setupA);
-		setup_A_refresh();
-	}
-	else
-	{
-		setup_type_current = 'B';
-		vt100_buffer_copy(buffer_setupB);
-		setup_B_refresh();
+		case 'B':
+			setup_type_current = 'A';
+			vt100_buffer_copy(setup_buffer_A);
+			setup_A_refresh();
+		break;
+		
+		case 'A':
+			setup_type_current = 'B';
+			vt100_buffer_copy(setup_buffer_B);
+			setup_B_refresh();
+		break;
 	}
 }
 
@@ -256,4 +262,18 @@ void setup_A_refresh()
 	{
 		vt100_buffer[6][j].data = setting_tab_read(j) ? 'T' : ' ';
 	}		
+}
+
+void setup_saving()
+{
+	col_t j = 0;
+	const struct __vt100_char saving_message[VT100_WIDTH] = {{'S', VT100_CHAR_PROP_TOUCH}, {'a'}, {'v'}, {'e'}, {'d'}, {'.'}};
+
+	/* start saving */
+	setting_save();
+
+	for(j = 0; j < VT100_WIDTH; j++)
+	{
+		vt100_buffer[3][j] = saving_message[j];
+	}
 }

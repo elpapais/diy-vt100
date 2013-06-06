@@ -8,8 +8,8 @@
 
 extern bool_t setup_show;
 
-const struct __vt100_char buffer_setupA[VT100_HEIGHT][VT100_WIDTH];
-const struct __vt100_char buffer_setupB[VT100_HEIGHT][VT100_WIDTH];
+extern const struct __vt100_char setup_buffer_A[VT100_HEIGHT][VT100_WIDTH];
+extern const struct __vt100_char setup_buffer_B[VT100_HEIGHT][VT100_WIDTH];
 
 extern uint8_t setup_type_current;
 extern uint8_t setup_setting_number;
@@ -29,5 +29,6 @@ void setup_arrow_left();
 void setup_arrow_down();
 void setup_arrow_up();
 void setup_state_worker();
+void setup_saving();
 
 #endif

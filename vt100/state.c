@@ -27,7 +27,7 @@ vt100_state_C0[] =
 	state_noparam	(ASCII_CR, vt100_CR),
 	state_ignore	(ASCII_DEL),
 	state_ignore	(ASCII_NULL),
-	//func_call_noparam(ASCII_ENQ, vt100_identity), is ASCII_ENQ alias of ESC Z ??
+	state_noparam	(ASCII_ENQ, vt100_ENQ),
 	state_end		()
 };
 

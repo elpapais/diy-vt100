@@ -15,6 +15,7 @@
 #include <state-machine.h>
 #include <vt100/misc.h>
 #include <vt100/screen.h>
+#include <setting.h>
 
 
 void msp430_init();
@@ -24,6 +25,7 @@ main()
 {
 	/* hardware dependent code */
 	msp430_init();
+	flash_init();
 	port1_init();
 	port2_init();
 	usciA_init();
@@ -31,10 +33,10 @@ main()
 	timer1_A3_init();
 	
 	/* no hardware dependent code */
+	setting_init();
 	nokia1100_init();
 	vt100_init();
 	uart_init();
-	setup_init();
 	
 	/* show splash screen */
 	splash();

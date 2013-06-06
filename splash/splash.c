@@ -5,9 +5,14 @@
 
 const struct __vt100_char splash_message[VT100_HEIGHT][VT100_WIDTH] = 
 {
-	{},
-	{{' ', VT100_CHAR_PROP_DOUBLE_HEIGHT_TOP}, {' '}, {' '}, {'#'}, {'d'}, {'i'}, {'y'}, {'-'}, {'v'}, {'t'}, {'1'}, {'0'}, {'0'}, {' '}, {' '}, {' '}},
-	{{' ', VT100_CHAR_PROP_DOUBLE_HEIGHT_BOTTOM}, {' '}, {' '}, {'#'}, {'d'}, {'i'}, {'y'}, {'-'}, {'v'}, {'t'}, {'1'}, {'0'}, {'0'}, {' '}, {' '}, {' '}}
+	{{0, VT100_CHAR_PROP_TOUCH}},
+	{{' ', VT100_CHAR_PROP_DOUBLE_HEIGHT_TOP | VT100_CHAR_PROP_TOUCH}, {' '}, {' '}, {'#'}, {'d'}, {'i'}, {'y'}, {'-'}, {'v'}, {'t'}, {'1'}, {'0'}, {'0'}, {' '}, {' '}, {' '}},
+	{{' ', VT100_CHAR_PROP_DOUBLE_HEIGHT_BOTTOM | VT100_CHAR_PROP_TOUCH}, {' '}, {' '}, {'#'}, {'d'}, {'i'}, {'y'}, {'-'}, {'v'}, {'t'}, {'1'}, {'0'}, {'0'}, {' '}, {' '}, {' '}},
+	{{0, VT100_CHAR_PROP_TOUCH}},
+	{{0, VT100_CHAR_PROP_TOUCH}},
+	{{0, VT100_CHAR_PROP_TOUCH}},
+	{{0, VT100_CHAR_PROP_TOUCH}},
+	{{0, VT100_CHAR_PROP_TOUCH}}
 };
 
 //"   #diy-vt100   ",

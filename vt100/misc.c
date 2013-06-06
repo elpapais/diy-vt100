@@ -82,3 +82,14 @@ void vt100_DECSCNM()
 	
 	
 }
+
+/* send answerback message */
+void vt100_ENQ()
+{
+	uint8_t i = 0;
+
+	for(i=0; i < SETTING_ANSWERBACK_SIZE; i++)
+	{
+		uart_send(setting.answerback[i]);
+	}
+}

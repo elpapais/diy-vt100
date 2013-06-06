@@ -2,6 +2,21 @@
 #define _SETTING_H_
 
 #include <common.h>
+#include <hardware/flash.h>
+
+#define SETTING_ANSWERBACK_SIZE 20
+
+struct __setting
+{
+	uint8_t vr_bits;
+	uint16_t nvr_bits;
+	uint8_t brightness;
+	uint8_t speed;
+	uint16_t tabs;
+	uint8_t answerback[SETTING_ANSWERBACK_SIZE];
+};
+
+extern struct __setting setting;
 
 /* note: (FALSE|TRUE)
  * ONLINE: 	(online mode|offline mode)
@@ -48,26 +63,6 @@
 #define SETTING_DECAWM		__SETTING_NVR(14)
 #define SETTING_SHIFTED		__SETTING_NVR(15)
 
-#define SETUP_ANSWERBACK_SIZE 20
-
-/* saved in NVR */
-struct __setting_nvr
-{
-	uint16_t bits;
-	uint8_t speed;
-	uint8_t brightness;
-	uint8_t answerback[SETUP_ANSWERBACK_SIZE];
-};
-
-extern const struct __setting_nvr setting_nvr;
-
-extern uint8_t setting_brightness;
-extern uint8_t setting_speed;
-extern uint16_t setting_tabs;
-
-extern uint16_t setting_nvr_bits;
-extern uint16_t setting_vr_bits;
-
 #define __SETTING_REMOVE_RAM_INFO(no) (no & ~BIT7)
 #define __SETTING_IS4NVR(no) (no & BIT7)
 #define __SETTING_GENERATE_BITMASK(num) (1 << __SETTING_REMOVE_RAM_INFO(num))
@@ -76,33 +71,34 @@ extern uint16_t setting_vr_bits;
 	(__SETTING_IS4NVR(num) ? code_nvr : code_vr)
 
 #define setting_flip(num) \
-	__setting_select_mem(num, __setting_flip(setting_nvr_bits, num), \
-								__setting_flip(setting_vr_bits, num))
+	__setting_select_mem(num, __setting_flip(setting.nvr_bits, num), \
+								__setting_flip(setting.vr_bits, num))
 	
 #define setting_low(num) \
-	__setting_select_mem(num, __setting_low(setting_nvr_bits, num), \
-								__setting_low(setting_vr_bits, num))
+	__setting_select_mem(num, __setting_low(setting.nvr_bits, num), \
+								__setting_low(setting.vr_bits, num))
 
 #define setting_high(num) \
-	__setting_select_mem(num, __setting_high(setting_nvr_bits, num), \
-								__setting_high(setting_vr_bits, num))
+	__setting_select_mem(num, __setting_high(setting.nvr_bits, num), \
+								__setting_high(setting.vr_bits, num))
 
 #define setting_read(num) \
-	(!!(__setting_select_mem(num, __setting_read(setting_nvr_bits, num), \
-								__setting_read(setting_vr_bits, num))))
+	(!!(__setting_select_mem(num, __setting_read(setting.nvr_bits, num), \
+								__setting_read(setting.vr_bits, num))))
 
 #define __setting_read(var, no) (var & __SETTING_GENERATE_BITMASK(no))
 #define __setting_flip(var, no) (var ^= __SETTING_GENERATE_BITMASK(no))
 #define __setting_high(var, no) (var |= __SETTING_GENERATE_BITMASK(no))
 #define __setting_low(var, no) (var &= ~__SETTING_GENERATE_BITMASK(no))
 
-#define setting_tab_high(pos) (setting_tabs |= (1 << (pos)))
-#define setting_tab_low(pos) (setting_tabs &= ~(1 << (pos)))
-#define setting_tab_read(pos) (setting_tabs & (1 << (pos)))
-#define setting_tab_flip(pos) (setting_tabs ^= (1 << (pos)))
-#define setting_tab_clearall() (setting_tabs = 0)
+#define setting_tab_high(pos) (setting.tabs |= (1 << (pos)))
+#define setting_tab_low(pos) (setting.tabs &= ~(1 << (pos)))
+#define setting_tab_read(pos) (setting.tabs & (1 << (pos)))
+#define setting_tab_flip(pos) (setting.tabs ^= (1 << (pos)))
+#define setting_tab_clearall() (setting.tabs = 0)
 
-void setting_load();
-void setting_save();
+#define setting_save() flash_setting_write()
+#define setting_load() flash_setting_read()
+#define setting_init() flash_setting_read()
 
 #endif
