@@ -4,8 +4,12 @@
 
 const struct __setting flash_setting = 
 {
+	.vr_bits = 0xFF,
 	.brightness = TIMER1_A3_PWM_INIT,
-	.speed = 0 /* 9600 */
+	.speed = 0, /* 9600 */
+	.nvr_bits = 0xFFFF,
+	.tabs = 0b1000100010001000,
+	.answerback = {'d', 'i', 'y', '-', 'v', 't', '1', '0', '0'}
 };
 
 void flash_setting_write()
