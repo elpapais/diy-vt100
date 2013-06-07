@@ -10,7 +10,7 @@ void timer1_A3_init()
 	P2SEL |= BIT2;
 	
 	/* Period Register */
-	TIMER1_A3_TACCR0 = 256;
+	TIMER1_A3_TACCR0 = TIMER1_A3_PWM_MAX + 1;
 
 	/* TA1.1 25% dutycycle */
 	TIMER1_A3_TACCR1 = TIMER1_A3_PWM_INIT;
