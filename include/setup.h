@@ -23,12 +23,22 @@ void setup();
 void setup_A_refresh();
 void setup_B_refresh();
 void setup_switch();
+
+void setup_state_worker();
+
+void setup_save();
+void setup_reset();
+void setup_reload();
+
 void setup_value_flip();
 void setup_arrow_right();
 void setup_arrow_left();
 void setup_arrow_down();
 void setup_arrow_up();
-void setup_state_worker();
-void setup_saving();
+void setup_speed();
+void setup_TAB_flip();
+void setup_TABS_clear();
+void setup_LOCAL();
+void setup_DECCOLM();
 
 #endif

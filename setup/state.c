@@ -15,9 +15,17 @@ setup_state_type[] =
 	state_noparam	(0, setup_state_worker),
 	
 	state_select	(ASCII_ESCAPE, setup_state_arrow),
+	state_noparam	(ASCII_DC3, setup_save), /* CTRL-S pressed */
+	state_noparam	(ASCII_DC2, setup_reload), /* CTRL-R pressed */
+	state_noparam	('0', setup_reset),
+	state_noparam	('2', setup_TAB_flip),
+	state_noparam	('3', setup_TABS_clear),
+	state_noparam	('4', setup_LOCAL),
 	state_noparam	('5', setup_switch),
 	state_noparam	('6', setup_value_flip),
-	state_noparam	(ASCII_DC3, setup_saving), /* CTRL-S pressed */
+	state_noparam	('7', setup_speed), /* transmit speed */
+	state_noparam	('8', setup_speed), /* receive speed */
+	state_noparam	('9', setup_DECCOLM),
 	state_end()
 };
 
@@ -65,6 +73,17 @@ void setup_state_worker()
 			state_current = (struct __state *)setup_state_type;
 			
 			state_iterate->cb();
+			
+			switch(setup_type_current)
+			{
+				case 'B':
+					setup_B_refresh();
+				break;
+				
+				case 'A':
+					setup_A_refresh();
+				break;
+			}
 		break;
 	}
 }
@@ -94,8 +113,6 @@ void setup_arrow_left()
 	
 	/* limit to 16 only */
 	setup_setting_number &= 0x0F;
-	
-	(setup_type_current == 'B') ? setup_B_refresh() : setup_A_refresh();
 }
 
 void setup_arrow_right()
@@ -105,95 +122,84 @@ void setup_arrow_right()
 	
 	/* limit to 16 only */
 	setup_setting_number &= 0x0F;
-	
-	(setup_type_current == 'B') ? setup_B_refresh() : setup_A_refresh();
 }
 
 void setup_value_flip()
 {
 	/* flip values in setup, 5 was pressed */
 	
-	switch(setup_type_current)
+	if(setup_type_current == 'B')
 	{
-		case 'B':
-			switch(setup_setting_number)
-			{
-				/* box 1 */
-				case 0:
-					setting_flip(SETTING_CURSOR);
-				break;
-				
-				case 1:
-					setting_flip(SETTING_DECSCNM);
-				break;
-				
-				case 2:
-					setting_flip(SETTING_DECARM);
-				break;
-				
-				case 3:
-					setting_flip(SETTING_DECSCLM);
-				break;
-				
-				/* box 2 */
-				case 4:
-					setting_flip(SETTING_MARGINBELL);
-				break;
-				
-				case 5:
-					setting_flip(SETTING_KEYCLICK);
-				break;
-				
-				case 6:
-					setting_flip(SETTING_DECANM);
-				break;
-				
-				case 7:
-					setting_flip(SETTING_AUTOX);
-				break;
-				
-				/* box 3 */
-				case 8:
-					setting_flip(SETTING_SHIFTED);
-				break;
-				
-				case 9:
-					setting_flip(SETTING_DECAWM);
-				break;
-				
-				case 10:
-					setting_flip(SETTING_LNM);
-				break;
-				
-				case 11:
-					setting_flip(SETTING_DECINLM);
-				break;
-				
-				/* box 4 */
-				case 12:
-					setting_flip(SETTING_PARITYSENSE);
-				break;
-				
-				case 13:
-					setting_flip(SETTING_PARITY);
-				break;
-				
-				case 14:
-					setting_flip(SETTING_BPC);
-				break;
-				
-				case 15:
-					/* setting_flip(SETTING_POWER); */
-				break;
-			}
+		switch(setup_setting_number)
+		{
+			/* box 1 */
+			case 0:
+				setting_flip(SETTING_CURSOR);
+			break;
 			
-			setup_B_refresh();
-		break;
-		
-		case 'A':
-			setting_tab_flip(setup_setting_number);
-			setup_A_refresh();
-		break;
+			case 1:
+				setting_flip(SETTING_DECSCNM);
+			break;
+			
+			case 2:
+				setting_flip(SETTING_DECARM);
+			break;
+			
+			case 3:
+				setting_flip(SETTING_DECSCLM);
+			break;
+			
+			/* box 2 */
+			case 4:
+				setting_flip(SETTING_MARGINBELL);
+			break;
+			
+			case 5:
+				setting_flip(SETTING_KEYCLICK);
+			break;
+			
+			case 6:
+				setting_flip(SETTING_DECANM);
+			break;
+			
+			case 7:
+				setting_flip(SETTING_AUTOX);
+			break;
+			
+			/* box 3 */
+			case 8:
+				setting_flip(SETTING_SHIFTED);
+			break;
+			
+			case 9:
+				setting_flip(SETTING_DECAWM);
+			break;
+			
+			case 10:
+				setting_flip(SETTING_LNM);
+			break;
+			
+			case 11:
+				setting_flip(SETTING_DECINLM);
+			break;
+			
+			/* box 4 */
+			case 12:
+				setting_flip(SETTING_PARITYSENSE);
+			break;
+			
+			case 13:
+				setting_flip(SETTING_PARITY);
+			break;
+			
+			case 14:
+				setting_flip(SETTING_BPC);
+			break;
+			
+			case 15:
+				/* setting_flip(SETTING_POWER); */
+			break;
+		}
 	}
 }
 
@@ -264,7 +270,7 @@ void setup_A_refresh()
 	}		
 }
 
-void setup_saving()
+void setup_save()
 {
 	col_t j = 0;
 	const struct __vt100_char saving_message[VT100_WIDTH] = {{'S', VT100_CHAR_PROP_TOUCH}, {'a'}, {'v'}, {'e'}, {'d'}, {'.'}};
@@ -276,4 +282,49 @@ void setup_saving()
 	{
 		vt100_buffer[3][j] = saving_message[j];
 	}
+}
+
+void setup_reload()
+{
+	setting_load();
+}
+
+void setup_reset()
+{
+	/* restart */
+	WDTCTL = 0;
+}
+
+void setup_DECCOLM()
+{
+	if(setup_type_current == 'A')
+	{
+		setting_flip(SETTING_DECCOLM);
+	}
+}
+
+void setup_LOCAL()
+{
+	setting_flip(SETTING__LOCAL);
+}
+
+void setup_TABS_clear()
+{
+	if(setup_type_current == 'A')
+	{
+		setting_tab_clearall();
+	}
+}
+
+void setup_TAB_flip()
+{
+	if(setup_type_current == 'A')
+	{
+		setting_tab_flip(setup_setting_number);
+	}
+}
+
+void setup_speed()
+{
+	/* handle speeds */
 }

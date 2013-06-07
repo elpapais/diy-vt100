@@ -115,7 +115,7 @@ void vt100_mode_high()
 		break;
 		
 		case 6:
-			setting_high(SETTING_DECCOM);
+			setting_high(SETTING_DECOM);
 		break;
 		
 		case 7:
@@ -161,7 +161,7 @@ void vt100_mode_low()
 		break;
 		
 		case 6:
-			setting_low(SETTING_DECCOM);
+			setting_low(SETTING_DECOM);
 		break;
 		
 		case 7:

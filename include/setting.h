@@ -36,7 +36,7 @@ extern struct __setting setting;
 #define SETTING_DECKPAM		__SETTING_VR(0)
 #define SETTING_DECCKM		__SETTING_VR(2)
 #define SETTING_DECGON		__SETTING_VR(1)
-#define SETTING_DECCOM		__SETTING_VR(3)
+#define SETTING_DECOM		__SETTING_VR(3)
 
 /* private use of vt100 */
 #define SETTING__UNSOLIC 		__SETTING_VR(4)
@@ -45,6 +45,7 @@ extern struct __setting setting;
 #define SETTING__ATTR_UNDERLINE	__SETTING_VR(7)
 #define SETTING__ATTR_INVERSE	__SETTING_VR(8)
 #define SETTING__ATTR_BLINK		__SETTING_VR(9)
+#define SETTING__LOCAL			__SETTING_VR(10)
 
 #define SETTING_DECANM 		__SETTING_NVR(0)
 #define SETTING_DECARM 		__SETTING_NVR(1)
