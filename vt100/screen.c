@@ -22,27 +22,27 @@ void vt100_screen_refresh()
 	uint8_t data;
 	
 	/* generally current row has some modification, so merge cursor blink with it */
-	vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_TOUCH;
+	vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_ROW_TOUCH;
 	
 	for(i=0; i < VT100_HEIGHT; i++)
 	{
 		/* is row modified */
-		if(vt100_buffer[i][0].prop & VT100_CHAR_PROP_TOUCH)
+		if(vt100_buffer[i][0].prop & VT100_CHAR_PROP_ROW_TOUCH)
 		{
-			vt100_buffer[i][0].prop &= ~VT100_CHAR_PROP_TOUCH;
+			vt100_buffer[i][0].prop &= ~VT100_CHAR_PROP_ROW_TOUCH;
 			
 			nokia1100_gotoyx(i, 0);
 			
 			count = 0;
 			/* create a temp pointer to  vt100_screen_row_buffer[] */
-			for(j=0; j < ((vt100_buffer[i][0].prop & VT100_CHAR_PROP_DOUBLE_WIDTH) ? VT100_WIDTH/2 : VT100_WIDTH); j++)
+			for(j=0; j < ((vt100_buffer[i][0].prop & VT100_CHAR_PROP_ROW_DOUBLE_WIDTH) ? VT100_WIDTH/2 : VT100_WIDTH); j++)
 			{
 				for(k=0; k < NOKIA1100_WIDTH_CHAR; k++)
 				{
 					data = vt100_screen_designchar(i, j, k);
 					screen_buffer[count++] = data;
 					
-					if(vt100_buffer[i][0].prop & VT100_CHAR_PROP_DOUBLE_WIDTH)
+					if(vt100_buffer[i][0].prop & VT100_CHAR_PROP_ROW_DOUBLE_WIDTH)
 					{
 						screen_buffer[count++] = data;
 					}
@@ -66,7 +66,7 @@ static inline uint8_t vt100_screen_designchar(const row_t i, const col_t j, cons
 	/* design the char */
 	send = font_simple_get(vt100_buffer[i][j].data, k);
 	
-	if(vt100_buffer[i][0].prop & VT100_CHAR_PROP_DOUBLE_HEIGHT_TOP)
+	if(vt100_buffer[i][0].prop & VT100_CHAR_PROP_ROW_DOUBLE_HEIGHT_TOP)
 	{
 		tmp = send;
 		send = 0x00;
@@ -90,7 +90,7 @@ static inline uint8_t vt100_screen_designchar(const row_t i, const col_t j, cons
 			send |= BIT1 | BIT0;
 		}
 	}
-	else if(vt100_buffer[i][0].prop & VT100_CHAR_PROP_DOUBLE_HEIGHT_BOTTOM)
+	else if(vt100_buffer[i][0].prop & VT100_CHAR_PROP_ROW_DOUBLE_HEIGHT_BOTTOM)
 	{
 		tmp = send;
 		send = 0x00;
@@ -117,12 +117,12 @@ static inline uint8_t vt100_screen_designchar(const row_t i, const col_t j, cons
 		}
 	}
 	
-	if(vt100_buffer[i][j].prop & VT100_CHAR_PROP_UNDERLINE)
+	if(vt100_buffer[i][j].prop & VT100_CHAR_PROP_DATA_UNDERLINE)
 	{
 		send |= 0x80;
 	}
 	
-	if(vt100_buffer[i][j].prop & VT100_CHAR_PROP_INVERSE)
+	if(vt100_buffer[i][j].prop & VT100_CHAR_PROP_DATA_INVERSE)
 	{
 		send ^= 0xFF;
 	}

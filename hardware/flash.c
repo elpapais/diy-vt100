@@ -4,7 +4,8 @@
 
 const struct __setting flash_setting = 
 {
-	.brightness = TIMER1_A3_PWM_INIT
+	.brightness = TIMER1_A3_PWM_INIT,
+	.speed = 0 /* 9600 */
 };
 
 void flash_setting_write()

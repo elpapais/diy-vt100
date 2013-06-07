@@ -2,6 +2,9 @@
 #define _FLASH_H_
 
 #include <common.h>
+#include <setting.h>
+
+extern const struct __setting flash_setting;
 
 /*
  * flash @ 4MHz/13 = 307692Hz

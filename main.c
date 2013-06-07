@@ -5,7 +5,7 @@
 #include <hardware/timer0_A3.h>
 #include <hardware/port1.h>
 #include <hardware/port2.h>
-#include <hardware/usciA.h>
+#include <hardware/usciA0.h>
 #include <keyboard/ps2.h>
 
 #include <splash.h>
@@ -28,7 +28,7 @@ main()
 	flash_init();
 	port1_init();
 	port2_init();
-	usciA_init();
+	usciA0_init();
 	timer0_A3_init();
 	timer1_A3_init();
 	

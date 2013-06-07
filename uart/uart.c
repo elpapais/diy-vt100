@@ -13,7 +13,7 @@ void uart_send(const uint8_t data)
 	uart_tx_push(data);
 	
 	/* enable interrupt if it was disabled due to empty cqueue */
-	usciA_tx_interrupt_enable();
+	usciA0_tx_interrupt_enable();
 }
 
 void uart_send_uint8(uint8_t val)

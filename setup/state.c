@@ -3,7 +3,9 @@
 #include <nokia1100.h>
 #include <vt100/buffer.h>
 #include <vt100/cursor.h>
+#include <vt100/buffer.h>
 #include <hardware/timer1_A3.h>
+#include <uart.h>
 #include <setting.h>
 
 uint8_t setup_type_current;
@@ -228,6 +230,8 @@ void setup_B_refresh()
 	row_t i;
 	col_t j;
 	uint8_t value_no = 0;
+	
+	
 	bool_t readed_values[16] =
 	{
 		setting_read(SETTING_CURSOR), setting_read(SETTING_DECSCNM), setting_read(SETTING_DECARM), setting_read(SETTING_DECSCLM),
@@ -254,7 +258,17 @@ void setup_B_refresh()
 			}
 		}
 		
-		vt100_buffer[i][0].prop |= VT100_CHAR_PROP_TOUCH;
+		vt100_buffer[i][0].prop |= VT100_CHAR_PROP_ROW_TOUCH;
+	}
+	
+	const struct __vt100_char *speed_str = uart_speed_get(setting.speed);
+	
+	vt100_buffer[4][0].prop |= VT100_CHAR_PROP_ROW_TOUCH;
+	vt100_buffer[5][0].prop |= VT100_CHAR_PROP_ROW_TOUCH;
+	
+	for(j=0; j < UART_SPEED_STRING_LENGTH; j++)
+	{
+		vt100_buffer[4][j + 8] = vt100_buffer[5][j + 8] = speed_str[j];
 	}
 }
 
@@ -273,7 +287,7 @@ void setup_A_refresh()
 void setup_save()
 {
 	col_t j = 0;
-	const struct __vt100_char saving_message[VT100_WIDTH] = {{'S', VT100_CHAR_PROP_TOUCH}, {'a'}, {'v'}, {'e'}, {'d'}, {'.'}};
+	const struct __vt100_char saving_message[VT100_WIDTH] = {{'S', VT100_CHAR_PROP_ROW_TOUCH}, {'a'}, {'v'}, {'e'}, {'d'}, {'.'}};
 
 	/* start saving */
 	setting_save();
@@ -327,4 +341,8 @@ void setup_TAB_flip()
 void setup_speed()
 {
 	/* handle speeds */
+	if(!(++setting.speed < UART_SPEED_COUNT))
+	{
+		setting.speed = 0;
+	}
 }
