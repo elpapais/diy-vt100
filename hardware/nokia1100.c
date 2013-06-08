@@ -66,7 +66,7 @@ nokia1100_init()
 	nokia1100_gotoy(0);
 	nokia1100_gotox(0);
 	
-	if(flash_setting_read(SETTING_DECSCNM))
+	if(! flash_setting_read(SETTING_DECSCNM))
 	{
 		nokia1100_invertpixel_on();
 	}
