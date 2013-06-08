@@ -13,7 +13,15 @@ extern const struct __setting flash_setting;
 #define FN_12 (FN2|FN3)
 #define flash_init() (FCTL2 = FWKEY + FSSEL_2 + FN_12)
 
-void flash_setting_write();
-void flash_setting_read();
+
+#define flash_setting_read(num) \
+	(!!(__setting_select_mem(num, __setting_read(flash_setting.nvr_bits, num), \
+								__setting_read(setting.vr_bits, num))))
+
+#define flash_setting_tab_read(pos) \
+	__read(flash_setting.tabs, __bitmask(pos))
+
+void flash_store();
+void flash_load();
 
 #endif

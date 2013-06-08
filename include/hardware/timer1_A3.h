@@ -1,5 +1,5 @@
-#ifndef _HARDWARE_TIMER1_A3_H_
-#define _HARDWARE_TIMER1_A3_H_
+#ifndef _TIMER1_A3_H_
+#define _TIMER1_A3_H_
 
 #include <common.h> 
 

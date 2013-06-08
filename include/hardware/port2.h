@@ -1,5 +1,5 @@
-#ifndef _HARDWARE_PORT2_H_
-#define _HARDWARE_PORT2_H_
+#ifndef _PORT2_H_
+#define _PORT2_H_
 
 #include <common.h>
 

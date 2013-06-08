@@ -6,6 +6,8 @@
 #include <hardware/port1.h>
 #include <hardware/port2.h>
 #include <hardware/ic_74xx595.h>
+#include <hardware/buzzer.h>
+#include <hardware/led.h>
 #include <hardware/usciA0.h>
 #include <hardware/keyboard-ps2.h>
 #include <hardware/nokia1100.h>
@@ -59,7 +61,7 @@ main()
 		vt100_screen_refresh();
 		
 		ic_74xx595_refresh();
-		__low(ic_74xx595, VT100_BELL);
+		buzzer_off();
 		
 		_BIS_SR(LPM1_bits + GIE);
 	goto __loop;

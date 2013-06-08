@@ -1,4 +1,3 @@
-
 #ifndef _NOKIA1100_H_
 #define _NOKIA1100_H_
 

@@ -1,5 +1,6 @@
 #include <hardware/port2.h>
 #include <hardware/keyboard-ps2.h>
+#include <hardware/flash.h>
 #include <uart.h>
 #include <cqueue.h>
 

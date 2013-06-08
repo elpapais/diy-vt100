@@ -1,4 +1,5 @@
 #include <hardware/keyboard-ps2.h>
+#include <hardware/buzzer.h>
 #include <uart.h>
 #include <vt100/misc.h>
 #include <setup.h>
@@ -46,6 +47,11 @@ keyboard_ps2_data_decode()
 				}
 				
 				uart_send(ch);
+				
+				if(flash_setting_read(SETTING_KEYCLICK))
+				{
+					buzzer_on();
+				}
 			break;
 			
 			default:

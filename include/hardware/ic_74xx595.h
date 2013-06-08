@@ -1,18 +1,18 @@
-#ifndef _74XX595_H_
-#define _74XX595_H_
+#ifndef _IC_74XX595_H_
+#define _IC_74XX595_H_
 
 #include <common.h>
 
-#define VT100_BELL 			BIT0
-#define VT100_LED_ONLINE 	BIT1
-#define VT100_LED_LOCAL 	BIT2
-#define VT100_LED_KBDLOCK 	BIT3
-#define VT100_LED_L1 		BIT4
-#define VT100_LED_L2 		BIT5
-#define VT100_LED_L3 		BIT6
-#define VT100_LED_L4 		BIT7
-
 extern uint8_t ic_74xx595;
+
+#define IC_74xx595_PIN0 BIT0
+#define IC_74xx595_PIN1 BIT1
+#define IC_74xx595_PIN2 BIT2
+#define IC_74xx595_PIN3 BIT3
+#define IC_74xx595_PIN4 BIT4
+#define IC_74xx595_PIN5 BIT5
+#define IC_74xx595_PIN6 BIT6
+#define IC_74xx595_PIN7 BIT7
 
 #define ic_74xx595_high(bits) 	__high(ic_74xx595, bits)
 #define ic_74xx595_low(bits) 	__low(ic_74xx595, bits)

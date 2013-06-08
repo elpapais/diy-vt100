@@ -95,8 +95,8 @@ extern struct __setting setting;
 #define setting_tab_flip(pos) 	__flip(setting.tabs, __bitmask(pos))
 #define setting_tab_clear() 	__clear(setting.tabs)
 
-#define setting_save() flash_setting_write()
-#define setting_load() flash_setting_read()
-#define setting_init() flash_setting_read()
+#define setting_save() flash_store()
+#define setting_load() flash_load()
+#define setting_init() flash_load()
 
 #endif
