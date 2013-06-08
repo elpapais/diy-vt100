@@ -9,19 +9,13 @@
 
 /* NOTE: using p2.2 for timer1_A3 PWM for LCD */
 
-/* === for nokia ==== */
 #define NOKIA1100_SS 	BIT3
 #define NOKIA1100_MOSI 	BIT4
 #define NOKIA1100_CLK 	BIT5
 
-#define nokia1100_ss_high() (P2OUT |= NOKIA1100_SS)
-#define nokia1100_ss_low() (P2OUT &= ~NOKIA1100_SS)
-
-#define nokia1100_mosi_low() (P2OUT &= ~NOKIA1100_MOSI)
-#define nokia1100_mosi_high() (P2OUT |= NOKIA1100_MOSI)
-
-#define nokia1100_clk_low() (P2OUT &= ~NOKIA1100_CLK)
-#define nokia1100_clk_high() (P2OUT |= NOKIA1100_CLK)
+#define port2_low(bits) 	__low(P2OUT, bits)
+#define port2_high(bits)	__high(P2OUT, bits)
+#define port2_flip(bits)	__flip(P2OUT, bits)
 
 /* ==== */
 void port2_init();

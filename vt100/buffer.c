@@ -1,5 +1,5 @@
 #include <vt100/buffer.h>
-#include <nokia1100.h>
+#include <hardware/nokia1100.h>
 #include <param.h>
 #include <setting.h>
 #include <vt100/cursor.h>

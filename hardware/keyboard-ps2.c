@@ -1,4 +1,4 @@
-#include <keyboard/ps2.h>
+#include <hardware/keyboard-ps2.h>
 #include <uart.h>
 #include <vt100/misc.h>
 #include <setup.h>
@@ -323,4 +323,9 @@ keyboard_ps2_scancode_arrow(const uint8_t ident)
 	}
 	
 	uart_send(ident);
+}
+
+void keyboard_ps2_scancode_callback_break()
+{
+	
 }

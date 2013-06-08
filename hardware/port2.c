@@ -1,7 +1,7 @@
 #include <hardware/port2.h>
-#include <cqueue.h>
-#include <keyboard/ps2.h>
+#include <hardware/keyboard-ps2.h>
 #include <uart.h>
+#include <cqueue.h>
 
 void port2_init()
 {

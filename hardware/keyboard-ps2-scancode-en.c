@@ -1,4 +1,4 @@
-#include <keyboard/ps2.h>
+#include <hardware/keyboard-ps2.h>
 #include <setup.h>
 
 const struct __keyboard_ps2_scancode keyboard_ps2_scancode_en[KEYBOARD_PS2_SCANCODE_SIZE] =

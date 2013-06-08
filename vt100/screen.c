@@ -1,9 +1,11 @@
+#include <hardware/nokia1100.h>
+
 #include <vt100/screen.h>
-#include <nokia1100.h>
-#include <font/simple.h>
 #include <vt100/misc.h>
 #include <vt100/buffer.h>
 #include <vt100/cursor.h>
+
+#include <font/simple.h>
 #include <setting.h>
 
 /* must be 2^x , x>1, x <= VT100_WIDTH  */

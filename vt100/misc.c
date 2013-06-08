@@ -10,10 +10,9 @@
 
 void vt100_init()
 {
-	/* TODO: load setting from eeprom */
-	vt100_bell_init();
-	
 	vt100_led_init();
+	vt100_bell_init();
+	ic_74xx595_refresh();
 	
 	/* TODO: check power online/offline mode & keyboard connected */
 	/* TODO: support offline mode */

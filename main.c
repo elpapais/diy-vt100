@@ -5,13 +5,14 @@
 #include <hardware/timer0_A3.h>
 #include <hardware/port1.h>
 #include <hardware/port2.h>
+#include <hardware/ic_74xx595.h>
 #include <hardware/usciA0.h>
-#include <keyboard/ps2.h>
+#include <hardware/keyboard-ps2.h>
+#include <hardware/nokia1100.h>
 
 #include <splash.h>
 #include <param.h>
 #include <uart.h>
-#include <nokia1100.h>
 #include <state-machine.h>
 #include <vt100/misc.h>
 #include <vt100/screen.h>
@@ -27,6 +28,7 @@ main()
 	msp430_init();
 	flash_init();
 	port1_init();
+	ic_74xx595_init();
 	port2_init();
 	usciA0_init();
 	timer0_A3_init();

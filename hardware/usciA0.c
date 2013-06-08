@@ -1,6 +1,8 @@
 #include <hardware/usciA0.h>
-#include <cqueue.h>
+#include <hardware/usciA0.h>
 #include <hardware/flash.h>
+
+#include <cqueue.h>
 #include <uart.h>
 
 #define usciA0_speed_collector(brx, ch5, ch4, ch3, ch2, ch1, ch0) \

@@ -1,20 +1,14 @@
+#include <hardware/nokia1100.h>
+#include <hardware/ic_74xx595.h>
 #include <vt100/bell.h>
-#include <nokia1100.h>
-
-void
-vt100_bell_init()
-{
-	VT100_BELL_PDIR |= VT100_BELL_PIN;
-	VT100_BELL_POUT &= ~VT100_BELL_PIN;
-}
 
 void
 vt100_audio_bell()
 {
-	/* TODO: make proper frequency(currently only used as dumb value) */
-	VT100_BELL_POUT |= VT100_BELL_PIN;
-	__delay_cycles(10000);
-	VT100_BELL_POUT &= ~VT100_BELL_PIN;
+	ic_74xx595_high(VT100_BELL);
+	ic_74xx595_refresh();
+	ic_74xx595_low(VT100_BELL);
+	ic_74xx595_refresh();
 }
 
 void

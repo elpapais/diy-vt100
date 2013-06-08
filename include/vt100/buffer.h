@@ -2,7 +2,7 @@
 #define _VT100_CHAR_H_
 
 #include <common.h>
-#include <nokia1100.h>
+#include <hardware/nokia1100.h>
 
 #define VT100_WIDTH NOKIA1100_COLOUMN
 #define VT100_HEIGHT NOKIA1100_ROW

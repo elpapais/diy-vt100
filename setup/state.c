@@ -1,10 +1,12 @@
-#include <setup.h>
-#include <param.h>
-#include <nokia1100.h>
+#include <hardware/nokia1100.h>
+#include <hardware/timer1_A3.h>
+
 #include <vt100/buffer.h>
 #include <vt100/cursor.h>
 #include <vt100/buffer.h>
-#include <hardware/timer1_A3.h>
+
+#include <setup.h>
+#include <param.h>
 #include <uart.h>
 #include <setting.h>
 
@@ -326,7 +328,7 @@ void setup_TABS_clear()
 {
 	if(setup_type_current == 'A')
 	{
-		setting_tab_clearall();
+		setting_tab_clear();
 	}
 }
 

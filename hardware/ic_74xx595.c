@@ -1,0 +1,31 @@
+#include <hardware/ic_74xx595.h>
+#include <hardware/port1.h>
+
+uint8_t ic_74xx595;
+
+#define IC_74XX595_SEND_BIT(bit) \
+	port1_low(IC_74XX595_SHCP); \
+	if(__read(ic_74xx595, bit)) \
+	{ \
+		port1_high(IC_74XX595_DATA); \
+	} \
+	else \
+	{ \
+		port1_low(IC_74XX595_DATA); \
+	} \
+	port1_high(IC_74XX595_SHCP)
+
+void ic_74xx595_refresh()
+{
+	IC_74XX595_SEND_BIT(VT100_LED_L4);
+	IC_74XX595_SEND_BIT(VT100_LED_L3);
+	IC_74XX595_SEND_BIT(VT100_LED_L2);
+	IC_74XX595_SEND_BIT(VT100_LED_L1);
+	IC_74XX595_SEND_BIT(VT100_LED_KBDLOCK);
+	IC_74XX595_SEND_BIT(VT100_LED_LOCAL);
+	IC_74XX595_SEND_BIT(VT100_LED_ONLINE);
+	IC_74XX595_SEND_BIT(VT100_BELL);
+	
+	port1_high(IC_74XX595_STCP);
+	port1_low(IC_74XX595_SHCP | IC_74XX595_DATA | IC_74XX595_STCP);
+}
