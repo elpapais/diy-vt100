@@ -3,6 +3,7 @@
 #include <param.h>
 #include <setting.h>
 #include <vt100/cursor.h>
+#include <hardware/flash.h>
 
 /* report terminal parameter (requested via DECREQTPARAM) */
 void
@@ -21,9 +22,22 @@ vt100_DECREPTPARAM()
 	uart_send('[');
 	uart_send_uint8(3);
 	uart_send(';');
-	uart_send_uint8(1);
+	
+	/* parity info's */
+	if(flash_setting_read(SETTING_PARITY))
+	{
+		uart_send(flash_setting_read(SETTING_PARITYSENSE) ? '5' : '4');
+	}
+	else
+	{
+		/* is this required?? */
+		uart_send('0');
+	}
+	
 	uart_send(';');
-	uart_send_uint8(1);
+	
+	uart_send((flash_setting_read(SETTING_BPC)) ? '1' : '2');
+	
 	uart_send(';');
 	uart_send_uint8(112);
 	uart_send(';');

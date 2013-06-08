@@ -27,8 +27,21 @@ void usciA0_init()
 	P1SEL2= BIT1 + BIT2; /* P1.1 = RXD, P1.2=TXD */
 
 	/* Initialize USCI registers */
-	UCA0CTL1 |= UCSSEL_2;
-
+	UCA0CTL1 = UCSSEL_2;
+	
+	if(flash_setting_read(SETTING_PARITY))
+	{
+		/* enable parity */
+		UCA0CTL1 |= UCPEN;
+		
+		/* set parity to EVEN */
+		if(flash_setting_read(SETTING_PARITYSENSE))
+		{
+			/* EVEN parity */
+			UCA0CTL1 |= UCPAR;
+		}
+	}
+	
 	UCA0BR0 = usciA0_speed[flash_setting.speed].BR0;
 	UCA0BR1 = usciA0_speed[flash_setting.speed].BR1;
 	
