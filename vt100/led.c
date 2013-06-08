@@ -33,6 +33,4 @@ vt100_DECLL()
 			break;
 		}
 	}
-	
-	ic_74xx595_refresh();
 }

@@ -58,6 +58,9 @@ main()
 		
 		vt100_screen_refresh();
 		
+		ic_74xx595_refresh();
+		__low(ic_74xx595, VT100_BELL);
+		
 		_BIS_SR(LPM1_bits + GIE);
 	goto __loop;
 }
