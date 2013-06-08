@@ -8,3 +8,5 @@ only send ctrl signal generated from specific keys(if improper found, alloc a ch
 support AUTO_REPEAT feature
 print last char of code if in ANSI mode or LOCAL mode
 send PARAM(settings) to host instead of dummy values
+answerback string input
+

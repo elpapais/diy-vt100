@@ -1,5 +1,6 @@
 #include <hardware/nokia1100.h>
 #include <hardware/port2.h>
+#include <hardware/flash.h>
 
 #define NOKIA1100_ONLY_CLKTRANSITION() \
 		port2_low(NOKIA1100_CLK); \
@@ -64,6 +65,11 @@ nokia1100_init()
 	nokia1100_clear();
 	nokia1100_gotoy(0);
 	nokia1100_gotox(0);
+	
+	if(flash_setting_read(SETTING_DECSCNM))
+	{
+		nokia1100_invertpixel_on();
+	}
 }
 
 /* only used to send data in one go */
