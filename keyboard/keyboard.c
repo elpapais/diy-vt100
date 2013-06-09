@@ -278,6 +278,8 @@ kbd_enter()
 	{
 		uart_send_enter();
 	}
+	
+	keyclick_sound();
 }
 
 void kbd_break()
