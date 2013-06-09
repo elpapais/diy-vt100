@@ -31,10 +31,10 @@ void setup_reset();
 void setup_reload();
 
 void setup_value_flip();
-void setup_arrow_right();
-void setup_arrow_left();
-void setup_arrow_down();
-void setup_arrow_up();
+void setup_next_setting();
+void setup_previous_setting();
+void setup_brightness_decrease();
+void setup_brightness_increase();
 void setup_speed();
 void setup_TAB_flip();
 void setup_TABS_clear();

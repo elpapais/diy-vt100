@@ -30,6 +30,9 @@ setup_state_type[] =
 	state_noparam	('7', setup_speed), /* transmit speed */
 	state_noparam	('8', setup_speed), /* receive speed */
 	state_noparam	('9', setup_DECCOLM),
+	state_noparam	(ASCII_LF, setup_next_setting),
+	state_noparam	(ASCII_SPACE, setup_next_setting),
+	state_noparam	(ASCII_TAB, setup_next_setting),
 	state_end()
 };
 
@@ -41,10 +44,10 @@ setup_state_arrow[] =
 	state_select	('O', setup_state_arrow_select),
 	state_select	('?', setup_state_arrow_select),
 	
-	state_noparam	('A', setup_arrow_up),
-	state_noparam	('B', setup_arrow_down),
-	state_noparam	('C', setup_arrow_right),
-	state_noparam	('D', setup_arrow_left),
+	state_noparam	('A', setup_brightness_increase),
+	state_noparam	('B', setup_brightness_decrease),
+	state_noparam	('C', setup_next_setting),
+	state_noparam	('D', setup_previous_setting),
 	state_end		()
 };
 
@@ -53,10 +56,10 @@ setup_state_arrow_select[] =
 {
 	state_noparam	(0, setup_state_worker),
 	
-	state_noparam	('A', setup_arrow_up),
-	state_noparam	('B', setup_arrow_down),
-	state_noparam	('C', setup_arrow_right),
-	state_noparam	('D', setup_arrow_left),
+	state_noparam	('A', setup_brightness_increase),
+	state_noparam	('B', setup_brightness_decrease),
+	state_noparam	('C', setup_next_setting),
+	state_noparam	('D', setup_previous_setting),
 };
 
 void setup_state_worker()
@@ -92,7 +95,7 @@ void setup_state_worker()
 	}
 }
 
-void setup_arrow_up()
+void setup_brightness_increase()
 {
 	/* increase brightness */
 	if(setting.brightness < TIMER1_A3_PWM_MAX)
@@ -101,7 +104,7 @@ void setup_arrow_up()
 	}
 }
 
-void setup_arrow_down()
+void setup_brightness_decrease()
 {
 	/* decrease brightness */
 	if(setting.brightness > TIMER1_A3_PWM_MIN)
@@ -110,7 +113,7 @@ void setup_arrow_down()
 	}
 }
 
-void setup_arrow_left()
+void setup_previous_setting()
 {
 	/* select left value */
 	setup_setting_number--;
@@ -119,7 +122,7 @@ void setup_arrow_left()
 	setup_setting_number &= 0x0F;
 }
 
-void setup_arrow_right()
+void setup_next_setting()
 {
 	/* select right value */
 	setup_setting_number++;
