@@ -293,4 +293,5 @@ vt100_buffer_copy(const struct __vt100_char buffer[VT100_HEIGHT][VT100_WIDTH])
 	}
 	
 	vt100_screen_refresh();
+	vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_ROW_TOUCH;
 }
