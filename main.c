@@ -32,7 +32,6 @@ main()
 	ic_74xx595_init();
 	port2_init();
 	usciA0_init();
-	//timer0_A3_init();
 	wdt_init();
 	timer1_A3_init();
 	
@@ -72,8 +71,8 @@ msp430_init()
 	/* If calibration constant erased */
 	if(CALBC1_16MHZ == 0xFF)
 	{
-		/* go in low power mode!! */							
-		_BIS_SR(LPM4_bits);
+		/* go in low power mode!! */
+		__do_nothing: goto __do_nothing;
 	}
 	
 	/*

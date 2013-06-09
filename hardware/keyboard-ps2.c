@@ -81,6 +81,11 @@ keyboard_ps2_data_decode()
 static void
 keyboard_ps2_scancode_fn(const uint8_t ident)
 {
+	if(keyboard_ps2.mode & KEYBOARD_PS2_MODE_BREAK)
+	{
+		return;
+	}
+	
 	uart_send_escape();
 
 	if(setting_read(SETTING_DECANM))
@@ -89,6 +94,11 @@ keyboard_ps2_scancode_fn(const uint8_t ident)
 	}
 	
 	uart_send(ident);
+	
+	if(flash_setting_read(SETTING_KEYCLICK))
+	{
+		buzzer_short();
+	}
 }
 
 void
@@ -134,6 +144,11 @@ keyboard_ps2_scancode_callback_caps()
 	{
 		/* flip caps */
 		keyboard_ps2.mode ^= KEYBOARD_PS2_MODE_LATCH_CAPS;
+		
+		if(flash_setting_read(SETTING_KEYCLICK))
+		{
+			buzzer_short();
+		}
 	}
 }
 
@@ -254,6 +269,11 @@ keyboard_ps2_scancode_callback_keypad_dot()
 		/* send simple ascii code (ascii = '.') */
 		uart_send('.');
 	}
+	
+	if(flash_setting_read(SETTING_KEYCLICK))
+	{
+		buzzer_short();
+	}
 }
 
 void
@@ -283,6 +303,11 @@ keyboard_ps2_scancode_callback_enter()
 	else
 	{
 		uart_send_enter();
+	}
+	
+	if(flash_setting_read(SETTING_KEYCLICK))
+	{
+		buzzer_short();
 	}
 }
 
@@ -315,6 +340,11 @@ keyboard_ps2_scancode_keypad(const uint8_t ascii, const uint8_t appmode,
 		/* send simple ascii code */
 		uart_send(ascii);
 	}
+	
+	if(flash_setting_read(SETTING_KEYCLICK))
+	{
+		buzzer_short();
+	}
 }
 
 static inline void
@@ -329,6 +359,11 @@ keyboard_ps2_scancode_arrow(const uint8_t ident)
 	}
 	
 	uart_send(ident);
+	
+	if(flash_setting_read(SETTING_KEYCLICK))
+	{
+		buzzer_short();
+	}
 }
 
 void keyboard_ps2_scancode_callback_break()
