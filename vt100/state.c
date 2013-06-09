@@ -91,7 +91,7 @@ vt100_state_opensquarebracket[] = //[
 	state_param		('n', vt100_DSR, 1, 0),
 	state_param		('x', vt100_DECREPTPARAM, 1, 0),
 	state_param		('g', vt100_TBC, 1,0),
-	state_param		('h', vt100_mode_high, 1, 0),
+	state_param		('h', vt100_setting_high, 1, 0),
 	state_end		()
 };
 
