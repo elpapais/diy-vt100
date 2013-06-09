@@ -25,27 +25,27 @@ void vt100_screen_refresh()
 	uint8_t data;
 	
 	/* generally current row has some modification, so merge cursor blink with it */
-	vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_ROW_TOUCH;
+	vt100_buffer_row_touch(vt100_cursor.row);
 	
 	for(i=0; i < VT100_HEIGHT; i++)
 	{
 		/* is row modified */
-		if(vt100_buffer[i][0].prop & VT100_CHAR_PROP_ROW_TOUCH)
+		if(vt100_buffer_row_touched(i))
 		{
-			vt100_buffer[i][0].prop &= ~VT100_CHAR_PROP_ROW_TOUCH;
+			vt100_buffer[i][0].prop &= ~ROW_TOUCH;
 			
 			nokia1100_gotoyx(i, 0);
 			
 			count = 0;
 			/* create a temp pointer to  vt100_screen_row_buffer[] */
-			for(j=0; j < ((vt100_buffer[i][0].prop & VT100_CHAR_PROP_ROW_DOUBLE_WIDTH) ? VT100_WIDTH/2 : VT100_WIDTH); j++)
+			for(j=0; j < (vt100_buffer_row_read(i, ROW_DOUBLE_WIDTH) ? VT100_WIDTH/2 : VT100_WIDTH); j++)
 			{
 				for(k=0; k < NOKIA1100_WIDTH_CHAR; k++)
 				{
 					data = vt100_screen_designchar(i, j, k);
 					screen_buffer[count++] = data;
 					
-					if(vt100_buffer[i][0].prop & VT100_CHAR_PROP_ROW_DOUBLE_WIDTH)
+					if(vt100_buffer_row_read(i, ROW_DOUBLE_WIDTH))
 					{
 						screen_buffer[count++] = data;
 					}
@@ -69,63 +69,62 @@ static inline uint8_t vt100_screen_designchar(const row_t i, const col_t j, cons
 	/* design the char */
 	send = font_simple_get(vt100_buffer[i][j].data, k);
 	
-	if(vt100_buffer[i][0].prop & VT100_CHAR_PROP_ROW_DOUBLE_HEIGHT_TOP)
+	if(vt100_buffer_row_read(i, ROW_DOUBLE_HEIGHT_TOP))
 	{
 		tmp = send;
 		send = 0x00;
-		if(tmp & BIT3)
+		if(__read(tmp,BIT3))
 		{
-			send |= BIT7 | BIT6;
+			__high(send, BIT7|BIT6);
 		}
 		
-		if(tmp & BIT2)
+		if(__read(tmp,BIT2))
 		{
-			send |= BIT5 | BIT4;
+			__high(send, BIT5|BIT4);
 		}
 		
-		if(tmp & BIT1)
+		if(__read(tmp,BIT1))
 		{
-			send |= BIT3 | BIT2;
+			__high(send, BIT3|BIT2);
 		}
 		
-		if(tmp & BIT0)
+		if(__read(tmp,BIT0))
 		{
-			send |= BIT1 | BIT0;
+			__high(send, BIT1|BIT0);
 		}
 	}
-	else if(vt100_buffer[i][0].prop & VT100_CHAR_PROP_ROW_DOUBLE_HEIGHT_BOTTOM)
+	else if(__read(vt100_buffer[i][0].prop, ROW_DOUBLE_HEIGHT_BOT))
 	{
 		tmp = send;
 		send = 0x00;
 		
-		if(tmp & BIT4)
+		if(__read(tmp,BIT4))
 		{
-			send |= BIT1 | BIT0;
+			__high(send, BIT1|BIT0);
 		}
 		
-		if(tmp & BIT5)
+		if(__read(tmp,BIT5))
 		{
-			send |= BIT3 | BIT2;
+			__high(send, BIT3|BIT2);
 		}
 		
-		if(tmp & BIT6)
+		if(__read(tmp,BIT6))
 		{
-			send |= BIT5 | BIT4;
+			__high(send, BIT5|BIT4);
 		}
 		
-		if(tmp & BIT7)
+		if(__read(tmp,BIT7))
 		{
-			send |= BIT7 | BIT6;
-			
+			__high(send, BIT7|BIT6);
 		}
 	}
 	
-	if(vt100_buffer[i][j].prop & VT100_CHAR_PROP_DATA_UNDERLINE)
+	if(vt100_buffer_prop_read(i,j,DATA_UNDERLINE))
 	{
 		send |= 0x80;
 	}
 	
-	if(vt100_buffer[i][j].prop & VT100_CHAR_PROP_DATA_INVERSE)
+	if(vt100_buffer_prop_read(i,j,DATA_INVERSE))
 	{
 		send ^= 0xFF;
 	}

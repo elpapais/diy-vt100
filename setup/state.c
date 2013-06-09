@@ -263,13 +263,13 @@ void setup_B_refresh()
 			}
 		}
 		
-		vt100_buffer[i][0].prop |= VT100_CHAR_PROP_ROW_TOUCH;
+		vt100_buffer_row_touch(i);
 	}
 	
 	const struct __vt100_char *speed_str = uart_speed_get(setting.speed);
 	
-	vt100_buffer[4][0].prop |= VT100_CHAR_PROP_ROW_TOUCH;
-	vt100_buffer[5][0].prop |= VT100_CHAR_PROP_ROW_TOUCH;
+	vt100_buffer_row_touch(4);
+	vt100_buffer_row_touch(5);
 	
 	for(j=0; j < UART_SPEED_STRING_LENGTH; j++)
 	{
@@ -292,7 +292,7 @@ void setup_A_refresh()
 void setup_save()
 {
 	col_t j = 0;
-	const struct __vt100_char saving_message[VT100_WIDTH] = {{'S', VT100_CHAR_PROP_ROW_TOUCH}, {'a'}, {'v'}, {'e'}, {'d'}, {'.'}};
+	const struct __vt100_char saving_message[VT100_WIDTH] = {{'S', ROW_TOUCH}, {'a'}, {'v'}, {'e'}, {'d'}, {'.'}};
 
 	/* start saving */
 	setting_save();

@@ -7,16 +7,16 @@
 #define VT100_WIDTH NOKIA1100_COLOUMN
 #define VT100_HEIGHT NOKIA1100_ROW
 
-#define VT100_CHAR_PROP_DATA_BOLD BIT0
-#define VT100_CHAR_PROP_DATA_UNDERLINE BIT1
-#define VT100_CHAR_PROP_DATA_INVERSE BIT2
-#define VT100_CHAR_PROP_DATA_BLINK BIT3
+#define DATA_BOLD BIT0
+#define DATA_UNDERLINE BIT1
+#define DATA_INVERSE BIT2
+#define DATA_BLINK BIT3
 
 /* row use only */
-#define VT100_CHAR_PROP_ROW_TOUCH BIT4
-#define VT100_CHAR_PROP_ROW_DOUBLE_HEIGHT_BOTTOM BIT5
-#define VT100_CHAR_PROP_ROW_DOUBLE_HEIGHT_TOP BIT6
-#define VT100_CHAR_PROP_ROW_DOUBLE_WIDTH BIT7
+#define ROW_TOUCH BIT4
+#define ROW_DOUBLE_HEIGHT_BOT BIT5
+#define ROW_DOUBLE_HEIGHT_TOP BIT6
+#define ROW_DOUBLE_WIDTH BIT7
 
 struct __vt100_char
 {
@@ -26,6 +26,14 @@ struct __vt100_char
 };
 
 extern struct __vt100_char vt100_buffer[VT100_HEIGHT][VT100_WIDTH];
+
+#define vt100_buffer_prop_read(i, j, props) __read(vt100_buffer[i][j].prop, props)
+
+#define vt100_buffer_row_read(i, props) __read(vt100_buffer[i][0].prop, props)
+#define vt100_buffer_row_high(i, props) __high(vt100_buffer[i][0].prop, props)
+
+#define vt100_buffer_row_touched(i) vt100_buffer_row_read(i, ROW_TOUCH)
+#define vt100_buffer_row_touch(i) vt100_buffer_row_high(i, ROW_TOUCH)
 
 void vt100_buffer_putchar();
 void vt100_buffer_shiftup();

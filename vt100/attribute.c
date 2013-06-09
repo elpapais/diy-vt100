@@ -9,7 +9,7 @@ void
 vt100_DECDHL_top()
 {
 	/* TODO: support double height */
-	vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_ROW_TOUCH | VT100_CHAR_PROP_ROW_DOUBLE_HEIGHT_TOP;
+	vt100_buffer_row_high(vt100_cursor.row, ROW_TOUCH | ROW_DOUBLE_HEIGHT_TOP);
 }
 
 /* double height line [bottom half]*/
@@ -17,7 +17,7 @@ void
 vt100_DECDHL_bottom()
 {
 	/* TODO: support double height */
-	vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_ROW_TOUCH | VT100_CHAR_PROP_ROW_DOUBLE_HEIGHT_BOTTOM;
+	vt100_buffer_row_high(vt100_cursor.row, ROW_TOUCH | ROW_DOUBLE_HEIGHT_BOT);
 }
 
 /* double width line */
@@ -25,7 +25,7 @@ void
 vt100_DECDWL()
 {
 	/* TODO: support double width */
-	vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_ROW_TOUCH | VT100_CHAR_PROP_ROW_DOUBLE_WIDTH;
+	vt100_buffer_row_high(vt100_cursor.row, ROW_TOUCH | ROW_DOUBLE_WIDTH);
 }
 
 /* select graphics rendition */

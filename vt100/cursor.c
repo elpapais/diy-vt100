@@ -11,7 +11,7 @@ void
 vt100_CUB()
 {
 	/* TODO: margin are not supported */
-	vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_ROW_TOUCH;
+	vt100_buffer[vt100_cursor.row][0].prop |= ROW_TOUCH;
 	vt100_cursor.col = constaint(vt100_cursor.col - param.data[0], 0, VT100_WIDTH - 1);
 }
 
@@ -20,7 +20,7 @@ void
 vt100_CUF()
 {
 	/* TODO: margin are not supported */
-	vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_ROW_TOUCH;
+	vt100_buffer[vt100_cursor.row][0].prop |= ROW_TOUCH;
 	
 	vt100_cursor.col = constaint(vt100_cursor.col + param.data[0], 0, VT100_WIDTH - 1);
 }
@@ -30,7 +30,7 @@ void
 vt100_CUU()
 {
 	/* TODO: margin are not supported | scroll up are not supported */	
-	vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_ROW_TOUCH;
+	vt100_buffer[vt100_cursor.row][0].prop |= ROW_TOUCH;
 	
 	vt100_cursor.row = constaint(vt100_cursor.row - param.data[0], 0, VT100_HEIGHT - 1);
 }
@@ -40,7 +40,7 @@ void
 vt100_CUD()
 {
 	/* TODO: margin are not supported | scroll down are not supported */
-	vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_ROW_TOUCH;
+	vt100_buffer[vt100_cursor.row][0].prop |= ROW_TOUCH;
 	
 	vt100_cursor.row = constaint(vt100_cursor.row + param.data[0], 0, VT100_HEIGHT - 1);
 }
@@ -49,7 +49,7 @@ vt100_CUD()
 void
 vt100_CUP()
 {
-	vt100_buffer[vt100_cursor.row][0].prop |= VT100_CHAR_PROP_ROW_TOUCH;
+	vt100_buffer[vt100_cursor.row][0].prop |= ROW_TOUCH;
 	
 	vt100_cursor.row = constaint(param.data[0], 0, VT100_WIDTH - 1);
 	vt100_cursor.col = constaint(param.data[1], 0, VT100_WIDTH - 1);
