@@ -1,6 +1,6 @@
 #include <hardware/port2.h>
-#include <hardware/keyboard-ps2.h>
 #include <hardware/flash.h>
+#include <keyboard/keyboard.h>
 #include <uart.h>
 #include <cqueue.h>
 
@@ -28,11 +28,11 @@ void port2_init()
 
 void port2_interrupt()
 {
-	P1OUT ^= BIT6;
+	__flip(P1OUT, BIT6);
 	
-	P2IFG &= ~KEYBOARD_PS2_CLK;
+	__low(P2IFG, KEYBOARD_PS2_CLK);
 	
-	switch(keyboard_ps2.index)
+	switch(kbd.index)
 	{
 		case 0:
 			/* start bit */
@@ -48,11 +48,11 @@ void port2_interrupt()
 		case 7:
 		case 8:
 			/* data */
-			keyboard_ps2.data >>= 1;
-			if(P2IN & KEYBOARD_PS2_DATA)
+			kbd.data >>= 1;
+			if(__read(P2IN,KEYBOARD_PS2_DATA))
 			{
-				keyboard_ps2.data |= BIT7;
-				//keyboard_ps2.mode ^= KEYBOARD_PS2_MODE_PARITY;
+				__high(kbd.data, BIT7);
+				//kbd.latch ^= KBD_PARITY;
 			}
 		break;
 		
@@ -66,12 +66,12 @@ void port2_interrupt()
 		
 		case 10:
 			/* STOP bit */
-			cqueue_push(&keyboard_ps2.data_queue, keyboard_ps2.data);
+			cqueue_push(&kbd.queue, kbd.data);
 			__bic_status_register_on_exit(LPM1_bits);
 		default:
-			keyboard_ps2.index = 0;
+			kbd.index = 0;
 		return;
 	}
 	
-	keyboard_ps2.index++;
+	kbd.index++;
 }

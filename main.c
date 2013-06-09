@@ -9,9 +9,9 @@
 #include <hardware/buzzer.h>
 #include <hardware/led.h>
 #include <hardware/usciA0.h>
-#include <hardware/keyboard-ps2.h>
 #include <hardware/nokia1100.h>
 
+#include <keyboard/keyboard.h>
 #include <splash.h>
 #include <param.h>
 #include <uart.h>
@@ -45,10 +45,10 @@ main()
 	splash();
 	
 	__loop:
-		while(keyboard_ps2.data_queue.count)
+		while(kbd.queue.count)
 		{
-			keyboard_ps2.param = cqueue_pop(&keyboard_ps2.data_queue);
-			keyboard_ps2_data_decode();
+			kbd.param = cqueue_pop(&kbd.queue);
+			kbd_decode();
 		}
 		
 		while(uart_rx_count())
