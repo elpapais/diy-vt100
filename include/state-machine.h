@@ -13,7 +13,7 @@ struct __state
 	{
 		struct
 		{
-			const uint8_t pcount;
+			const int8_t pcount;
 			const uint8_t pdefault;
 		} param;
 		
@@ -30,6 +30,7 @@ extern struct __state *state_iterate;
 
 /* some useful derivative */
 #define state_noparam(ch, func) 		state_param(ch, func, 0, 0)
+#define state_anyparam(ch, func) 		state_param(ch, func, -1, 0)
 #define state_ignore(ch)				state_state(ch, (callback_t)1, 0)
 #define state_select(ch, state)			state_state(ch, (callback_t)2, state)
 void state_do();

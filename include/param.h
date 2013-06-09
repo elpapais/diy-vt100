@@ -16,5 +16,5 @@ struct __param
 extern struct __param param;
 
 void param_add();
-void param_default(uint8_t pcount, uint8_t pdefault);
+void param_default(int8_t pcount, uint8_t pdefault);
 #endif

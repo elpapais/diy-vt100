@@ -1,6 +1,7 @@
 #include <vt100/led.h>
 #include <param.h>
 #include <hardware/led.h>
+#include <uart.h>
 
 /* load led's */
 void 

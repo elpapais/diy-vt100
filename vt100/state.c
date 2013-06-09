@@ -82,12 +82,12 @@ vt100_state_opensquarebracket[] = //[
 	state_param		('H', vt100_CUP, 2, 0),
 	state_param		('f', vt100_HVP, 2, 0),
 	state_noparam	('c', vt100_DECID),
-	state_param		('q', vt100_DECLL, PARAM_QUEUE_SIZE, 0),
+	state_anyparam	('q', vt100_DECLL),
 	state_param		('r', vt100_DECSTBM, 2, 0),
 	state_noparam	('y', vt100_DECTST),
 	state_param		('J', vt100_ED, 1, 0),
 	state_param		('K', vt100_EL, 1, 0),
-	state_param		('m', vt100_SGR, PARAM_QUEUE_SIZE, 0),
+	state_anyparam	('m', vt100_SGR),
 	state_param		('n', vt100_DSR, 1, 0),
 	state_param		('x', vt100_DECREPTPARAM, 1, 0),
 	state_param		('g', vt100_TBC, 1,0),
@@ -132,8 +132,16 @@ void vt100_state_worker()
 		{
 			/* NOTE: can become a bug if function with state used, currently we only support param's */
 			state_current = (struct __state *)vt100_state_C0;
-			param_default(state_iterate->arg.param.pcount, state_iterate->arg.param.pdefault);
+			
+			/* a < 0 shows that it can have any number of params */
+			if(!(state_iterate->arg.param.pcount < 0))
+			{
+				/* chop of extra param */
+				param_default(state_iterate->arg.param.pcount, state_iterate->arg.param.pdefault);
+			}
+			
 			state_iterate->cb();
+			
 			/* reset param */
 			param.count = 0;
 		}
