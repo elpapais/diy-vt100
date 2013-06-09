@@ -113,8 +113,8 @@ vt100_state_question[] = //?
 {
 	state_noparam	(0, vt100_state_worker),
 	
-	state_param		('l', vt100_mode_low, 1, 0),
-	state_param		('h', vt100_mode_high, 1, 0),
+	state_param		('l', vt100_setting_low, 1, 0),
+	state_param		('h', vt100_setting_high, 1, 0),
 	state_end		()
 };
 

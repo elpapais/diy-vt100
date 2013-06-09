@@ -92,7 +92,7 @@ void vt100_ENQ()
 	}
 }
 
-void vt100_mode_high()
+void vt100_setting_high()
 {
 	switch(param.data[0])
 	{
@@ -134,7 +134,7 @@ void vt100_mode_high()
 	}
 }
 
-void vt100_mode_low()
+void vt100_setting_low()
 {
 	switch(param.data[0])
 	{

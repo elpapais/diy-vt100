@@ -9,8 +9,8 @@ void vt100_init();
 void vt100_DECSCNM();
 void vt100_ENQ();
 
-void vt100_mode_low();
-void vt100_mode_high();
+void vt100_setting_low();
+void vt100_setting_high();
 
 bool_t __is_vt100_malfunctioning();
 
