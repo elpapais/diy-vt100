@@ -11,6 +11,7 @@
 #define LED_L3 		IC_74xx595_PIN6
 #define LED_L4 		IC_74xx595_PIN7
 
+#define led_refresh() ic_74xx595_refresh()
 #define led_on(led_bit) ic_74xx595_high(led_bit)
 #define led_off(led_bit) ic_74xx595_low(led_bit)
 

@@ -50,7 +50,7 @@ keyboard_ps2_data_decode()
 				
 				if(flash_setting_read(SETTING_KEYCLICK))
 				{
-					buzzer_on();
+					buzzer_short();
 				}
 			break;
 			

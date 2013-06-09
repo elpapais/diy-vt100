@@ -59,10 +59,6 @@ main()
 		}
 		
 		vt100_screen_refresh();
-		
-		ic_74xx595_refresh();
-		buzzer_off();
-		
 		_BIS_SR(LPM1_bits + GIE);
 	goto __loop;
 }

@@ -3,5 +3,5 @@
 
 void vt100_BEL()
 {
-	buzzer_on();
+	buzzer_long();
 }

@@ -33,4 +33,6 @@ vt100_DECLL()
 			break;
 		}
 	}
+	
+	led_refresh();
 }

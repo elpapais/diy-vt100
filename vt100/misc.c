@@ -4,15 +4,14 @@
 #include <vt100/buffer.h>
 #include <vt100/state.h>
 #include <vt100/bell.h>
-#include <vt100/led.h>
+#include <hardware/led.h>
 #include <state-machine.h>
 #include <setting.h>
 
 void vt100_init()
 {
-	vt100_led_init();
-	vt100_bell_init();
-	ic_74xx595_refresh();
+	led_on(LED_ONLINE);
+	led_refresh();
 	
 	/* TODO: check power online/offline mode & keyboard connected */
 	/* TODO: support offline mode */

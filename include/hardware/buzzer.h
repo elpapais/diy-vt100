@@ -1,11 +1,9 @@
 #ifndef _BUZZER_H_
 #define _BUZZER_H_
 
-#include <hardware/ic_74xx595.h>
+#include <hardware/timer0_A3.h>
 
-#define BUZZER 	IC_74xx595_PIN0
-
-#define buzzer_on() ic_74xx595_high(BUZZER)
-#define buzzer_off() ic_74xx595_low(BUZZER)
+#define buzzer_long() timer0_A3_start(0xFFFF) 
+#define buzzer_short() timer0_A3_start(0x4000)
 
 #endif

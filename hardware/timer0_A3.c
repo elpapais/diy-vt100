@@ -1,5 +1,5 @@
 #include <hardware/timer0_A3.h>
-#include <setting.h>
+#include <hardware/ic_74xx595.h>
 
 /* note on naming convention
  * timerX_YZ
@@ -10,15 +10,18 @@
  * append registers_name with "_"
  */
 
-void timer0_A3_init()
+void timer0_A3_start(const uint16_t delay)
 {
-	//TIMER0_A3_TACCR0 = 0xFFFF - 1;
+	ic_74xx595_high(BUZZER);
+	ic_74xx595_refresh();
+	
+	TIMER0_A3_TACCR0 = delay;
 	TIMER0_A3_TACCTL0 = CCIE;
 	
 	/* timer0_A3 @ 512KHz */
-	TIMER0_A3_TACTL = TASSEL_2 + ID_3  + MC_2 + TACLR;
+	TIMER0_A3_TACTL = TASSEL_2 + ID_3  + MC_1 + TACLR;
 	
-	/* interrupt goes to timer0_A0_interrupt() @ 7Hz */
+	/* interrupt goes to timer0_A0_interrupt() */
 }
 
 /* note on vector naming convention
@@ -30,8 +33,8 @@ void timer0_A3_init()
 
 void timer0_A0_interrupt()
 {
-	setting_flip(SETTING__CURSOR_STATE);
-	
-	/* exit sleep mode to refresh screen */
-	__bic_status_register_on_exit(LPM1_bits);
+	/* turn off buzzer */
+	ic_74xx595_low(BUZZER);
+	ic_74xx595_refresh();
+	TIMER0_A3_TACTL = TACLR;
 }
