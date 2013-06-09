@@ -2,7 +2,7 @@
 #include <common.h>
 
 #include <hardware/timer1_A3.h>
-#include <hardware/timer0_A3.h>
+#include <hardware/wdt.h>
 #include <hardware/port1.h>
 #include <hardware/port2.h>
 #include <hardware/ic_74xx595.h>
@@ -20,7 +20,6 @@
 #include <vt100/screen.h>
 #include <setting.h>
 
-
 void msp430_init();
 
 void
@@ -33,7 +32,8 @@ main()
 	ic_74xx595_init();
 	port2_init();
 	usciA0_init();
-	timer0_A3_init();
+	//timer0_A3_init();
+	wdt_init();
 	timer1_A3_init();
 	
 	/* no hardware dependent code */
