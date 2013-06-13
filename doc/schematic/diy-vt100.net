@@ -1,0 +1,291 @@
+# EESchema Netlist Version 1.1 created  Wed 12 Jun 2013 11:25:14 PM IST
+(
+ ( /51921EED bnc B1 BUZZER
+  ( 1 N-000028 )
+  ( 2 GND )
+ )
+ ( /51921F0F D3 D1 DIODE
+  ( 1 N-000028 )
+  ( 2 GND )
+ )
+ ( /51B86386 PINHEAD1-3 K1 CONN_3
+  ( 1 VCC )
+  ( 2 GND )
+  ( 3 GND )
+ )
+ ( /51921B2F LED-3MM KBD_LOCKED1 LED
+  ( 1 N-000034 )
+  ( 2 GND )
+ )
+ ( /51921AAE pin_array_4x2 LCD1 NOKIA1100_LCD
+  ( 1 N-000024 )
+  ( 2 N-000050 )
+  ( 3 GND )
+  ( 4 N-000076 )
+  ( 5 N-000032 )
+  ( 6 VCC )
+  ( 7 VCC )
+  ( 8 N-000037 )
+  ( 9 ? )
+ )
+ ( /51921B2A LED-3MM OFFLINE1 LED
+  ( 1 N-000033 )
+  ( 2 GND )
+ )
+ ( /51921B09 LED-3MM ONLINE1 LED
+  ( 1 N-000036 )
+  ( 2 GND )
+ )
+ ( /51B862D3 pin_array_12x2 P1 FC_LEFT
+  ( 1 VCC )
+  ( 2 ? )
+  ( 3 ? )
+  ( 4 ? )
+  ( 5 ? )
+  ( 6 ? )
+  ( 7 ? )
+  ( 8 ? )
+  ( 9 ? )
+  ( 10 ? )
+ )
+ ( /51B8701A pin_array_12x2 P2 FC_RIGHT
+  ( 1 GND )
+  ( 2 ? )
+  ( 3 ? )
+  ( 4 ? )
+  ( 5 ? )
+  ( 6 ? )
+  ( 7 ? )
+  ( 8 ? )
+  ( 9 ? )
+  ( 10 ? )
+ )
+ ( /5197035F pin_array_3x2 P3 MINIDIN_6_FEMALE
+  ( 1 N-000018 )
+  ( 2 ? )
+  ( 3 GND )
+  ( 4 VCC )
+  ( 5 N-000072 )
+  ( 6 ? )
+ )
+ ( /51921B34 LED-3MM PROG_1 LED
+  ( 1 N-000035 )
+  ( 2 GND )
+ )
+ ( /51921B3D LED-3MM PROG_2 LED
+  ( 1 N-000030 )
+  ( 2 GND )
+ )
+ ( /51921B57 LED-3MM PROG_3 LED
+  ( 1 N-000012 )
+  ( 2 GND )
+ )
+ ( /51921B70 LED-3MM PROG_4 LED
+  ( 1 N-000029 )
+  ( 2 GND )
+ )
+ ( /51B73C83 TO92 Q1 BC548
+  ( 1 N-000037 )
+  ( 2 N-000038 )
+  ( 3 VCC )
+ )
+ ( /51B73C78 R3 R1 220
+  ( 1 N-000019 )
+  ( 2 N-000038 )
+ )
+ ( /51B74E6F R3 R2 R
+  ( 1 N-000047 )
+  ( 2 N-000029 )
+ )
+ ( /51B74E72 R3 R3 R
+  ( 1 N-000048 )
+  ( 2 N-000012 )
+ )
+ ( /51B74DA3 R3 R4 R
+  ( 1 N-000040 )
+  ( 2 N-000036 )
+ )
+ ( /51B74DA8 R3 R5 R
+  ( 1 N-000041 )
+  ( 2 N-000033 )
+ )
+ ( /51B74DD3 R3 R6 R
+  ( 1 N-000042 )
+  ( 2 N-000034 )
+ )
+ ( /51B74E7C R3 R7 R
+  ( 1 N-000049 )
+  ( 2 N-000030 )
+ )
+ ( /51B74E7F R3 R8 R
+  ( 1 N-000011 )
+  ( 2 N-000035 )
+ )
+ ( /51920588 $noname$ U1 MSP430G2553IN20
+  ( 1 VCC )
+  ( 2 N-000043 )
+  ( 3 ? )
+  ( 4 ? )
+  ( 5 ? )
+  ( 6 N-000044 )
+  ( 7 N-000045 )
+  ( 8 N-000018 )
+  ( 9 N-000072 )
+  ( 10 N-000019 )
+  ( 11 N-000050 )
+  ( 12 N-000076 )
+  ( 13 N-000032 )
+  ( 14 ? )
+  ( 15 ? )
+  ( 16 N-000024 )
+  ( 17 ? )
+  ( 18 ? )
+  ( 19 ? )
+  ( 20 GND )
+ )
+ ( /51A3A31F DIP-16__300 U2 74HC595
+  ( 1 N-000040 )
+  ( 2 N-000041 )
+  ( 3 N-000042 )
+  ( 4 N-000011 )
+  ( 5 N-000049 )
+  ( 6 N-000048 )
+  ( 7 N-000047 )
+  ( 8 GND )
+  ( 9 ? )
+  ( 10 N-000024 )
+  ( 11 N-000045 )
+  ( 12 N-000044 )
+  ( 13 GND )
+  ( 14 N-000043 )
+  ( 15 N-000028 )
+  ( 16 VCC )
+ )
+)
+*
+{ Allowed footprints by component:
+$component D1
+ D?
+ S*
+$endlist
+$component KBD_LOCKED1
+ LED-3MM
+ LED-5MM
+ LED-10MM
+ LED-0603
+ LED-0805
+ LED-1206
+ LEDV
+$endlist
+$component OFFLINE1
+ LED-3MM
+ LED-5MM
+ LED-10MM
+ LED-0603
+ LED-0805
+ LED-1206
+ LEDV
+$endlist
+$component ONLINE1
+ LED-3MM
+ LED-5MM
+ LED-10MM
+ LED-0603
+ LED-0805
+ LED-1206
+ LEDV
+$endlist
+$component PROG_1
+ LED-3MM
+ LED-5MM
+ LED-10MM
+ LED-0603
+ LED-0805
+ LED-1206
+ LEDV
+$endlist
+$component PROG_2
+ LED-3MM
+ LED-5MM
+ LED-10MM
+ LED-0603
+ LED-0805
+ LED-1206
+ LEDV
+$endlist
+$component PROG_3
+ LED-3MM
+ LED-5MM
+ LED-10MM
+ LED-0603
+ LED-0805
+ LED-1206
+ LEDV
+$endlist
+$component PROG_4
+ LED-3MM
+ LED-5MM
+ LED-10MM
+ LED-0603
+ LED-0805
+ LED-1206
+ LEDV
+$endlist
+$component R1
+ R?
+ SM0603
+ SM0805
+ R?-*
+ SM1206
+$endlist
+$component R2
+ R?
+ SM0603
+ SM0805
+ R?-*
+ SM1206
+$endlist
+$component R3
+ R?
+ SM0603
+ SM0805
+ R?-*
+ SM1206
+$endlist
+$component R4
+ R?
+ SM0603
+ SM0805
+ R?-*
+ SM1206
+$endlist
+$component R5
+ R?
+ SM0603
+ SM0805
+ R?-*
+ SM1206
+$endlist
+$component R6
+ R?
+ SM0603
+ SM0805
+ R?-*
+ SM1206
+$endlist
+$component R7
+ R?
+ SM0603
+ SM0805
+ R?-*
+ SM1206
+$endlist
+$component R8
+ R?
+ SM0603
+ SM0805
+ R?-*
+ SM1206
+$endlist
+$endfootprintlist
+}
