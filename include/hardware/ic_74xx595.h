@@ -1,5 +1,5 @@
-#ifndef _IC_74XX595_H_
-#define _IC_74XX595_H_
+#ifndef _HW_IC_74XX595_H_
+#define _HW_IC_74XX595_H_
 
 #include <common.h>
 

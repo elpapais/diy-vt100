@@ -1,5 +1,5 @@
-#ifndef _LED_H_
-#define _LED_H_
+#ifndef _HW_LED_H_
+#define _HW_LED_H_
 
 #include <hardware/ic_74xx595.h>
 

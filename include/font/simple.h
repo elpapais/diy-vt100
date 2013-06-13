@@ -1,5 +1,5 @@
-#ifndef _VT100_FONT_H_
-#define _VT100_FONT_H_
+#ifndef _FONT_SIMPLE_H_
+#define _FONT_SIMPLE_H_
 
 #include <common.h>
 

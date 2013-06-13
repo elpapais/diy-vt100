@@ -1,5 +1,5 @@
-#ifndef _BUZZER_H_
-#define _BUZZER_H_
+#ifndef _HW_BUZZER_H_
+#define _HW_BUZZER_H_
 
 #include <hardware/timer0_A3.h>
 

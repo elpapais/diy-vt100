@@ -1,5 +1,5 @@
-#ifndef _NOKIA1100_H_
-#define _NOKIA1100_H_
+#ifndef _HW_NOKIA1100_H_
+#define _HW_NOKIA1100_H_
 
 #define NOKIA1100_WIDTH_PIXEL 96
 #define NOKIA1100_HEIGHT_PIXEL 65

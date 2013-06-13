@@ -1,5 +1,5 @@
-#ifndef _KEYBOARD_PS2_H_
-#define _KEYBOARD_PS2_H_
+#ifndef _KBD_H_
+#define _KBD_H_
 
 #include <common.h>
 #include <cqueue.h>
@@ -24,10 +24,14 @@ extern struct __kbd kbd;
 #define KBD_BREAK 	BIT5
 #define KBD_PARITY 	BIT6
 
-#define kbd_latch_read(bit) __read(kbd.latch, bit)
+
 #define kbd_latch_high(bit) __high(kbd.latch, bit)
 #define kbd_latch_low(bit) __low(kbd.latch, bit)
 #define kbd_latch_flip(bit) __flip(kbd.latch, bit)
+
+#define kbd_latch_read(bit) __read(kbd.latch, bit)
+#define kbd_latch_ishigh(bit) __ishigh(kbd.latch, bit)
+#define kbd_latch_islow(bit) __islow(kbd.latch, bit)
 
 void kbd_ctrl();
 void kbd_shift();

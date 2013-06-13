@@ -1,4 +1,5 @@
 #include <uart.h>
+#include <setting.h>
 
 struct __cqueue
 uart_tx, uart_rx, *uart_tx_ptr;
@@ -34,4 +35,14 @@ void uart_send_uint8(uint8_t val)
 	}
 	
 	uart_send('0' + val);
+}
+
+void uart_send_enter()
+{
+	uart_send(ASCII_CR);
+	
+	if(setting_ishigh(SETTING_LNM))
+	{
+		uart_send(ASCII_LF);
+	}
 }

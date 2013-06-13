@@ -19,10 +19,14 @@ vt100_state_C0[] =
 	state_noparam	(0, vt100_state_worker),
 	
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
+	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
+	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
 	state_noparam	(ASCII_BELL, vt100_BEL),
 	state_noparam	(ASCII_TAB, vt100_HT),
 	state_param		(ASCII_BS, vt100_CUB, 1, 1),
 	state_noparam	(ASCII_LF, vt100_LF),
+	state_noparam	(ASCII_VT, vt100_LF),
+	state_noparam	(ASCII_FF, vt100_LF),
 	state_noparam	(ASCII_CR, vt100_CR),
 	state_ignore	(ASCII_DEL),
 	state_ignore	(ASCII_NULL),
@@ -36,6 +40,8 @@ vt100_state_C1[] = //ESC
 	state_noparam	(0, vt100_state_worker),
 	
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
+	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
+	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
 	state_select	('[', vt100_state_opensquarebracket),
 	state_select	('#', vt100_state_hash),
 	state_noparam	('Z', vt100_DECID),
@@ -56,6 +62,8 @@ vt100_state_open_smallbracket[] = //(
 {
 	state_noparam	(0, vt100_state_worker),
 
+	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
+	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
 	state_end()
 };
@@ -65,6 +73,8 @@ vt100_state_close_smallbracket[] = //)
 {
 	state_noparam	(0, vt100_state_worker),
 	
+	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
+	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
 	state_end()
 };
@@ -74,6 +84,8 @@ vt100_state_opensquarebracket[] = //[
 {
 	state_noparam	(0, vt100_state_worker),
 	
+	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
+	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
 	state_param		('D', vt100_CUB, 1, 1),
 	state_param		('B', vt100_CUD, 1, 1),
@@ -100,6 +112,8 @@ vt100_state_hash[] = //#
 {
 	state_noparam	(0, vt100_state_worker),
 	
+	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
+	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
 	state_noparam	('3', vt100_DECDHL_top),
 	state_noparam	('4', vt100_DECDHL_bottom),
@@ -113,6 +127,8 @@ vt100_state_question[] = //?
 {
 	state_noparam	(0, vt100_state_worker),
 	
+	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
+	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
 	state_param		('l', vt100_setting_low, 1, 0),
 	state_param		('h', vt100_setting_high, 1, 0),
 	state_end		()
@@ -130,15 +146,13 @@ void vt100_state_worker()
 		/* clear out ignore states */
 		else if(state_iterate->cb != (callback_t)1)
 		{
-			/* NOTE: can become a bug if function with state used, currently we only support param's */
+			/* NOTE: can become a bug if function with state used
+			 * currently we only support param's */
 			state_current = (struct __state *)vt100_state_C0;
 			
-			/* a < 0 shows that it can have any number of params */
-			if(!(state_iterate->arg.param.pcount < 0))
-			{
-				/* chop of extra param */
-				param_default(state_iterate->arg.param.pcount, state_iterate->arg.param.pdefault);
-			}
+			/* chop of extra param */
+			param_default(state_iterate->arg.param.pcount, 
+							state_iterate->arg.param.pdefault);
 			
 			state_iterate->cb();
 			

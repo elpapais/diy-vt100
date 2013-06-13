@@ -1,5 +1,5 @@
-#ifndef _USCIA_H_
-#define _USCIA_H_
+#ifndef _HW_USCIA_H_
+#define _HW_USCIA_H_
 
 #include <common.h>
 #include <vt100/buffer.h>

@@ -1,5 +1,5 @@
-#ifndef _WDT_H_
-#define _WDT_H_
+#ifndef _HW_WDT_H_
+#define _HW_WDT_H_
 
 #include <common.h>
 
