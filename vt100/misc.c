@@ -7,6 +7,7 @@
 #include <hardware/led.h>
 #include <state-machine.h>
 #include <setting.h>
+#include <hardware/misc.h>
 
 void vt100_init()
 {
@@ -54,7 +55,8 @@ vt100_DECKPAM()
 void 
 vt100_RIS()
 {
-	/* TODO: set vt100 to reset state  */
+	/* reset MSP430 */
+	hw_reset();
 }
 
 /* cursor key mode */

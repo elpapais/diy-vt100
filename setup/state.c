@@ -1,5 +1,6 @@
 #include <hardware/nokia1100.h>
 #include <hardware/timer1_A3.h>
+#include <hardware/misc.h>
 
 #include <vt100/buffer.h>
 #include <vt100/cursor.h>
@@ -10,8 +11,7 @@
 #include <uart.h>
 #include <setting.h>
 
-uint8_t setup_type_current;
-uint8_t setup_setting_number;
+uint8_t setup_number;
 
 const struct __state
 setup_state_type[] = 
@@ -81,15 +81,15 @@ void setup_state_worker()
 			
 			state_iterate->cb();
 			
-			switch(setup_type_current)
+			if(setting_ishigh(SETTING__SETUP_TYPE))
 			{
-				case 'B':
-					setup_B_refresh();
-				break;
-				
-				case 'A':
-					setup_A_refresh();
-				break;
+				/* high show setup B */
+				setup_B_refresh();
+			}
+			else
+			{
+				/* low show setup A */
+				setup_A_refresh();
 			}
 		break;
 	}
@@ -116,28 +116,28 @@ void setup_brightness_decrease()
 void setup_previous_setting()
 {
 	/* select left value */
-	setup_setting_number--;
+	setup_number--;
 	
 	/* limit to 16 only */
-	setup_setting_number &= 0x0F;
+	setup_number &= 0x0F;
 }
 
 void setup_next_setting()
 {
 	/* select right value */
-	setup_setting_number++;
+	setup_number++;
 	
 	/* limit to 16 only */
-	setup_setting_number &= 0x0F;
+	setup_number &= 0x0F;
 }
 
 void setup_value_flip()
 {
 	/* flip values in setup, 5 was pressed */
 	
-	if(setup_type_current == 'B')
+	if(setting_ishigh(SETTING__SETUP_TYPE))
 	{
-		switch(setup_setting_number)
+		switch(setup_number)
 		{
 			/* box 1 */
 			case 0:
@@ -212,21 +212,22 @@ void setup_value_flip()
 
 void setup_switch()
 {
-	setup_setting_number = 0;
+	setup_number = 0;
 	
-	switch(setup_type_current)
+	/* invert setting (A to B) or (B to A) */
+	setting_flip(SETTING__SETUP_TYPE);
+	
+	if(setting_ishigh(SETTING__SETUP_TYPE))
 	{
-		case 'B':
-			setup_type_current = 'A';
-			vt100_buffer_copy(setup_buffer_A);
-			setup_A_refresh();
-		break;
-		
-		case 'A':
-			setup_type_current = 'B';
-			vt100_buffer_copy(setup_buffer_B);
-			setup_B_refresh();
-		break;
+		/* high show setup B */
+		vt100_buffer_copy(setup_buffer_B);
+		setup_B_refresh();
+	}
+	else
+	{
+		/* low show setup A */
+		vt100_buffer_copy(setup_buffer_A);
+		setup_A_refresh();
 	}
 }
 
@@ -239,10 +240,10 @@ void setup_B_refresh()
 	
 	bool_t readed_values[16] =
 	{
-		setting_read(SETTING_CURSOR), setting_read(SETTING_DECSCNM), setting_read(SETTING_DECARM), setting_read(SETTING_DECSCLM),
-		setting_read(SETTING_MARGINBELL), setting_read(SETTING_KEYCLICK), setting_read(SETTING_DECANM), setting_read(SETTING_AUTOX),
-		setting_read(SETTING_SHIFTED), setting_read(SETTING_DECAWM), setting_read(SETTING_LNM), setting_read(SETTING_DECINLM),
-		setting_read(SETTING_PARITYSENSE), setting_read(SETTING_PARITY), setting_read(SETTING_BPC), /*setting_read(SETTING_POWER) */ 0
+		setting_ishigh(SETTING_CURSOR), setting_ishigh(SETTING_DECSCNM), setting_ishigh(SETTING_DECARM), setting_ishigh(SETTING_DECSCLM),
+		setting_ishigh(SETTING_MARGINBELL), setting_ishigh(SETTING_KEYCLICK), setting_ishigh(SETTING_DECANM), setting_ishigh(SETTING_AUTOX),
+		setting_ishigh(SETTING_SHIFTED), setting_ishigh(SETTING_DECAWM), setting_ishigh(SETTING_LNM), setting_ishigh(SETTING_DECINLM),
+		setting_ishigh(SETTING_PARITYSENSE), setting_ishigh(SETTING_PARITY), setting_ishigh(SETTING_BPC), /*setting_ishigh(SETTING_POWER) */ 0
 	};
 	
 	for(i = 6; i < 8; i++)
@@ -256,7 +257,7 @@ void setup_B_refresh()
 			
 			vt100_buffer[i][j].data = readed_values[value_no] ? '1' : '0';
 			
-			if(value_no++ == setup_setting_number)
+			if(value_no++ == setup_number)
 			{
 				vt100_cursor.row = i;
 				vt100_cursor.col = j;
@@ -281,11 +282,11 @@ void setup_A_refresh()
 {
 	col_t j;
 	vt100_cursor.row = 6;
-	vt100_cursor.col = setup_setting_number;
+	vt100_cursor.col = setup_number;
 	
 	for(j=0; j < 16; j++)
 	{
-		vt100_buffer[6][j].data = setting_tab_read(j) ? 'T' : ' ';
+		vt100_buffer[6][j].data = setting_tab_ishigh(j) ? 'T' : ' ';
 	}		
 }
 
@@ -311,12 +312,13 @@ void setup_reload()
 void setup_reset()
 {
 	/* restart */
-	WDTCTL = 0;
+	hw_reset();
 }
 
 void setup_DECCOLM()
 {
-	if(setup_type_current == 'A')
+	/* is it setup A */
+	if(setting_low(SETTING__SETUP_TYPE))
 	{
 		setting_flip(SETTING_DECCOLM);
 	}
@@ -329,7 +331,8 @@ void setup_LOCAL()
 
 void setup_TABS_clear()
 {
-	if(setup_type_current == 'A')
+	/* is it setup A */
+	if(setting_islow(SETTING__SETUP_TYPE))
 	{
 		setting_tab_clear();
 	}
@@ -337,9 +340,10 @@ void setup_TABS_clear()
 
 void setup_TAB_flip()
 {
-	if(setup_type_current == 'A')
+	/* is it setup A */
+	if(setting_islow(SETTING__SETUP_TYPE))
 	{
-		setting_tab_flip(setup_setting_number);
+		setting_tab_flip(setup_number);
 	}
 }
 

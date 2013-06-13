@@ -6,13 +6,8 @@
 #include <vt100/buffer.h>
 #include <msp430.h>
 
-extern bool_t setup_show;
-
 extern const struct __vt100_char setup_buffer_A[VT100_HEIGHT][VT100_WIDTH];
 extern const struct __vt100_char setup_buffer_B[VT100_HEIGHT][VT100_WIDTH];
-
-extern uint8_t setup_type_current;
-extern uint8_t setup_setting_number;
 
 extern const struct __state setup_state_type[];
 extern const struct __state setup_state_arrow[];

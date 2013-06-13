@@ -8,7 +8,7 @@
 
 struct __setting
 {
-	uint8_t vr_bits;
+	uint16_t vr_bits;
 	uint16_t nvr_bits;
 	uint8_t brightness;
 	uint8_t speed;
@@ -46,6 +46,8 @@ extern struct __setting setting;
 #define SETTING__ATTR_INVERSE	__setting_vr(8)
 #define SETTING__ATTR_BLINK		__setting_vr(9)
 #define SETTING__LOCAL			__setting_vr(10)
+#define SETTING__SETUP_TYPE		__setting_vr(11)
+#define SETTING__SETUP_SHOW		__setting_vr(12)
 
 #define SETTING_DECANM 		__setting_nvr(0)
 #define SETTING_DECARM 		__setting_nvr(1)
@@ -65,10 +67,13 @@ extern struct __setting setting;
 #define SETTING_SHIFTED		__setting_nvr(15)
 
 #define __setting_get_actual_bitmask(num) __bitmask(num & ~BIT7) /* remove BIT7(for NVR or not) */
-#define __setting_read(var, num) __read(var, __setting_get_actual_bitmask(num))
 #define __setting_flip(var, num) __flip(var, __setting_get_actual_bitmask(num))
 #define __setting_high(var, num) __high(var, __setting_get_actual_bitmask(num))
 #define __setting_low(var, num)  __low(var, __setting_get_actual_bitmask(num))
+
+#define __setting_read(var, num) __read(var, __setting_get_actual_bitmask(num))
+#define __setting_ishigh(var, num) __ishigh(var, __setting_get_actual_bitmask(num))
+#define __setting_islow(var, num) __islow(var, __setting_get_actual_bitmask(num))
 
 #define __setting_select_mem(num, code_nvr, code_vr) \
 	(__read(num, BIT7) /* is NVR */ ? code_nvr : code_vr)
@@ -86,14 +91,26 @@ extern struct __setting setting;
 								__setting_high(setting.vr_bits, num))
 
 #define setting_read(num) \
-	(!!(__setting_select_mem(num, __setting_read(setting.nvr_bits, num), \
-								__setting_read(setting.vr_bits, num))))
+	__setting_select_mem(num, __setting_read(setting.nvr_bits, num), \
+								__setting_read(setting.vr_bits, num))
+								
+#define setting_islow(num) \
+	__setting_select_mem(num, __setting_islow(setting.nvr_bits, num), \
+								__setting_islow(setting.vr_bits, num))
+
+#define setting_ishigh(num) \
+	__setting_select_mem(num, __setting_ishigh(setting.nvr_bits, num), \
+								__setting_ishigh(setting.vr_bits, num))
 
 #define setting_tab_high(pos) 	__high(setting.tabs, __bitmask(pos))
 #define setting_tab_low(pos) 	__low(setting.tabs, __bitmask(pos))
-#define setting_tab_read(pos) 	__read(setting.tabs, __bitmask(pos))
 #define setting_tab_flip(pos) 	__flip(setting.tabs, __bitmask(pos))
 #define setting_tab_clear() 	__clear(setting.tabs)
+
+#define setting_tab_islow(pos) 	__islow(setting.tabs, __bitmask(pos))
+#define setting_tab_ishigh(pos) __ishigh(setting.tabs, __bitmask(pos))
+#define setting_tab_read(pos) 	__read(setting.tabs, __bitmask(pos))
+
 
 #define setting_save() flash_store()
 #define setting_load() flash_load()

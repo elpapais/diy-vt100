@@ -71,7 +71,11 @@ typedef uint8_t bool_t;
 #define __flip(var, bit) ((var) ^= (bit))
 #define __low(var, bit) ((var) &= ~(bit))
 #define __high(var, bit) ((var) |= (bit))
-#define __read(var, bit) ((var) & (bit))
 #define __clear(var) ((var) = 0)
+
+#define __read(var, bit) ((var) & (bit))
+#define __islow(var, bit) (!__read(var, bit))
+#define __ishigh(var, bit) (!!__read(var, bit))
+
 
 #endif

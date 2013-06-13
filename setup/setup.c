@@ -4,8 +4,6 @@
 #include <vt100/buffer.h>
 #include <setting.h>
 
-bool_t setup_show;
-
 const struct __vt100_char setup_buffer_A[VT100_HEIGHT][VT100_WIDTH] =  
 {
 	{{'S', ROW_DOUBLE_WIDTH|ROW_DOUBLE_HEIGHT_TOP|ROW_TOUCH}, {'E'}, {'T'}, {'-'}, {'U'}, {'P'}, {' '}, {'A'}},
@@ -32,15 +30,17 @@ const struct __vt100_char setup_buffer_B[VT100_HEIGHT][VT100_WIDTH] =
 
 void setup()
 {
-	setup_show ^= TRUE;
-	
-	if(setup_show)
+	setting_flip(SETTING__SETUP_SHOW);
+
+	if(setting_ishigh(SETTING__SETUP_SHOW))
 	{
 		/* enter setup */
 		uart_hardware_disable();
 		uart_loopback_enable();
 		state_current = (struct __state *)setup_state_type;
-		setup_type_current = 'B';
+		
+		/* simulate STATE B */
+		setting_high(SETTING__SETUP_TYPE);
 		setup_switch();
 	}
 	else
