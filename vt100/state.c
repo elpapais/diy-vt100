@@ -47,6 +47,7 @@ vt100_state_C1[] = //ESC
 	state_noparam	('Z', vt100_DECID),
 	state_param		('=', vt100_DECKPAM, 1, 1),
 	state_param		('>', vt100_DECKPAM, 1, 0),
+	state_param		('<', vt100_setting_high, 1, 2), /* enable ansi mode */
 	state_noparam	('8', vt100_DECRC),
 	state_noparam	('7', vt100_DECSC),
 	state_noparam	('H', vt100_HTS),

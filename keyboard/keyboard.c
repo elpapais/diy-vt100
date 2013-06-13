@@ -23,10 +23,7 @@ struct __kbd kbd;
 #define kbd_fn(ident) \
 	break_event_stop(); \
 	uart_send_escape(); \
-	if(flash_setting_ishigh(SETTING_DECANM)) \
-	{\
-		uart_send('O');\
-	}\
+	uart_send(flash_setting_ishigh(SETTING_DECANM) ? 'O' : '?');\
 	uart_send(ident); \
 	keyclick_sound()
 

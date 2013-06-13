@@ -102,6 +102,10 @@ void vt100_setting_high()
 			setting_high(SETTING_DECCKM);
 		break;
 		
+		case 2:
+			setting_high(SETTING_DECANM);
+		break;
+		
 		case 3:
 			setting_high(SETTING_DECCOLM);
 		break;
