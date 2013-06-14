@@ -1,9 +1,9 @@
-#include <vt100/report.h>
-#include <uart.h>
-#include <param.h>
-#include <setting.h>
-#include <vt100/cursor.h>
-#include <hardware/flash.h>
+#include <diy-vt100/vt100/report.h>
+#include <diy-vt100/uart.h>
+#include <diy-vt100/param.h>
+#include <diy-vt100/setting.h>
+#include <diy-vt100/vt100/cursor.h>
+#include <diy-vt100/hardware/flash.h>
 
 /* report terminal parameter (requested via DECREQTPARAM) */
 void

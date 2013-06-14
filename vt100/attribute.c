@@ -1,8 +1,8 @@
-#include <vt100/attribute.h>
-#include <vt100/buffer.h>
-#include <setting.h>
-#include <vt100/cursor.h>
-#include <param.h>
+#include <diy-vt100/vt100/attribute.h>
+#include <diy-vt100/vt100/buffer.h>
+#include <diy-vt100/setting.h>
+#include <diy-vt100/vt100/cursor.h>
+#include <diy-vt100/param.h>
 
 /* double height line [top half] */
 void

@@ -1,19 +1,20 @@
-#include <state-machine.h>
-#include <param.h>
+#include <diy-vt100/state-machine.h>
+#include <diy-vt100/param.h>
 
-#include <vt100/attribute.h>
-#include <vt100/bell.h>
-#include <vt100/buffer.h>
-#include <vt100/cursor.h>
-#include <vt100/led.h>
-#include <vt100/margin.h>
-#include <vt100/misc.h>
-#include <vt100/report.h>
-#include <vt100/screen.h>
-#include <vt100/tab.h>
-#include <vt100/state.h>
+#include <diy-vt100/hardware/led.h>
+#include <diy-vt100/hardware/bell.h>
 
-#include <vt52/misc.h>
+#include <diy-vt100/vt100/attribute.h>
+#include <diy-vt100/vt100/buffer.h>
+#include <diy-vt100/vt100/cursor.h>
+#include <diy-vt100/vt100/margin.h>
+#include <diy-vt100/vt100/misc.h>
+#include <diy-vt100/vt100/report.h>
+#include <diy-vt100/vt100/screen.h>
+#include <diy-vt100/vt100/tab.h>
+#include <diy-vt100/vt100/state.h>
+
+#include <diy-vt100/vt52/misc.h>
 
 const struct __state
 vt100_state_C0[] = 
@@ -48,6 +49,7 @@ vt100_state_C1[] = //ESC
 	/* conflicting (vt100 & vt52) | TODO: resolve conflicts */
 	state_ignore	('D'),
 	state_ignore	('H'),
+	state_ignore	('Z'),
 	
 	/* vt100 */
 	state_select	('[', vt100_state_opensquarebracket),
@@ -110,7 +112,7 @@ vt100_state_opensquarebracket[] = //[
 	state_param		('C', vt100_CUF, 1, 1),
 	state_param		('A', vt100_CUU, 1, 1),
 	state_param		('H', vt100_CUP, 2, 0),
-	state_param		('f', vt100_HVP, 2, 0),
+	state_param		('f', vt100_CUP, 2, 0), /* vt100_HVP */
 	state_noparam	('c', vt100_DECID),
 	state_anyparam	('q', vt100_DECLL),
 	state_param		('r', vt100_DECSTBM, 2, 0),

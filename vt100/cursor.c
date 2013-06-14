@@ -1,6 +1,6 @@
-#include <vt100/cursor.h>
-#include <param.h>
-#include <vt100/buffer.h>
+#include <diy-vt100/vt100/cursor.h>
+#include <diy-vt100/param.h>
+#include <diy-vt100/vt100/buffer.h>
 
 struct __vt100_cursor
 vt100_cursor,

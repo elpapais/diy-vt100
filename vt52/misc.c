@@ -1,6 +1,6 @@
-#include <vt52/misc.h>
-#include <uart.h>
-#include <setting.h>
+#include <diy-vt100/vt52/misc.h>
+#include <diy-vt100/uart.h>
+#include <diy-vt100/setting.h>
 
 void vt52_ident()
 {

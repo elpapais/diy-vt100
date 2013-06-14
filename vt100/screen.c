@@ -1,13 +1,13 @@
-#include <hardware/nokia1100.h>
-#include <hardware/flash.h>
+#include <diy-vt100/screen.h>
+#include <diy-vt100/hardware/flash.h>
 
-#include <vt100/screen.h>
-#include <vt100/misc.h>
-#include <vt100/buffer.h>
-#include <vt100/cursor.h>
+#include <diy-vt100/vt100/screen.h>
+#include <diy-vt100/vt100/misc.h>
+#include <diy-vt100/vt100/buffer.h>
+#include <diy-vt100/vt100/cursor.h>
 
-#include <font/simple.h>
-#include <setting.h>
+#include <diy-vt100/font/simple.h>
+#include <diy-vt100/setting.h>
 
 /* must be 2^x , x>1, x <= VT100_WIDTH  */
 #define VT100_SCREEN_BUFFER_SIZE (NOKIA1100_WIDTH_CHAR*4)
@@ -54,7 +54,7 @@ void vt100_screen_refresh()
 				if(!(count < VT100_SCREEN_BUFFER_SIZE))
 				{
 					/* flush buffer */
-					nokia1100_send_data(screen_buffer, VT100_SCREEN_BUFFER_SIZE);
+					screen_send(screen_buffer, VT100_SCREEN_BUFFER_SIZE);
 					count = 0;
 				}
 			}

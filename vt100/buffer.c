@@ -1,8 +1,8 @@
-#include <vt100/buffer.h>
-#include <hardware/nokia1100.h>
-#include <param.h>
-#include <setting.h>
-#include <vt100/cursor.h>
+#include <diy-vt100/vt100/buffer.h>
+#include <diy-vt100/hardware/nokia1100.h>
+#include <diy-vt100/param.h>
+#include <diy-vt100/setting.h>
+#include <diy-vt100/vt100/cursor.h>
 
 struct __vt100_char
 vt100_buffer[VT100_HEIGHT][VT100_WIDTH];

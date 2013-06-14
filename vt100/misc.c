@@ -1,13 +1,15 @@
-#include <vt100/misc.h>
-#include <vt100/cursor.h>
-#include <param.h>
-#include <vt100/buffer.h>
-#include <vt100/state.h>
-#include <vt100/bell.h>
-#include <hardware/led.h>
-#include <state-machine.h>
-#include <setting.h>
-#include <hardware/misc.h>
+#include <diy-vt100/vt100/misc.h>
+#include <diy-vt100/vt100/cursor.h>
+#include <diy-vt100/vt100/buffer.h>
+#include <diy-vt100/vt100/state.h>
+
+#include <diy-vt100/param.h>
+#include <diy-vt100/state-machine.h>
+#include <diy-vt100/setting.h>
+
+#include <diy-vt100/hardware/misc.h>
+#include <diy-vt100/hardware/bell.h>
+#include <diy-vt100/hardware/led.h>
 
 void vt100_init()
 {
@@ -56,7 +58,7 @@ void
 vt100_RIS()
 {
 	/* reset MSP430 */
-	hw_reset();
+	hardware_reset();
 }
 
 /* cursor key mode */
@@ -188,4 +190,44 @@ void vt100_sequence_terminate()
 	//state_current = (struct __state)vt100_state_C0;
 
 	/* TODO: print error char */
+}
+
+/* load led's */
+void 
+vt100_DECLL()
+{
+	uint8_t i;
+	
+	for(i=0; i < param.count; i++)
+	{
+		switch(param.data[i])
+		{
+			case 0:
+				led_off(LED_L1 | LED_L2 | LED_L3 | LED_L4);
+			break;
+			
+			case 1:
+				led_on(LED_L1);
+			break;
+			
+			case 2:
+				led_on(LED_L2);
+			break;
+			
+			case 3:
+				led_on(LED_L3);
+			break;
+			
+			case 4:
+				led_on(LED_L4);
+			break;
+		}
+	}
+	
+	led_refresh();
+}
+
+void vt100_BEL()
+{
+	bell_long();
 }

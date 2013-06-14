@@ -1,5 +1,5 @@
-#include <keyboard/scancode.h>
-#include <keyboard/keyboard.h>
+#include <diy-vt100/keyboard/scancode.h>
+#include <diy-vt100/keyboard/keyboard.h>
 
 #define number(ch, ch_alt) 	{0, {ch, ch_alt}}
 #define special(ch, ch_alt) {0, {ch, ch_alt}}

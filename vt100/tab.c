@@ -1,9 +1,9 @@
-#include <vt100/tab.h>
-#include <vt100/buffer.h>
-#include <vt100/cursor.h>
-#include <param.h>
-#include <setup.h>
-#include <setting.h>
+#include <diy-vt100/vt100/tab.h>
+#include <diy-vt100/vt100/buffer.h>
+#include <diy-vt100/vt100/cursor.h>
+#include <diy-vt100/param.h>
+#include <diy-vt100/setup.h>
+#include <diy-vt100/setting.h>
 
 /* tabulation clear */
 void vt100_TBC()
