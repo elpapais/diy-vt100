@@ -13,6 +13,8 @@
 #include <vt100/tab.h>
 #include <vt100/state.h>
 
+#include <vt52/misc.h>
+
 const struct __state
 vt100_state_C0[] = 
 {
@@ -42,19 +44,34 @@ vt100_state_C1[] = //ESC
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
 	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
 	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
+	
+	/* conflicting (vt100 & vt52) | TODO: resolve conflicts */
+	state_ignore	('D'),
+	state_ignore	('H'),
+	
+	/* vt100 */
 	state_select	('[', vt100_state_opensquarebracket),
 	state_select	('#', vt100_state_hash),
-	state_noparam	('Z', vt100_DECID),
-	state_param		('=', vt100_DECKPAM, 1, 1),
-	state_param		('>', vt100_DECKPAM, 1, 0),
-	state_param		('<', vt100_setting_high, 1, 2), /* enable ansi mode */
-	state_noparam	('8', vt100_DECRC),
 	state_noparam	('7', vt100_DECSC),
-	state_noparam	('H', vt100_HTS),
+	state_noparam	('8', vt100_DECRC),
+	state_noparam	('c', vt100_RIS),
 	state_noparam	('D', vt100_IND),
 	state_noparam	('E', vt100_NEL),
+	state_noparam	('H', vt100_HTS),
 	state_noparam	('M', vt100_RI),
-	state_noparam	('c', vt100_RIS),
+	
+	/* vt52 */
+	state_param		('=', vt100_DECKPAM, 1, 1),
+	state_param		('>', vt100_DECKPAM, 1, 0),
+	state_noparam	('<', vt52_enter_ansi_mode),
+	state_param		('A', vt100_CUU, 1, 1),
+	state_param		('B', vt100_CUD, 1, 1),
+	state_param		('C', vt100_CUF, 1, 1),
+	state_param		('D', vt100_CUB, 1, 1),
+	state_param		('H', vt100_CUP, 2, 0),
+	state_noparam	('I', vt100_RI),
+	state_noparam	('Z', vt52_ident),
+	
 	state_end		()
 };
 

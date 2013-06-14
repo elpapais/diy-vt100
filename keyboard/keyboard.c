@@ -56,7 +56,6 @@ struct __kbd kbd;
 #define kbd_arrow(ident) \
 	uart_send_escape(); \
 	 \
-	/* are in ANSI Mode ? */ \
 	if(flash_setting_ishigh(SETTING_DECANM)) \
 	{ \
 		uart_send(flash_setting_ishigh(SETTING_DECCKM) ? 'O' : '['); \
