@@ -37,7 +37,7 @@ void uart_send_uint8(uint8_t val)
 	uart_send('0' + val);
 }
 
-void uart_send_enter()
+inline void uart_send_enter()
 {
 	uart_send(ASCII_CR);
 	

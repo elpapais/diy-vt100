@@ -26,7 +26,7 @@ void uart_send_uint8(uint8_t val);
 #define uart_tx_push(data) (cqueue_push(uart_tx_ptr, data))
 
 #define uart_send_escape() uart_send(ASCII_ESCAPE)
-void uart_send_enter();
+inline void uart_send_enter();
 
 #define uart_loopback_enable() (uart_tx_ptr = &uart_rx)
 #define uart_loopback_disable() (uart_tx_ptr = &uart_tx)

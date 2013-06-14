@@ -252,22 +252,25 @@ void vt100_EL()
 	vt100_buffer_row_touch(vt100_cursor.row);
 }
 
+/* \n */
 void
 vt100_LF()
 {
-	vt100_buffer_row_touch(vt100_cursor.row++);
+	vt100_cursor.row++;
 	
 	if(!(vt100_cursor.row < VT100_HEIGHT))
 	{
+		vt100_buffer_shiftup();
 		vt100_cursor.row = VT100_HEIGHT - 1;
 	}
 	
 	if(setting_ishigh(SETTING_LNM))
 	{
 		vt100_cursor.col = 0;
-	}		
+	}
 }
 
+/* \r */
 void
 vt100_CR()
 {
@@ -277,7 +280,6 @@ vt100_CR()
 void
 vt100_NEL()
 {
-	vt100_buffer_row_touch(vt100_cursor.row);
 	vt100_cursor.row++;
 	
 	if(!(vt100_cursor.row < VT100_HEIGHT))
