@@ -17,13 +17,3 @@ then type following commands
 $stty cols 16 rows 8
 $lines=8
 $cols=16
-
-JUNE 4 2013:
-changes in schematic.
-(NOTE: use 148 in between PWM from MSP430 and LCD)
-brightness support
-
-older:
-support for setup A/B
-current Switch at P1.3 dont show setup
-F5 to show/hide setup, 5 to change A <-> B, only supported
