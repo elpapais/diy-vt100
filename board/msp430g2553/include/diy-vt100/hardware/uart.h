@@ -1,5 +1,5 @@
-#ifndef _UART_H_
-#define _UART_H_
+#ifndef _HW_UART_H_
+#define _HW_UART_H_
 
 #include <diy-vt100/common.h>
 #include <diy-vt100/cqueue.h>
@@ -9,10 +9,7 @@ extern struct __cqueue uart_rx;
 extern struct __cqueue uart_tx;
 extern struct __cqueue *uart_tx_ptr;
 
-void uart_init();
-
-void uart_send(const uint8_t data);
-void uart_send_uint8(uint8_t val);
+#define uart_init() uart_loopback_disable()
 
 #define uart_hardware_enable() usciA0_enable()
 #define uart_hardware_disable() usciA0_disable()
@@ -24,9 +21,6 @@ void uart_send_uint8(uint8_t val);
 #define uart_tx_count() (uart_tx_ptr->count)
 #define uart_tx_pop()	(cqueue_pop(uart_tx_ptr))
 #define uart_tx_push(data) (cqueue_push(uart_tx_ptr, data))
-
-#define uart_send_escape() uart_send(ASCII_ESCAPE)
-inline void uart_send_enter();
 
 #define uart_loopback_enable() (uart_tx_ptr = &uart_rx)
 #define uart_loopback_disable() (uart_tx_ptr = &uart_tx)
