@@ -24,7 +24,8 @@ void param_add()
 			param.data[0] = 0;
 		}
 		
-		param.data[param.count - 1] = (param.data[param.count - 1] * 10) + param.pass - '0';
+		param.data[param.count - 1] *= 10;
+		param.data[param.count - 1] += param.pass - '0';
 	}
 	//else
 	//{
@@ -37,16 +38,27 @@ void param_add()
 
 void param_default(int8_t pcount, uint8_t pdefault)
 {
-	if(param.count >= pcount)
+	if(pcount < 0)
 	{
-		param.count = pcount;
+		/* pad in some default param */
+		while(param.count < (pcount*-1))
+		{
+			param.data[param.count++] = pdefault;
+		}
 	}
 	else
 	{
-		/* pad in some default param */
-		while(param.count < pcount)
+		if(param.count >= pcount)
 		{
-			param.data[param.count++] = pdefault;
+			param.count = pcount;
+		}
+		else
+		{
+			/* pad in some default param */
+			while(param.count < pcount)
+			{
+				param.data[param.count++] = pdefault;
+			}
 		}
 	}
 }
