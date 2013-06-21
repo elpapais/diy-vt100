@@ -44,7 +44,6 @@ void setup()
 	if(setting_ishigh(SETTING__SETUP_SHOW))
 	{
 		/* enter setup */
-		uart_hardware_disable();
 		uart_loopback_enable();
 		state_current = (struct __state *)setup_state_type;
 		
@@ -55,7 +54,6 @@ void setup()
 	else
 	{
 		/* exit setup */
-		uart_hardware_enable();
 		uart_loopback_disable();
 		
 		state_current = (struct __state *)vt100_state_C0;
@@ -324,7 +322,7 @@ void setup_B_refresh()
 	vt100_buffer_row_touch(4);
 	vt100_buffer_row_touch(5);
 	
-	for(j=0; j < UART_SPEED_STRING_LENGTH; j++)
+	for(j=0; j < UART_SPEED_VALUE_STR_LENGTH; j++)
 	{
 		vt100_buffer[4][j + 8] = vt100_buffer[5][j + 8] = speed_str[j];
 	}
@@ -402,7 +400,7 @@ void setup_TAB_flip()
 void setup_speed()
 {
 	/* handle speeds */
-	if(!(++setting.speed < UART_SPEED_COUNT))
+	if(!(++setting.speed < UART_SPEED_SIZE))
 	{
 		setting.speed = 0;
 	}

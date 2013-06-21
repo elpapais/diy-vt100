@@ -1,33 +1,21 @@
-#ifndef _HW_UART_H_
-#define _HW_UART_H_
+#ifndef _HW_USCIA_H_
+#define _HW_USCIA_H_
 
 #include <diy-vt100/common.h>
-#include <diy-vt100/cqueue.h>
-#include <diy-vt100/hardware/usciA0.h>
+#include <diy-vt100/vt100/buffer.h>
 
-extern struct __cqueue uart_rx;
-extern struct __cqueue uart_tx;
-extern struct __cqueue *uart_tx_ptr;
+#define UART_SPEED_SIZE 7
+#define UART_SPEED_VALUE_STR_LENGTH 6
 
-#define uart_init() uart_loopback_disable()
+struct __usciA0_speed
+{
+	uint8_t BR0;
+	uint8_t BR1;
+	struct __vt100_char value_str[UART_SPEED_VALUE_STR_LENGTH];
+};
 
-#define uart_hardware_enable() usciA0_enable()
-#define uart_hardware_disable() usciA0_disable()
+extern const struct __usciA0_speed usciA0_speed[UART_SPEED_SIZE];
 
-#define uart_rx_count() (uart_rx.count)
-#define uart_rx_pop() 	(cqueue_pop(&uart_rx))
-#define uart_rx_push(data) (cqueue_push(&uart_rx, data))
-
-#define uart_tx_count() (uart_tx_ptr->count)
-#define uart_tx_pop()	(cqueue_pop(uart_tx_ptr))
-#define uart_tx_push(data) (cqueue_push(uart_tx_ptr, data))
-
-#define uart_loopback_enable() (uart_tx_ptr = &uart_rx)
-#define uart_loopback_disable() (uart_tx_ptr = &uart_tx)
-
-/* uart speed related */
-#define UART_SPEED_COUNT USCIA_SPEED_SIZE
-#define UART_SPEED_STRING_LENGTH USCIA_SPEED_VALUE_STR_LENGTH
-#define uart_speed_get(i) usciA0_speed_get(i)
+#define uart_speed_get(i) (usciA0_speed[i].value_str)
 
 #endif

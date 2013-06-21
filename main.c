@@ -30,9 +30,9 @@ main()
 			kbd_decode();
 		}
 		
-		while(uart_rx_count())
+		while(uart_rx.count)
 		{
-			param.pass = uart_rx_pop();
+			param.pass = cqueue_pop(&uart_rx);
 			state_do();
 		}
 		

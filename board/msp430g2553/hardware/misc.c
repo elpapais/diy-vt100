@@ -6,7 +6,6 @@
 #include <diy-vt100/hardware/ic_74xx595.h>
 #include <diy-vt100/hardware/bell.h>
 #include <diy-vt100/hardware/led.h>
-#include <diy-vt100/hardware/usciA0.h>
 #include <diy-vt100/hardware/nokia1100.h>
 
 void
@@ -38,7 +37,6 @@ msp430_init()
 	port1_init();
 	ic_74xx595_init();
 	port2_init();
-	usciA0_init();
 	wdt_init();
 	timer1_A3_init();
 	nokia1100_init();

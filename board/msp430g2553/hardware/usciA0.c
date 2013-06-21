@@ -1,5 +1,4 @@
-#include <diy-vt100/hardware/usciA0.h>
-#include <diy-vt100/hardware/usciA0.h>
+#include <diy-vt100/hardware/uart.h>
 #include <diy-vt100/hardware/flash.h>
 
 #include <diy-vt100/cqueue.h>
@@ -8,8 +7,11 @@
 #define usciA0_speed_collector(brx, ch5, ch4, ch3, ch2, ch1, ch0) \
 			{(uint8_t)(brx & 0x00FF), (uint8_t)(brx >> 8), {{ch5}, {ch4}, {ch3}, {ch2}, {ch1}, {ch0}}}
 
+void usciA0_TX_interrupt() __attribute__((interrupt(USCIAB0TX_VECTOR))); /* USCI_A_TX */
+void usciA0_RX_interrupt() __attribute__((interrupt(USCIAB0RX_VECTOR))); /* USCI_A_RX */
+
 /* SMCLK @ 4MHz */
-const struct __usciA0_speed usciA0_speed[USCIA_SPEED_SIZE] =
+const struct __usciA0_speed usciA0_speed[UART_SPEED_SIZE] =
 {
 	usciA0_speed_collector(416, '9','6','0','0', 0,  0),
 	usciA0_speed_collector(208, '1','9','2','0','0', 0),
@@ -20,7 +22,7 @@ const struct __usciA0_speed usciA0_speed[USCIA_SPEED_SIZE] =
 	usciA0_speed_collector(015, '2','5','6','0','0','0')
 };
 
-void usciA0_init()
+void uart_init()
 {
 	/* Configure ports */
 	P1SEL = BIT1 + BIT2; /* P1.1 = RXD, P1.2=TXD */
@@ -60,7 +62,7 @@ void usciA0_init()
 /* push received data to uart buffer */
 void usciA0_RX_interrupt()
 {
-	uart_rx_push(UCA0RXBUF);
+	cqueue_push(&uart_rx, UCA0RXBUF);
 	/* TODO: XON/XOFF sending for preventing overflow on when count == 16 */
 	
 	/* exit sleep mode to refresh screen */
@@ -69,12 +71,30 @@ void usciA0_RX_interrupt()
 
 void usciA0_TX_interrupt()
 {
-	if(uart_tx_count())
+	if(uart_tx.count)
 	{
-		UCA0TXBUF = uart_tx_pop();
+		UCA0TXBUF = cqueue_pop(&uart_tx);
 	}
 	else
 	{
 		IE2 &= ~UCA0TXIE;
 	}
+}
+
+void uart_send(const uint8_t data)
+{
+	cqueue_push(&uart_tx, data);
+	
+	/* enable interrupt if it was disabled due to empty cqueue */
+	IE2 |= UCA0TXIE;
+}
+
+void uart_loopback_disable()
+{
+	__low(UCA0STAT, UCLISTEN);
+}
+
+void uart_loopback_enable()
+{
+	__high(UCA0STAT, UCLISTEN);
 }

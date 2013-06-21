@@ -1,6 +1,9 @@
 #include <diy-vt100/setting.h>
 #include <diy-vt100/uart.h>
 
+struct __cqueue
+uart_tx, uart_rx;
+
 void uart_send_uint8(uint8_t val)
 {
 	uint8_t tmp = val / 100;
@@ -29,4 +32,9 @@ inline void uart_send_enter()
 	{
 		uart_send(ASCII_LF);
 	}
+}
+
+inline void uart_send_escape()
+{
+	uart_send(ASCII_ESCAPE);
 }
