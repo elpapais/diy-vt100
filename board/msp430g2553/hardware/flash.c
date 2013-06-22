@@ -12,7 +12,7 @@ const struct __setting flash_setting =
 	.answerback = {'d', 'i', 'y', '-', 'v', 't', '1', '0', '0'}
 };
 
-void flash_store()
+void setting_store()
 {
 	struct __setting *dest = (struct __setting *)(&flash_setting);
 	
@@ -33,9 +33,14 @@ void flash_store()
 	__enable_interrupt();
 }
 
-void flash_load()
+void setting_load()
 {
 	setting = (struct __setting)flash_setting;
 	setting.vr_bits = 0;
 
+}
+
+void setting_init()
+{
+	setting_load();
 }

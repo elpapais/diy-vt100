@@ -30,7 +30,7 @@ extern struct __vt100_char vt100_buffer[VT100_HEIGHT][VT100_WIDTH];
 #define vt100_buffer_prop_read(i, j, props) __read(vt100_buffer[i][j].prop, props)
 #define vt100_buffer_prop_high(i, j, props) __high(vt100_buffer[i][j].prop, props)
 #define vt100_buffer_prop_low(i, j, props) __low(vt100_buffer[i][j].prop, props)
-#define vt100_buffer_prop_clear(i, j) __clear(vt100_buffer[i][j].prop)
+#define vt100_buffer_prop_clear(i, j) (vt100_buffer[i][j].prop = 0)
 
 #define vt100_buffer_row_read(i, props) vt100_buffer_prop_read(i, 0, props)
 #define vt100_buffer_row_high(i, props) vt100_buffer_prop_high(i, 0, props)

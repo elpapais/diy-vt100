@@ -105,15 +105,14 @@ extern struct __setting setting;
 #define setting_tab_high(pos) 	__high(setting.tabs, __bitmask(pos))
 #define setting_tab_low(pos) 	__low(setting.tabs, __bitmask(pos))
 #define setting_tab_flip(pos) 	__flip(setting.tabs, __bitmask(pos))
-#define setting_tab_clear() 	__clear(setting.tabs)
+#define setting_tabs_clear() 	(setting.tabs = 0)
 
 #define setting_tab_islow(pos) 	__islow(setting.tabs, __bitmask(pos))
 #define setting_tab_ishigh(pos) __ishigh(setting.tabs, __bitmask(pos))
 #define setting_tab_read(pos) 	__read(setting.tabs, __bitmask(pos))
 
-
-#define setting_save() flash_store()
-#define setting_load() flash_load()
-#define setting_init() flash_load()
+void setting_load();
+void setting_store();
+void setting_init();
 
 #endif

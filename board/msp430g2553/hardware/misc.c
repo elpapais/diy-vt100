@@ -9,7 +9,7 @@
 #include <diy-vt100/hardware/nokia1100.h>
 
 void
-msp430_init()
+hardware_init()
 {
 	/* hold watch dog timer */
 	WDTCTL = WDTPW + WDTHOLD;
@@ -40,4 +40,9 @@ msp430_init()
 	wdt_init();
 	timer1_A3_init();
 	nokia1100_init();
+}
+
+void hardware_reset()
+{
+	WDTCTL = 0;
 }

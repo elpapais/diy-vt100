@@ -11,7 +11,6 @@
 #define SCREEN_BRIGHTNESS_MIN TIMER1_A3_PWM_MIN
 
 #define screen_brightness(value) timer1_A3_pwm(value)
-
 #define screen_send(data_arr, size) nokia1100_send_data(data_arr, size)
 
 #endif

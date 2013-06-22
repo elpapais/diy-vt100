@@ -5,25 +5,17 @@
 #include <diy-vt100/state-machine.h>
 #include <diy-vt100/vt100/buffer.h>
 
-extern const struct __vt100_char setup_buffer_A[VT100_HEIGHT][VT100_WIDTH];
-extern const struct __vt100_char setup_buffer_B[VT100_HEIGHT][VT100_WIDTH];
+extern uint8_t setup_number;
 
-extern const struct __state setup_state_type[];
-extern const struct __state setup_state_arrow[];
-extern const struct __state setup_state_arrow_select[];
-
-void setup();
-
-void setup_A_refresh();
-void setup_B_refresh();
-void setup_switch();
+void setupA_refresh();
+void setupA_load();
+void setupB_refresh();
+void setupB_load();
+void setup_save();
 
 void setup_state_worker();
-
-void setup_save();
-void setup_reset();
-void setup_reload();
-
+void setup();
+void setup_switch();
 void setup_value_flip();
 void setup_next_setting();
 void setup_previous_setting();

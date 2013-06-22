@@ -19,7 +19,7 @@ void vt100_TBC()
 
 		case 3:
 			/* clear all horizontal tab stops */
-			setting_tab_clear();
+			setting_tabs_clear();
 		break;
 	}
 }
