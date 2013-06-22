@@ -1,7 +1,7 @@
 #include <diy-vt100/keyboard/keyboard.h>
 #include <diy-vt100/keyboard/scancode.h>
 #include <diy-vt100/hardware/flash.h>
-#include <diy-vt100/hardware/bell.h>
+#include <diy-vt100/bell.h>
 #include <diy-vt100/uart.h>
 #include <diy-vt100/vt100/misc.h>
 #include <diy-vt100/setup.h>

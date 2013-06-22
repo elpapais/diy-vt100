@@ -4,7 +4,6 @@
 #include <diy-vt100/hardware/port1.h>
 #include <diy-vt100/hardware/port2.h>
 #include <diy-vt100/hardware/ic_74xx595.h>
-#include <diy-vt100/hardware/bell.h>
 #include <diy-vt100/hardware/led.h>
 #include <diy-vt100/hardware/nokia1100.h>
 

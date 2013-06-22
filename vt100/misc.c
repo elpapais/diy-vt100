@@ -8,7 +8,7 @@
 #include <diy-vt100/setting.h>
 
 #include <diy-vt100/hardware/misc.h>
-#include <diy-vt100/hardware/bell.h>
+#include <diy-vt100/bell.h>
 #include <diy-vt100/hardware/led.h>
 
 void vt100_init()

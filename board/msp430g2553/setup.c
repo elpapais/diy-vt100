@@ -4,7 +4,6 @@
 
 #include <diy-vt100/vt100/cursor.h>
 #include <diy-vt100/vt100/buffer.h>
-#include <diy-vt100/hardware/bell.h>
 
 void setupB_refresh()
 {
