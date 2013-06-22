@@ -4,7 +4,7 @@
 #include <diy-vt100/setting.h>
 
 #include <diy-vt100/screen.h>
-#include <diy-vt100/hardware/misc.h>
+#include <diy-vt100/hardware.h>
 #include <diy-vt100/vt100/state.h>
 #include <diy-vt100/vt100/cursor.h>
 
@@ -17,7 +17,7 @@ uint8_t setup_number;
 const struct __state
 setup_state_type[] = 
 {
-	state_noparam	(0, setup_state_worker),
+	state_worker	(setup_state_worker),
 	
 	state_select	(ASCII_ESCAPE, setup_state_arrow),
 	state_noparam	(ASCII_DC3, setup_save), /* CTRL-S pressed */
@@ -40,7 +40,7 @@ setup_state_type[] =
 const struct __state
 setup_state_arrow[] = 
 {
-	state_noparam	(0, setup_state_worker),
+	state_worker	(setup_state_worker),
 	
 	state_select	('O', setup_state_arrow_select),
 	state_select	('?', setup_state_arrow_select),
@@ -55,7 +55,7 @@ setup_state_arrow[] =
 const struct __state
 setup_state_arrow_select[] =
 {
-	state_noparam	(0, setup_state_worker),
+	state_worker	(setup_state_worker),
 	
 	state_noparam	('A', setup_brightness_increase),
 	state_noparam	('B', setup_brightness_decrease),

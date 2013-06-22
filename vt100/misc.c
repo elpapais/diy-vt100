@@ -7,14 +7,13 @@
 #include <diy-vt100/state-machine.h>
 #include <diy-vt100/setting.h>
 
-#include <diy-vt100/hardware/misc.h>
+#include <diy-vt100/hardware.h>
 #include <diy-vt100/bell.h>
-#include <diy-vt100/hardware/led.h>
+#include <diy-vt100/led.h>
 
 void vt100_init()
 {
-	led_on(LED_ONLINE);
-	led_refresh();
+	led_on(ONLINE);
 	
 	/* TODO: check power online/offline mode & keyboard connected */
 	/* TODO: support offline mode */
@@ -203,31 +202,27 @@ vt100_DECLL()
 		switch(param.data[i])
 		{
 			case 0:
-				led_off(LED_L1 | LED_L2 | LED_L3 | LED_L4);
+				led_off(PROG1);
+				led_off(PROG2);
+				led_off(PROG3);
+				led_off(PROG4);
 			break;
 			
 			case 1:
-				led_on(LED_L1);
+				led_on(PROG1);
 			break;
 			
 			case 2:
-				led_on(LED_L2);
+				led_on(PROG2);
 			break;
 			
 			case 3:
-				led_on(LED_L3);
+				led_on(PROG3);
 			break;
 			
 			case 4:
-				led_on(LED_L4);
+				led_on(PROG4);
 			break;
 		}
 	}
-	
-	led_refresh();
-}
-
-void vt100_BEL()
-{
-	bell_long();
 }

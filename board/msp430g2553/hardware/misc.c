@@ -1,10 +1,9 @@
-#include <diy-vt100/hardware/misc.h>
+#include <diy-vt100/hardware.h>
 #include <diy-vt100/hardware/timer1_A3.h>
 #include <diy-vt100/hardware/wdt.h>
 #include <diy-vt100/hardware/port1.h>
 #include <diy-vt100/hardware/port2.h>
 #include <diy-vt100/hardware/ic_74xx595.h>
-#include <diy-vt100/hardware/led.h>
 #include <diy-vt100/hardware/nokia1100.h>
 
 void
@@ -44,4 +43,10 @@ hardware_init()
 void hardware_reset()
 {
 	WDTCTL = 0;
+}
+
+void refresh_finished()
+{
+	ic_74xx595_refresh();
+	_BIS_SR(LPM1_bits + GIE);
 }

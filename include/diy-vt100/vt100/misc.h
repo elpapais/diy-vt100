@@ -16,8 +16,6 @@ bool_t __is_vt100_malfunctioning();
 void vt100_sequence_terminate();
 
 void vt100_DECTST();
-
-void vt100_BEL();
 void vt100_DECLL();
 
 #endif

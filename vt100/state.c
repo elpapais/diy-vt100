@@ -1,30 +1,31 @@
-#include <diy-vt100/state-machine.h>
-#include <diy-vt100/param.h>
-
 #include <diy-vt100/vt100/attribute.h>
 #include <diy-vt100/vt100/buffer.h>
 #include <diy-vt100/vt100/cursor.h>
 #include <diy-vt100/vt100/margin.h>
-#include <diy-vt100/vt100/misc.h>
 #include <diy-vt100/vt100/report.h>
 #include <diy-vt100/vt100/screen.h>
 #include <diy-vt100/vt100/tab.h>
 #include <diy-vt100/vt100/state.h>
+#include <diy-vt100/vt100/misc.h>
 
 #include <diy-vt100/vt52/misc.h>
 
+#include <diy-vt100/state-machine.h>
+#include <diy-vt100/param.h>
+#include <diy-vt100/bell.h>
+
 const struct __state
-vt100_state_C0[] = 
+vt100_state_C0[] =
 {
-	state_noparam	(0, vt100_state_worker),
-	
+	state_worker	(vt100_state_worker),
+
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
 	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
 	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
-	
-	state_noparam	(ASCII_BELL, vt100_BEL),
+
+	state_noparam	(ASCII_BELL, bell_long),
 	state_noparam	(ASCII_TAB, vt100_HT),
-	state_maxparam		(ASCII_BS, vt100_CUB, 1, 1),
+	state_maxparam	(ASCII_BS, vt100_CUB, 1, 1),
 	state_noparam	(ASCII_LF, vt100_LF),
 	state_noparam	(ASCII_VT, vt100_LF),
 	state_noparam	(ASCII_FF, vt100_LF),
@@ -38,17 +39,17 @@ vt100_state_C0[] =
 const struct __state
 vt100_state_C1[] = //ESC
 {
-	state_noparam	(0, vt100_state_worker),
-	
+	state_worker	(vt100_state_worker),
+
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
 	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
 	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
-	
+
 	/* conflicting (vt100 & vt52) | TODO: resolve conflicts */
 	state_ignore	('D'),
 	state_ignore	('H'),
 	state_ignore	('Z'),
-	
+
 	/* vt100 */
 	state_select	('[', vt100_state_opensquarebracket),
 	state_select	('#', vt100_state_hash),
@@ -59,7 +60,7 @@ vt100_state_C1[] = //ESC
 	state_noparam	('E', vt100_NEL),
 	state_noparam	('H', vt100_HTS),
 	state_noparam	('M', vt100_RI),
-	
+
 	/* vt52 */
 	state_maxparam		('=', vt100_DECKPAM, 1, 1),
 	state_maxparam		('>', vt100_DECKPAM, 1, 0),
@@ -71,14 +72,14 @@ vt100_state_C1[] = //ESC
 	state_maxparam		('H', vt100_CUP, 2, 0),
 	state_noparam	('I', vt100_RI),
 	state_noparam	('Z', vt52_ident),
-	
+
 	state_end		()
 };
 
 const struct __state
 vt100_state_open_smallbracket[] = //(
 {
-	state_noparam	(0, vt100_state_worker),
+	state_worker	(vt100_state_worker),
 
 	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
 	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
@@ -89,8 +90,8 @@ vt100_state_open_smallbracket[] = //(
 const struct __state
 vt100_state_close_smallbracket[] = //)
 {
-	state_noparam	(0, vt100_state_worker),
-	
+	state_worker	(vt100_state_worker),
+
 	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
 	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
@@ -100,13 +101,13 @@ vt100_state_close_smallbracket[] = //)
 const struct __state
 vt100_state_opensquarebracket[] = //[
 {
-	state_noparam	(0, vt100_state_worker),
-	
+	state_worker	(vt100_state_worker),
+
 	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
 	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
 	state_select	('?', vt100_state_question),
-	
+
 	state_maxparam		('D', vt100_CUB, 1, 1),
 	state_maxparam		('B', vt100_CUD, 1, 1),
 	state_maxparam		('C', vt100_CUF, 1, 1),
@@ -131,12 +132,12 @@ vt100_state_opensquarebracket[] = //[
 const struct __state
 vt100_state_hash[] = //#
 {
-	state_noparam	(0, vt100_state_worker),
-	
+	state_worker	(vt100_state_worker),
+
 	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
 	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
-	
+
 	state_noparam	('3', vt100_DECDHL_top),
 	state_noparam	('4', vt100_DECDHL_bottom),
 	state_noparam	('5', vt100_DECDWL),
@@ -147,8 +148,8 @@ vt100_state_hash[] = //#
 const struct __state
 vt100_state_question[] = //?
 {
-	state_noparam	(0, vt100_state_worker),
-	
+	state_worker	(vt100_state_worker),
+
 	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
 	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
 	state_minparam	('l', vt100_setting_low, 1, 0),
@@ -171,13 +172,13 @@ void vt100_state_worker()
 			/* NOTE: can become a bug if function with state used
 			 * currently we only support param's */
 			state_current = (struct __state *)vt100_state_C0;
-			
+
 			/* chop of extra param */
-			param_default(state_iterate->arg.param.pcount, 
+			param_default(state_iterate->arg.param.pcount,
 							state_iterate->arg.param.pdefault);
-			
+
 			state_iterate->cb();
-			
+
 			/* reset param */
 			param.count = 0;
 		}

@@ -1,12 +1,10 @@
 #ifndef _HARDWARE_H_
 #define _HARDWARE_H_
 
-#include <msp430.h>
+#include <diy-vt100/common.h>
 
 void hardware_init();
-
-#define __refresh_finished() _BIS_SR(LPM1_bits + GIE)
-
+void refresh_finished();
 void hardware_reset();
 
 #endif

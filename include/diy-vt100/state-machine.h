@@ -24,6 +24,7 @@ struct __state
 extern struct __state *state_current;
 extern struct __state *state_iterate;
 
+#define state_worker(func)				{func, 0}
 #define state_state(ch, func, _state) 	{func, ch, .arg = {.state = _state}}
 #define state_param(ch, func, pc, pd) 	{func, ch, .arg = {.param = {.pcount = pc, .pdefault = pd}}}
 #define state_end() 					{0}

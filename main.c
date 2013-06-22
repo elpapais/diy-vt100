@@ -1,4 +1,4 @@
-#include <diy-vt100/hardware/misc.h>
+#include <diy-vt100/hardware.h>
 #include <diy-vt100/common.h>
 #include <diy-vt100/keyboard/keyboard.h>
 #include <diy-vt100/splash.h>
@@ -38,7 +38,7 @@ main()
 		
 		vt100_screen_refresh();
 		
-		__refresh_finished();
+		refresh_finished();
 	goto __loop;
 }
 
