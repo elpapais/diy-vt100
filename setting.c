@@ -1,3 +1,3 @@
 #include <diy-vt100/setting.h>
 
-struct __setting setting;
+setting_t setting;

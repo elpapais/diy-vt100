@@ -15,8 +15,6 @@
 #define TIMER0_A3_TACCR1 TA0CCR1
 #define TIMER0_A3_TACCTL0 TA0CCTL0
 
-#define BUZZER 	IC_74xx595_PIN0
-
 void timer0_A3_start(const uint16_t delay);
 void timer0_A0_interrupt (void) __attribute__((interrupt(TIMER0_A0_VECTOR)));
 
@@ -32,7 +30,7 @@ void bell_long()
 
 void timer0_A3_start(const uint16_t delay)
 {
-	ic_74xx595_high(BUZZER);
+	ic_74xx595.buzzer = TRUE;
 	ic_74xx595_refresh();
 
 	TIMER0_A3_TACCR0 = delay;
@@ -54,7 +52,8 @@ void timer0_A3_start(const uint16_t delay)
 void timer0_A0_interrupt()
 {
 	/* turn off buzzer */
-	ic_74xx595_low(BUZZER);
+	ic_74xx595.buzzer = FALSE;
 	ic_74xx595_refresh();
+	
 	TIMER0_A3_TACTL = TACLR;
 }

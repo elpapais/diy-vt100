@@ -1,6 +1,7 @@
 #include <diy-vt100/hardware/wdt.h>
 #include <diy-vt100/setting.h>
 
+const uint8_t wdt_cycles_max = 64;
 uint8_t wdt_cycles;
 
 void wdt_init()
@@ -11,7 +12,7 @@ void wdt_init()
 
 void wdt_interrupt()
 {
-	if(!(++wdt_cycles < WDT_CYCLES_MAX))
+	if(!(++wdt_cycles < wdt_cycles_max))
 	{
 		setting_flip(SETTING__CURSOR_STATE);
 	

@@ -28,8 +28,8 @@ setup_state_type[] =
 	state_noparam	('4', setup_LOCAL),
 	state_noparam	('5', setup_switch),
 	state_noparam	('6', setup_value_flip),
-	state_noparam	('7', setup_speed), /* transmit speed */
-	state_noparam	('8', setup_speed), /* receive speed */
+	state_noparam	('7', setup_uart_tx), /* transmit speed */
+	state_noparam	('8', setup_uart_rx), /* receive speed */
 	state_noparam	('9', setup_DECCOLM),
 	state_noparam	(ASCII_LF, setup_next_setting),
 	state_noparam	(ASCII_SPACE, setup_next_setting),
@@ -87,7 +87,7 @@ void setup()
 		}
 		
 		state_current = (struct __state *)vt100_state_C0;
-		splash();
+		screen_splash();
 	}
 	
 	
@@ -159,7 +159,7 @@ void setup_brightness_increase()
 void setup_brightness_decrease()
 {
 	/* decrease brightness */
-	if(setting.brightness > SCREEN_BRIGHTNESS_MAX)
+	if(setting.brightness > SCREEN_BRIGHTNESS_MIN)
 	{
 		screen_brightness(--setting.brightness);
 	}
@@ -265,7 +265,7 @@ void setup_value_flip()
 void setup_DECCOLM()
 {
 	/* is it setup A */
-	if(setting_low(SETTING__SETUP_TYPE))
+	if(setting_islow(SETTING__SETUP_TYPE))
 	{
 		setting_flip(SETTING_DECCOLM);
 	}
@@ -294,11 +294,20 @@ void setup_TAB_flip()
 	}
 }
 
-void setup_speed()
+void setup_uart_rx()
 {
 	/* handle speeds */
-	if(!(++setting.speed < UART_SPEED_SIZE))
+	if(!(++setting.uart_rx < UART_SPEED_COUNT))
 	{
-		setting.speed = 0;
+		setting.uart_rx = 0;
+	}
+}
+
+void setup_uart_tx()
+{
+	/* handle speeds */
+	if(!(++setting.uart_tx < UART_SPEED_COUNT))
+	{
+		setting.uart_tx = 0;
 	}
 }

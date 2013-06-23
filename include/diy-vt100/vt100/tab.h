@@ -1,5 +1,5 @@
-#ifndef _VT100_TAB_H_
-#define _VT100_TAB_H_
+#ifndef VT100_TAB_H
+#define VT100_TAB_H
 
 void vt100_TBC();
 void vt100_HTS();

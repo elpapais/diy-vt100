@@ -1,5 +1,5 @@
-#ifndef _VT100_STATE_H_
-#define _VT100_STATE_H_
+#ifndef VT100_STATE_H
+#define VT100_STATE_H
 
 #include <diy-vt100/state-machine.h>
 

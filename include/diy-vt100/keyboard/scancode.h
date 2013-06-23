@@ -1,5 +1,5 @@
-#ifndef _KBD_SCANCODE_H_
-#define _KBD_SCANCODE_H_
+#ifndef KBD_SCANCODE_H
+#define KBD_SCANCODE_H
 
 #define KBD_SCANCODE_SIZE 126
 

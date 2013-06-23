@@ -2,7 +2,7 @@
 #define SCREEN_NOKIA1100_H
 
 #include <diy-vt100/hardware/screen/nokia1100.h>
-#include <stdint.h>
+#include <diy-vt100/common.h>
 
 /* VERT ADDR */
 #define nokia1100_gotoy(addr) nokia1100_send_cmd(0xB0 | (addr & 0x0F))
@@ -76,18 +76,16 @@
 
 void nokia1100_send_cmd (const uint8_t data);
 void nokia1100_send_data(const uint8_t *data_array, const uint8_t size);
-
-/* API adhock */
-#define screen_send(arr, size) nokia1100_send_data(arr, size)
+void nokia1100_full_clear();
 
 typedef uint8_t row_t;
 typedef uint8_t col_t;
 
-#define screen_row 8
-#define screen_col 16
-#define screen_width 96
-#define screen_height 65
-#define screen_char_height 8
-#define screen_char_width 6
+#define SCREEN_ROW 8
+#define SCREEN_COL 16
+#define SCREEN_WIDTH 96
+#define SCREEN_HEIGHT 65
+#define SCREEN_CHAR_HEIGHT 8
+#define SCREEN_CHAR_WIDTH 6
 
 #endif

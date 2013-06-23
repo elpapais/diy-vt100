@@ -1,6 +1,6 @@
 #include <diy-vt100/param.h>
 
-struct __param param;
+param_t param;
 
 /* TODO: check for overflow */
 void param_add()

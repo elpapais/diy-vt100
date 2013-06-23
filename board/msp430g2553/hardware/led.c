@@ -6,31 +6,31 @@ void led_on(led_t led_no)
 	switch(led_no)
 	{
 		case ONLINE:
-			ic_74xx595_high(IC_74xx595_PIN1);
+			ic_74xx595.led_online = TRUE;
 		break;
 		
 		case LOCAL:
-			ic_74xx595_high(IC_74xx595_PIN2);
+			ic_74xx595.led_offline = TRUE;
 		break;
 		
 		case KBDLOCK:
-			ic_74xx595_high(IC_74xx595_PIN3);
+			ic_74xx595.led_kbdlock = TRUE;
 		break;
 		
 		case PROG1:
-			ic_74xx595_high(IC_74xx595_PIN4);
+			ic_74xx595.led_prog1 = TRUE;
 		break;
 		
 		case PROG2:
-			ic_74xx595_high(IC_74xx595_PIN5);
+			ic_74xx595.led_prog2 = TRUE;
 		break;
 		
 		case PROG3:
-			ic_74xx595_high(IC_74xx595_PIN6);
+			ic_74xx595.led_prog3 = TRUE;
 		break;
 		
 		case PROG4:
-			ic_74xx595_high(IC_74xx595_PIN7);
+			ic_74xx595.led_prog4 = TRUE;
 		break;
 	}
 }
@@ -40,31 +40,31 @@ void led_off(led_t led_no)
 	switch(led_no)
 	{
 		case ONLINE:
-			ic_74xx595_low(IC_74xx595_PIN1);
+			ic_74xx595.led_online = FALSE;
 		break;
 		
 		case LOCAL:
-			ic_74xx595_low(IC_74xx595_PIN2);
+			ic_74xx595.led_offline = FALSE;
 		break;
 		
 		case KBDLOCK:
-			ic_74xx595_low(IC_74xx595_PIN3);
+			ic_74xx595.led_kbdlock = FALSE;
 		break;
 		
 		case PROG1:
-			ic_74xx595_low(IC_74xx595_PIN4);
+			ic_74xx595.led_prog1 = FALSE;
 		break;
 		
 		case PROG2:
-			ic_74xx595_low(IC_74xx595_PIN5);
+			ic_74xx595.led_prog2 = FALSE;
 		break;
 		
 		case PROG3:
-			ic_74xx595_low(IC_74xx595_PIN6);
+			ic_74xx595.led_prog3 = FALSE;
 		break;
 		
 		case PROG4:
-			ic_74xx595_low(IC_74xx595_PIN7);
+			ic_74xx595.led_prog4 = FALSE;
 		break;
 	}
 }

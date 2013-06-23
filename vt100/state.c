@@ -3,7 +3,6 @@
 #include <diy-vt100/vt100/cursor.h>
 #include <diy-vt100/vt100/margin.h>
 #include <diy-vt100/vt100/report.h>
-#include <diy-vt100/vt100/screen.h>
 #include <diy-vt100/vt100/tab.h>
 #include <diy-vt100/vt100/state.h>
 #include <diy-vt100/vt100/misc.h>
@@ -186,7 +185,7 @@ void vt100_state_worker()
 	/* if we are at start state, store it in buffer */
 	else if(state_current == (struct __state *)vt100_state_C0)
 	{
-		vt100_buffer_putchar();
+		vt100_putchar();
 	}
 	else
 	{

@@ -1,22 +1,22 @@
-#ifndef _SETTING_H_
-#define _SETTING_H_
+#ifndef SETTING_H
+#define SETTING_H
 
 #include <diy-vt100/common.h>
-#include <diy-vt100/hardware/flash.h>
 
-#define SETTING_ANSWERBACK_SIZE 20
+#define answerback_size 20
 
-struct __setting
+typedef struct
 {
 	uint16_t vr_bits;
 	uint16_t nvr_bits;
 	uint8_t brightness;
-	uint8_t speed;
+	uint8_t uart_rx;
+	uint8_t uart_tx;
 	uint16_t tabs;
-	uint8_t answerback[SETTING_ANSWERBACK_SIZE];
-};
+	uint8_t answerback[answerback_size];
+} __attribute((packed)) setting_t;
 
-extern struct __setting setting;
+extern setting_t setting;
 
 /* note: (FALSE|TRUE)
  * ONLINE: 	(online mode|offline mode)
@@ -66,7 +66,7 @@ extern struct __setting setting;
 #define SETTING_DECAWM		__setting_nvr(14)
 #define SETTING_SHIFTED		__setting_nvr(15)
 
-#define __setting_get_actual_bitmask(num) __bitmask(num & ~BIT7) /* remove BIT7(for NVR or not) */
+#define __setting_get_actual_bitmask(bm) __bitmask(bm & ~BIT7) /* remove BIT7(for NVR or not) */
 #define __setting_flip(var, num) __flip(var, __setting_get_actual_bitmask(num))
 #define __setting_high(var, num) __high(var, __setting_get_actual_bitmask(num))
 #define __setting_low(var, num)  __low(var, __setting_get_actual_bitmask(num))
@@ -109,10 +109,27 @@ extern struct __setting setting;
 
 #define setting_tab_islow(pos) 	__islow(setting.tabs, __bitmask(pos))
 #define setting_tab_ishigh(pos) __ishigh(setting.tabs, __bitmask(pos))
-#define setting_tab_read(pos) 	__read(setting.tabs, __bitmask(pos))
 
 void setting_load();
 void setting_store();
 void setting_init();
+
+/* === parmanent setting === */
+extern const setting_t parm_setting;
+
+#define parm_setting_read(num) \
+	__setting_select_mem(num, __setting_read(parm_setting.nvr_bits, num), \
+								__setting_read(setting.vr_bits, num))
+								
+#define parm_setting_ishigh(num) \
+	__setting_select_mem(num, __setting_ishigh(parm_setting.nvr_bits, num), \
+								__setting_ishigh(setting.vr_bits, num))
+								
+#define parm_setting_islow(num) \
+	__setting_select_mem(num, __setting_islow(parm_setting.nvr_bits, num), \
+								__setting_islow(setting.vr_bits, num))
+
+#define parm_setting_tab_islow(pos) __islow(parm_setting.tabs, __bitmask(pos))
+#define parm_setting_tab_ishigh(pos) __ishigh(parm_setting.tabs, __bitmask(pos))
 
 #endif

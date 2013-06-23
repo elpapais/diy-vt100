@@ -6,7 +6,7 @@
 #include <diy-vt100/param.h>
 #include <diy-vt100/state-machine.h>
 #include <diy-vt100/setting.h>
-
+#include <diy-vt100/uart.h>
 #include <diy-vt100/hardware.h>
 #include <diy-vt100/bell.h>
 #include <diy-vt100/led.h>
@@ -73,23 +73,17 @@ void vt100_DECSCNM()
 	if(param.data[0])
 	{
 		setting_high(SETTING_DECSCNM);
-		nokia1100_invertpixel_on();
 	}
 	else
 	{
 		setting_low(SETTING_DECSCNM);
-		nokia1100_invertpixel_off();
 	}
-	
-	
 }
 
 /* send answerback message */
 void vt100_ENQ()
 {
-	uint8_t i = 0;
-
-	for(i=0; i < SETTING_ANSWERBACK_SIZE; i++)
+	for(uint8_t i=0; i < answerback_size; i++)
 	{
 		uart_send(setting.answerback[i]);
 	}
@@ -195,9 +189,7 @@ void vt100_sequence_terminate()
 void 
 vt100_DECLL()
 {
-	uint8_t i;
-	
-	for(i=0; i < param.count; i++)
+	for(register uint8_t i=0; i < param.count; i++)
 	{
 		switch(param.data[i])
 		{

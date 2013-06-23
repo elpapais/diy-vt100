@@ -1,5 +1,4 @@
 #include <diy-vt100/hardware/port2.h>
-#include <diy-vt100/hardware/flash.h>
 #include <diy-vt100/keyboard/keyboard.h>
 #include <diy-vt100/uart.h>
 #include <diy-vt100/cqueue.h>

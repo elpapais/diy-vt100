@@ -1,20 +1,20 @@
-#ifndef _KBD_H_
-#define _KBD_H_
+#ifndef KBD_H
+#define KBD_H
 
 #include <diy-vt100/common.h>
 #include <diy-vt100/cqueue.h>
 
-struct __kbd
+typedef struct
 {
 	int8_t index;
 	uint8_t latch;
 	uint8_t data;
 	
 	uint8_t param;
-	struct __cqueue queue;
-};
+	cqueue_t queue;
+} __attribute((packed)) kbd_t;
 
-extern struct __kbd kbd;
+extern kbd_t kbd;
 
 #define KBD_CTRL 	BIT0
 #define KBD_NUM 	BIT1

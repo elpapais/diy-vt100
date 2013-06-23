@@ -1,10 +1,7 @@
-#ifndef _COMMON_H_
-#define _COMMON_H_
+#ifndef COMMON_H
+#define COMMON_H
 
 #include <diy-vt100/hardware/common.h>
-
-typedef uint8_t col_t;
-typedef uint8_t row_t;
 
 /* ASCII code */
 #define ASCII_NULL		0x00 /* null(\0)					CTRL @ */

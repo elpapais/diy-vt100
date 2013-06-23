@@ -1,6 +1,6 @@
 #include <diy-vt100/cqueue.h>
 
-uint8_t cqueue_pop(struct __cqueue *queue)
+uint8_t cqueue_pop(cqueue_t *queue)
 {
 	uint8_t data = queue->data[queue->start++];
 	
@@ -12,7 +12,7 @@ uint8_t cqueue_pop(struct __cqueue *queue)
 	return data;
 }
 
-void cqueue_push(struct __cqueue *queue, const uint8_t data)
+void cqueue_push(cqueue_t *queue, const uint8_t data)
 {
 	if(queue->count == CQUEUE_SIZE)
 	{
@@ -26,7 +26,7 @@ void cqueue_push(struct __cqueue *queue, const uint8_t data)
 	queue->count++;
 }
 
-void cqueue_overflow(struct __cqueue *queue) 
+void cqueue_overflow(cqueue_t *queue) 
 {
 	P1DIR |= BIT0;
 	

@@ -3,7 +3,8 @@
 #include <diy-vt100/param.h>
 #include <diy-vt100/setting.h>
 #include <diy-vt100/vt100/cursor.h>
-#include <diy-vt100/hardware/flash.h>
+#include <diy-vt100/vt100/misc.h>
+#include <diy-vt100/setting.h>
 
 /* report terminal parameter (requested via DECREQTPARAM) */
 void
@@ -20,13 +21,14 @@ vt100_DECREPTPARAM()
 	
 	uart_send_escape();
 	uart_send('[');
-	uart_send_uint8(3);
-	uart_send(';');
 	
+	uart_send_uint8(3);
+	
+	uart_send(';');
 	/* parity info's */
-	if(flash_setting_read(SETTING_PARITY))
+	if(parm_setting_read(SETTING_PARITY))
 	{
-		uart_send(flash_setting_read(SETTING_PARITYSENSE) ? '5' : '4');
+		uart_send(parm_setting_read(SETTING_PARITYSENSE) ? '5' : '4');
 	}
 	else
 	{
@@ -35,15 +37,22 @@ vt100_DECREPTPARAM()
 	}
 	
 	uart_send(';');
+	uart_send((parm_setting_read(SETTING_BPC)) ? '1' : '2');
 	
-	uart_send((flash_setting_read(SETTING_BPC)) ? '1' : '2');
+	uart_send(';');
+	uart_send_array( &uart_speed[setting.uart_tx].value[1], 
+						uart_speed[setting.uart_tx].value[0]);
 	
 	uart_send(';');
-	uart_send_uint8(112);
+	uart_send_array( &uart_speed[setting.uart_rx].value[1], 
+						uart_speed[setting.uart_rx].value[0]);
+	
 	uart_send(';');
-	uart_send_uint8(16);
+	uart_send(uart_clkmul);
+	
 	uart_send(';');
-	uart_send_uint8(0);
+	uart_send('0');
+	
 	uart_send('x');
 }
 

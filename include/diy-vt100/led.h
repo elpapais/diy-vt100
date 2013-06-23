@@ -1,5 +1,5 @@
-#ifndef _LED_H_
-#define _LED_H_
+#ifndef LED_H
+#define LED_H
 
 typedef enum
 {

@@ -1,12 +1,12 @@
 #include <diy-vt100/keyboard/keyboard.h>
 #include <diy-vt100/keyboard/scancode.h>
-#include <diy-vt100/hardware/flash.h>
+#include <diy-vt100/setting.h>
 #include <diy-vt100/bell.h>
 #include <diy-vt100/uart.h>
 #include <diy-vt100/vt100/misc.h>
 #include <diy-vt100/setup.h>
 
-struct __kbd kbd;
+kbd_t kbd;
 
 #define break_event_stop()  \
 	if(kbd_latch_ishigh(KBD_BREAK)) \
@@ -15,7 +15,7 @@ struct __kbd kbd;
 	}
 	
 #define keyclick_sound() \
-	if(flash_setting_ishigh(SETTING_KEYCLICK)) \
+	if(parm_setting_ishigh(SETTING_KEYCLICK)) \
 	{ \
 		bell_short(); \
 	}
@@ -23,7 +23,7 @@ struct __kbd kbd;
 #define kbd_fn(ident) \
 	break_event_stop(); \
 	uart_send_escape(); \
-	uart_send(flash_setting_ishigh(SETTING_DECANM) ? 'O' : '?');\
+	uart_send(parm_setting_ishigh(SETTING_DECANM) ? 'O' : '?');\
 	uart_send(ident); \
 	keyclick_sound()
 
@@ -39,10 +39,10 @@ struct __kbd kbd;
 		} \
 	} \
 	/* send accoring to Keypad mode */ \
-	else if(flash_setting_ishigh(SETTING_DECKPAM)) \
+	else if(parm_setting_ishigh(SETTING_DECKPAM)) \
 	{ \
 		uart_send_escape(); \
-		uart_send(flash_setting_ishigh(SETTING_DECANM) ? 'O' : '?'); \
+		uart_send(parm_setting_ishigh(SETTING_DECANM) ? 'O' : '?'); \
 		uart_send(appmode); \
 	} \
 	else \
@@ -56,9 +56,9 @@ struct __kbd kbd;
 #define kbd_arrow(ident) \
 	uart_send_escape(); \
 	 \
-	if(flash_setting_ishigh(SETTING_DECANM)) \
+	if(parm_setting_ishigh(SETTING_DECANM)) \
 	{ \
-		uart_send(flash_setting_ishigh(SETTING_DECCKM) ? 'O' : '['); \
+		uart_send(parm_setting_ishigh(SETTING_DECCKM) ? 'O' : '['); \
 	} \
 	 \
 	uart_send(ident); \
@@ -66,7 +66,7 @@ struct __kbd kbd;
 
 void kbd_decode()
 {
-	uint8_t ch = 0;
+	register uint8_t ch = 0;
 	
 	if(kbd.param < KBD_SCANCODE_SIZE)
 	{
@@ -263,7 +263,7 @@ kbd_enter()
 {
 	break_event_stop();
 	
-	if(kbd_latch_ishigh(KBD_MODIFIER) && flash_setting_ishigh(SETTING_DECKPAM))
+	if(kbd_latch_ishigh(KBD_MODIFIER) && parm_setting_ishigh(SETTING_DECKPAM))
 	{
 		/* keypad enter */
 		uart_send_escape();

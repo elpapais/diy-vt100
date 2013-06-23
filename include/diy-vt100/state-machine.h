@@ -1,5 +1,5 @@
-#ifndef _STATE_H_
-#define _STATE_H_
+#ifndef STATE_H
+#define STATE_H
 
 #include <diy-vt100/common.h>
 
@@ -35,5 +35,7 @@ extern struct __state *state_iterate;
 #define state_minparam(ch, func, pc, pd)state_param(ch, func, (-1 * pc), pd)
 #define state_ignore(ch)				state_state(ch, (callback_t)1, 0)
 #define state_select(ch, state)			state_state(ch, (callback_t)2, state)
+
 void state_do();
+
 #endif

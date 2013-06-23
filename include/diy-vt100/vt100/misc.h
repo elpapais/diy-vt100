@@ -1,5 +1,5 @@
-#ifndef _VT100_MISC_H_
-#define _VT100_MISC_H_
+#ifndef VT100_MISC_H
+#define VT100_MISC_H
 
 #include <diy-vt100/common.h>
 

@@ -1,5 +1,5 @@
-#ifndef _HARDWARE_H_
-#define _HARDWARE_H_
+#ifndef HARDWARE_H
+#define HARDWARE_H
 
 #include <diy-vt100/common.h>
 

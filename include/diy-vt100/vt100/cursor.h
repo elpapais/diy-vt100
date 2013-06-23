@@ -1,17 +1,18 @@
-#ifndef _VT100_CURSOR_H_
-#define _VT100_CURSOR_H_
+#ifndef VT100_CURSOR_H
+#define VT100_CURSOR_H
 
 #include <diy-vt100/common.h>
+#include <diy-vt100/screen.h>
 
 /* cursor position */
-struct __vt100_cursor
+struct __cursor
 {
 	row_t row;
 	col_t col;
 };
 
-extern struct __vt100_cursor vt100_cursor;
-extern struct __vt100_cursor vt100_cursor_bkp;
+extern struct __cursor vt100_cursor;
+extern struct __cursor vt100_cursor_bkp;
 
 void vt100_CUP();
 void vt100_CUD();

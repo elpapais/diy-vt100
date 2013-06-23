@@ -1,5 +1,5 @@
-#ifndef _HW_PORT2_H_
-#define _HW_PORT2_H_
+#ifndef HW_PORT2_H
+#define HW_PORT2_H
 
 #include <diy-vt100/common.h>
 

@@ -1,8 +1,7 @@
 #include <diy-vt100/setting.h>
 #include <diy-vt100/uart.h>
 
-struct __cqueue
-uart_tx, uart_rx;
+cqueue_t uart_tx, uart_rx;
 
 void uart_send_uint8(uint8_t val)
 {
@@ -24,17 +23,10 @@ void uart_send_uint8(uint8_t val)
 	uart_send('0' + val);
 }
 
-inline void uart_send_enter()
+void uart_send_array(const uint8_t *arr, const uint8_t size)
 {
-	uart_send(ASCII_CR);
-	
-	if(setting_ishigh(SETTING_LNM))
+	for(uint8_t i=0; i < size; i++)
 	{
-		uart_send(ASCII_LF);
+		uart_send(arr[i]);
 	}
-}
-
-inline void uart_send_escape()
-{
-	uart_send(ASCII_ESCAPE);
 }

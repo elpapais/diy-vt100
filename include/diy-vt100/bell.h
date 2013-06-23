@@ -1,5 +1,5 @@
-#ifndef _BELL_H_
-#define _BELL_H_
+#ifndef BELL_H
+#define BELL_H
 
 void bell_short();
 void bell_long();

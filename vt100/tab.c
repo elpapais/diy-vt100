@@ -8,8 +8,6 @@
 /* tabulation clear */
 void vt100_TBC()
 {
-	uint8_t i;
-	
 	switch(param.data[0])
 	{
 		case 0:
@@ -33,11 +31,9 @@ void vt100_HTS()
 /* give a horizontal tab */
 void vt100_HT()
 {
-	col_t j;
-	
-	for(j = vt100_cursor.col; j < VT100_WIDTH; j++)
+	for(register col_t j = vt100_cursor.col; j < SCREEN_COL; j++)
 	{
-		if(setting_tab_read(j))
+		if(setting_tab_ishigh(j))
 		{
 			vt100_cursor.col = j;
 		}
