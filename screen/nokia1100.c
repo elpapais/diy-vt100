@@ -159,28 +159,28 @@ void setupB_refresh()
 		vt100_cursor.row = i; \
 		vt100_cursor.col = j; \
 	}\
-	nokia1100_buffer[i][j].data = setting_ishigh(setting) ? '1' : '0'
+	nokia1100_buffer[i][j].data = setting ? '1' : '0'
 	
-	readvalue_setng(0, 6, 2, SETTING_DECSCLM);
-	readvalue_setng(1, 6, 3, SETTING_DECARM);
-	readvalue_setng(2, 6, 4, SETTING_DECSCNM);
-	readvalue_setng(3, 6, 5, SETTING_CURSOR);
+	readvalue_setng(0, 6, 2, setting.bits.DECSCLM);
+	readvalue_setng(1, 6, 3, setting.bits.DECARM);
+	readvalue_setng(2, 6, 4, setting.bits.DECSCNM);
+	readvalue_setng(3, 6, 5, setting.bits.CURSOR);
 	
-	readvalue_setng(4, 6, 9, SETTING_MARGINBELL);
-	readvalue_setng(5, 6, 10, SETTING_KEYCLICK);
-	readvalue_setng(6, 6, 11, SETTING_DECANM);
-	readvalue_setng(7, 6, 12, SETTING_AUTOX);
+	readvalue_setng(4, 6, 9, setting.bits.MARGINBELL);
+	readvalue_setng(5, 6, 10, setting.bits.KEYCLICK);
+	readvalue_setng(6, 6, 11, setting.bits.DECANM);
+	readvalue_setng(7, 6, 12, setting.bits.AUTOX);
 
-	readvalue_setng(8, 7, 2, SETTING_SHIFTED);
-	readvalue_setng(9, 7, 3, SETTING_DECAWM);
-	readvalue_setng(10, 7, 4, SETTING_LNM);
-	readvalue_setng(11, 7, 5, SETTING_DECINLM);
+	readvalue_setng(8, 7, 2, setting.bits.SHIFTED);
+	readvalue_setng(9, 7, 3, setting.bits.DECAWM);
+	readvalue_setng(10, 7, 4, setting.bits.LNM);
+	readvalue_setng(11, 7, 5, setting.bits.DECINLM);
 	
-	readvalue_setng(12, 7, 9, SETTING_PARITYSENSE);
-	readvalue_setng(13, 7, 10, SETTING_PARITY);
-	readvalue_setng(14, 7, 11, SETTING_BPC);
+	readvalue_setng(12, 7, 9, setting.bits.PARITYSENSE);
+	readvalue_setng(13, 7, 10, setting.bits.PARITY);
+	readvalue_setng(14, 7, 11, setting.bits.BPC);
 	
-	//readvalue_setng(15,7, 11 SETTING_POWER);
+	//readvalue_setng(15,7, 11 setting.bits.POWER);
 	if(setup_number == 15)
 	{
 		vt100_cursor.row = 7;
@@ -521,10 +521,10 @@ static inline uint8_t _nokia1100_char_designer(const col_t i, const row_t j, con
 	}
 	
 	if(j == vt100_cursor.col
-		&& setting_read(SETTING__CURSOR_STATE) 
+		&& setting.bits.CURSOR_STATE 
 		&& i == vt100_cursor.row)
 	{
-		send ^= parm_setting_read(SETTING_CURSOR) ? 0xFF : 0x80;
+		send ^= parm_setting.bits.CURSOR ? 0xFF : 0x80;
 	}
 	
 	return send;
@@ -536,13 +536,13 @@ void screen_shiftup()
 	register col_t j;
 	
 	/* shift down data */
-	for(i=1; i < SCREEN_ROW; i++)
+	for(i=0; i < SCREEN_ROW - 1; i++)
 	{
 		for(j=0; j < SCREEN_COL; j++)
 		{
-			nokia1100_buffer[i - 1][j] = nokia1100_buffer[i][j];
+			nokia1100_buffer[i][j] = nokia1100_buffer[i + 1][j];
 		}
-		
+		vt100_rowprop[i] = vt100_rowprop[i + 1];
 		vt100_rowprop[i].touch = TRUE;
 	}
 	
@@ -562,7 +562,7 @@ void screen_shiftdown()
 		{
 			nokia1100_buffer[i][j] = nokia1100_buffer[i - 1][j];
 		}
-		
+		vt100_rowprop[i] = vt100_rowprop[i - 1];
 		vt100_rowprop[i].touch = TRUE;
 	}
 	

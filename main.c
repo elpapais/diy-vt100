@@ -15,12 +15,12 @@ main()
 {
 	hardware_init();
 	setting_init();
-	uart_init(parm_setting_ishigh(SETTING_PARITY), parm_setting_ishigh(SETTING_PARITYSENSE), parm_setting.uart_rx, parm_setting.uart_tx);
+	uart_init(parm_setting.bits.PARITY, parm_setting.bits.PARITYSENSE, parm_setting.uart_rx, parm_setting.uart_tx);
 	vt100_init();
 	screen_init();
 	
 	screen_brightness(parm_setting.brightness);
-	screen_invert(parm_setting_ishigh(SETTING_DECSCNM));
+	screen_invert(parm_setting.bits.DECSCNM);
 	
 	/* show splash screen */
 	screen_splash();

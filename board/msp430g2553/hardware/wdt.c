@@ -14,7 +14,7 @@ void wdt_interrupt()
 {
 	if(!(++wdt_cycles < wdt_cycles_max))
 	{
-		setting_flip(SETTING__CURSOR_STATE);
+		setting.bits.CURSOR_STATE ^= TRUE;
 	
 		wdt_cycles = 0;
 		

@@ -65,23 +65,23 @@ setup_state_arrow_select[] =
 
 void setup()
 {
-	setting_flip(SETTING__SETUP_SHOW);
+	setting.bits.SETUP_SHOW ^= TRUE;
 
-	if(setting_ishigh(SETTING__SETUP_SHOW))
+	if(setting.bits.SETUP_SHOW)
 	{
 		/* enter setup */
 		uart_loopback_enable();
 		state_current = (struct __state *)setup_state_type;
 		
 		/* simulate STATE B */
-		setting_high(SETTING__SETUP_TYPE);
+		setting.bits.SETUP_TYPE = TRUE;
 		setup_switch();
 	}
 	else
 	{
 		/* exit setup */
 		
-		if(setting_islow(SETTING__LOCAL))
+		if(! setting.bits.LOCAL)
 		{
 			uart_loopback_disable();
 		}
@@ -98,9 +98,9 @@ void setup_switch()
 	setup_number = 0;
 	
 	/* invert setting (A to B) or (B to A) */
-	setting_flip(SETTING__SETUP_TYPE);
+	setting.bits.SETUP_TYPE ^= TRUE;
 	
-	if(setting_ishigh(SETTING__SETUP_TYPE))
+	if(setting.bits.SETUP_TYPE)
 	{
 		/* high show setup B */
 		setupB_load();
@@ -133,7 +133,7 @@ void setup_state_worker()
 			
 			state_iterate->cb();
 			
-			if(setting_ishigh(SETTING__SETUP_TYPE))
+			if(setting.bits.SETUP_TYPE)
 			{
 				/* high show setup B */
 				setupB_refresh();
@@ -187,72 +187,72 @@ void setup_value_flip()
 {
 	/* flip values in setup, 5 was pressed */
 	
-	if(setting_ishigh(SETTING__SETUP_TYPE))
+	if(setting.bits.SETUP_TYPE)
 	{
 		switch(setup_number)
 		{
 			/* box 1 */
 			case 0:
-				setting_flip(SETTING_CURSOR);
+				setting.bits.CURSOR ^= TRUE;
 			break;
 			
 			case 1:
-				setting_flip(SETTING_DECSCNM);
+				setting.bits.DECSCNM ^= TRUE;
 			break;
 			
 			case 2:
-				setting_flip(SETTING_DECARM);
+				setting.bits.DECARM ^= TRUE;
 			break;
 			
 			case 3:
-				setting_flip(SETTING_DECSCLM);
+				setting.bits.DECSCLM ^= TRUE;
 			break;
 			
 			/* box 2 */
 			case 4:
-				setting_flip(SETTING_MARGINBELL);
+				setting.bits.MARGINBELL ^= TRUE;
 			break;
 			
 			case 5:
-				setting_flip(SETTING_KEYCLICK);
+				setting.bits.KEYCLICK ^= TRUE;
 			break;
 			
 			case 6:
-				setting_flip(SETTING_DECANM);
+				setting.bits.DECANM ^= TRUE;
 			break;
 			
 			case 7:
-				setting_flip(SETTING_AUTOX);
+				setting.bits.AUTOX ^= TRUE;
 			break;
 			
 			/* box 3 */
 			case 8:
-				setting_flip(SETTING_SHIFTED);
+				setting.bits.SHIFTED ^= TRUE;
 			break;
 			
 			case 9:
-				setting_flip(SETTING_DECAWM);
+				setting.bits.DECAWM ^= TRUE;
 			break;
 			
 			case 10:
-				setting_flip(SETTING_LNM);
+				setting.bits.LNM ^= TRUE;
 			break;
 			
 			case 11:
-				setting_flip(SETTING_DECINLM);
+				setting.bits.DECINLM ^= TRUE;
 			break;
 			
 			/* box 4 */
 			case 12:
-				setting_flip(SETTING_PARITYSENSE);
+				setting.bits.PARITYSENSE ^= TRUE;
 			break;
 			
 			case 13:
-				setting_flip(SETTING_PARITY);
+				setting.bits.PARITY ^= TRUE;
 			break;
 			
 			case 14:
-				setting_flip(SETTING_BPC);
+				setting.bits.BPC ^= TRUE;
 			break;
 			
 			case 15:
@@ -265,21 +265,21 @@ void setup_value_flip()
 void setup_DECCOLM()
 {
 	/* is it setup A */
-	if(setting_islow(SETTING__SETUP_TYPE))
+	if(! setting.bits.SETUP_TYPE)
 	{
-		setting_flip(SETTING_DECCOLM);
+		setting.bits.DECCOLM ^= TRUE;
 	}
 }
 
 void setup_LOCAL()
 {
-	setting_flip(SETTING__LOCAL);
+	setting.bits.LOCAL ^= TRUE;
 }
 
 void setup_TABS_clear()
 {
 	/* is it setup A */
-	if(setting_islow(SETTING__SETUP_TYPE))
+	if(! setting.bits.SETUP_TYPE)
 	{
 		setting_tabs_clear();
 	}
@@ -287,8 +287,8 @@ void setup_TABS_clear()
 
 void setup_TAB_flip()
 {
+	if(! setting.bits.SETUP_TYPE)
 	/* is it setup A */
-	if(setting_islow(SETTING__SETUP_TYPE))
 	{
 		setting_tab_flip(setup_number);
 	}

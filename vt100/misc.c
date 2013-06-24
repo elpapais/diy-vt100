@@ -41,15 +41,7 @@ vt100_DECTST()
 void
 vt100_DECKPAM()
 {
-	if(param.data[0])
-	{
-		setting_high(SETTING_DECKPAM);
-	}
-	else
-	{
-		setting_low(SETTING_DECKPAM);
-	}
-	
+	setting.bits.DECKPAM = (param.data[0]) ? TRUE : FALSE;
 }
 
 /* reset to inital state (as on power on) */
@@ -64,20 +56,13 @@ vt100_RIS()
 void
 vt100_DECCKM()
 {
-	setting_high(SETTING_DECCKM);
+	setting.bits.DECCKM = TRUE;
 }
 
 /* screen in reverse vedio mode */
 void vt100_DECSCNM()
 {
-	if(param.data[0])
-	{
-		setting_high(SETTING_DECSCNM);
-	}
-	else
-	{
-		setting_low(SETTING_DECSCNM);
-	}
+	setting.bits.DECSCNM = (param.data[0]) ? TRUE : FALSE;
 }
 
 /* send answerback message */
@@ -94,39 +79,39 @@ void vt100_setting_high()
 	switch(param.data[0])
 	{
 		case 1:
-			setting_high(SETTING_DECCKM);
+			setting.bits.DECCKM = TRUE;
 		break;
 		
 		case 3:
-			setting_high(SETTING_DECCOLM);
+			setting.bits.DECCOLM = TRUE;
 		break;
 		
 		case 4:
-			setting_high(SETTING_DECSCLM);
+			setting.bits.DECSCLM = TRUE;
 		break;
 		
 		case 5:
-			setting_high(SETTING_DECSCNM);
+			setting.bits.DECSCNM = TRUE;
 		break;
 		
 		case 6:
-			setting_high(SETTING_DECOM);
+			setting.bits.DECCOM = TRUE;
 		break;
 		
 		case 7:
-			setting_high(SETTING_DECAWM);
+			setting.bits.DECAWM = TRUE;
 		break;
 		
 		case 8:
-			setting_high(SETTING_DECARM);
+			setting.bits.DECARM = TRUE;
 		break;
 		
 		case 9:
-			setting_high(SETTING_DECINLM);
+			setting.bits.DECINLM = TRUE;
 		break;
 		
 		case 20:
-			setting_high(SETTING_LNM);
+			setting.bits.LNM = TRUE;
 		break;
 	}
 }
@@ -136,43 +121,43 @@ void vt100_setting_low()
 	switch(param.data[0])
 	{
 		case 1:
-			setting_low(SETTING_DECCKM);
+			setting.bits.DECCKM = FALSE;
 		break;
 		
 		case 2:
-			setting_low(SETTING_DECANM);
+			setting.bits.DECANM = FALSE;
 		break;
 		
 		case 3:
-			setting_low(SETTING_DECCOLM);
+			setting.bits.DECCOLM = FALSE;
 		break;
 		
 		case 4:
-			setting_low(SETTING_DECSCLM);
+			setting.bits.DECSCLM = FALSE;
 		break;
 		
 		case 5:
-			setting_low(SETTING_DECSCNM);
+			setting.bits.DECSCNM = FALSE;
 		break;
 		
 		case 6:
-			setting_low(SETTING_DECOM);
+			setting.bits.DECCOM = FALSE;
 		break;
 		
 		case 7:
-			setting_low(SETTING_DECAWM);
+			setting.bits.DECAWM = FALSE;
 		break;
 		
 		case 8:
-			setting_low(SETTING_DECARM);
+			setting.bits.DECARM = FALSE;
 		break;
 		
 		case 9:
-			setting_low(SETTING_DECINLM);
+			setting.bits.DECINLM = FALSE;
 		break;
 		
 		case 20:
-			setting_low(SETTING_LNM);
+			setting.bits.LNM = FALSE;
 		break;
 	}
 }
@@ -194,10 +179,7 @@ vt100_DECLL()
 		switch(param.data[i])
 		{
 			case 0:
-				led_off(PROG1);
-				led_off(PROG2);
-				led_off(PROG3);
-				led_off(PROG4);
+				led_off_allprog();
 			break;
 			
 			case 1:

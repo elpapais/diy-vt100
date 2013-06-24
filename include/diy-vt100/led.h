@@ -15,4 +15,6 @@ typedef enum
 void led_on(led_t);
 void led_off(led_t);
 
+void led_off_allprog();
+
 #endif

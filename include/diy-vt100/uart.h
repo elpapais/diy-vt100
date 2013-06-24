@@ -34,7 +34,7 @@ inline void uart_send_enter()
 {
 	uart_send(ASCII_CR);
 
-	if(setting_ishigh(SETTING_LNM))
+	if(parm_setting.bits.LNM)
 	{
 		uart_send(ASCII_LF);
 	}

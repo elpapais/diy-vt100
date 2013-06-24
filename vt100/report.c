@@ -10,14 +10,7 @@
 void
 vt100_DECREPTPARAM()
 {
-	if(param.data[0])
-	{
-		setting_low(SETTING__UNSOLIC);
-	}
-	else
-	{
-		setting_high(SETTING__UNSOLIC);
-	}
+	setting.bits.UNSOLIC = param.data[0] ? FALSE : TRUE;
 	
 	uart_send_escape();
 	uart_send('[');
@@ -26,9 +19,9 @@ vt100_DECREPTPARAM()
 	
 	uart_send(';');
 	/* parity info's */
-	if(parm_setting_read(SETTING_PARITY))
+	if(parm_setting.bits.PARITY)
 	{
-		uart_send(parm_setting_read(SETTING_PARITYSENSE) ? '5' : '4');
+		uart_send(parm_setting.bits.PARITYSENSE ? '5' : '4');
 	}
 	else
 	{
@@ -37,7 +30,7 @@ vt100_DECREPTPARAM()
 	}
 	
 	uart_send(';');
-	uart_send((parm_setting_read(SETTING_BPC)) ? '1' : '2');
+	uart_send(parm_setting.bits.BPC ? '1' : '2');
 	
 	uart_send(';');
 	uart_send_array( &uart_speed[setting.uart_tx].value[1], 

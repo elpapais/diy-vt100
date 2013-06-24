@@ -7,22 +7,26 @@
 typedef struct
 {
 	int8_t index;
-	uint8_t latch;
 	uint8_t data;
-	
+
+	struct
+	{
+		uint8_t _break:1;
+		uint8_t caps:1;
+		uint8_t ctrl:1;
+		uint8_t num:1;
+		uint8_t modifier:1;
+		uint8_t shift:1;
+		uint8_t parity:1;
+	} __attribute((packed)) latch;
+
 	uint8_t param;
 	cqueue_t queue;
 } __attribute((packed)) kbd_t;
 
 extern kbd_t kbd;
 
-#define KBD_CTRL 	BIT0
-#define KBD_NUM 	BIT1
-#define KBD_CAPS 	BIT2
-#define KBD_SHIFT 	BIT3
-#define KBD_MODIFIER BIT4
-#define KBD_BREAK 	BIT5
-#define KBD_PARITY 	BIT6
+
 
 
 #define kbd_latch_high(bit) __high(kbd.latch, bit)

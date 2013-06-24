@@ -123,7 +123,7 @@ vt100_LF()
 		vt100_cursor.row = SCREEN_ROW - 1;
 	}
 	
-	if(setting_ishigh(SETTING_LNM))
+	if(setting.bits.LNM)
 	{
 		vt100_cursor.col = 0;
 	}

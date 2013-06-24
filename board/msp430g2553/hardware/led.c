@@ -68,3 +68,11 @@ void led_off(led_t led_no)
 		break;
 	}
 }
+
+void led_off_allprog()
+{
+	ic_74xx595.led_prog1 = FALSE;
+	ic_74xx595.led_prog2 = FALSE;
+	ic_74xx595.led_prog3 = FALSE;
+	ic_74xx595.led_prog4 = FALSE;
+}

@@ -9,13 +9,13 @@
 kbd_t kbd;
 
 #define break_event_stop()  \
-	if(kbd_latch_ishigh(KBD_BREAK)) \
+	if(kbd.latch._break) \
 	{ \
 		return; \
 	}
 	
 #define keyclick_sound() \
-	if(parm_setting_ishigh(SETTING_KEYCLICK)) \
+	if(parm_setting.bits.KEYCLICK) \
 	{ \
 		bell_short(); \
 	}
@@ -23,7 +23,7 @@ kbd_t kbd;
 #define kbd_fn(ident) \
 	break_event_stop(); \
 	uart_send_escape(); \
-	uart_send(parm_setting_ishigh(SETTING_DECANM) ? 'O' : '?');\
+	uart_send(parm_setting.bits.DECANM ? 'O' : '?');\
 	uart_send(ident); \
 	keyclick_sound()
 
@@ -31,7 +31,7 @@ kbd_t kbd;
 	break_event_stop(); \
 	 \
 	/* arrow key pressed */ \
-	if(kbd_latch_ishigh(KBD_MODIFIER)) \
+	if(kbd.latch.modifier) \
 	{ \
 		if(arrow) \
 		{ \
@@ -39,10 +39,10 @@ kbd_t kbd;
 		} \
 	} \
 	/* send accoring to Keypad mode */ \
-	else if(parm_setting_ishigh(SETTING_DECKPAM)) \
+	else if(parm_setting.bits.DECKPAM) \
 	{ \
 		uart_send_escape(); \
-		uart_send(parm_setting_ishigh(SETTING_DECANM) ? 'O' : '?'); \
+		uart_send(parm_setting.bits.DECANM ? 'O' : '?'); \
 		uart_send(appmode); \
 	} \
 	else \
@@ -56,9 +56,9 @@ kbd_t kbd;
 #define kbd_arrow(ident) \
 	uart_send_escape(); \
 	 \
-	if(parm_setting_ishigh(SETTING_DECANM)) \
+	if(parm_setting.bits.DECANM) \
 	{ \
-		uart_send(parm_setting_ishigh(SETTING_DECCKM) ? 'O' : '['); \
+		uart_send(parm_setting.bits.DECCKM ? 'O' : '['); \
 	} \
 	 \
 	uart_send(ident); \
@@ -74,25 +74,25 @@ void kbd_decode()
 		{
 			/* only caps is latched */
 			case 1:
-				if(kbd_latch_read(KBD_CAPS | KBD_CTRL) == KBD_CAPS)
+				if(kbd.latch.caps && ! kbd.latch.ctrl)
 				{
 					ch = 1;
 				}
 							
 			case 0:
-				if(kbd_latch_ishigh(KBD_BREAK))
+				if(kbd.latch._break)
 				{
 					break;
 				}
 				
-				if(kbd_latch_ishigh(KBD_SHIFT | KBD_CTRL))
+				if(kbd.latch.shift || kbd.latch.ctrl)
 				{
 					ch ^= 1;
 				}
 				
 				ch = kbd_scancode[kbd.param].ch[ch];
 				
-				if(kbd_latch_ishigh(KBD_CTRL))
+				if(kbd.latch.ctrl)
 				{
 					ch -= '@';
 					__low(ch, BIT7);
@@ -108,7 +108,8 @@ void kbd_decode()
 			break;
 		}
 		
-		kbd_latch_low(KBD_BREAK | KBD_MODIFIER);
+		kbd.latch._break = FALSE;
+		kbd.latch.modifier = FALSE;
 	}
 	else
 	{
@@ -116,11 +117,11 @@ void kbd_decode()
 		{
 			case 0xF0:
 				/* some key released */
-				kbd_latch_high(KBD_BREAK);
+				kbd.latch._break = TRUE;
 			break;
 			
 			case 0xE0:
-				kbd_latch_high(KBD_MODIFIER);
+				kbd.latch.modifier = TRUE;
 			break;
 		}
 	}
@@ -152,35 +153,21 @@ void kbd_f5()
 void kbd_caps()
 {
 	/* caps status modify */
-	if(kbd_latch_islow(KBD_BREAK))
+	if(! kbd.latch._break)
 	{
-		kbd_latch_flip(KBD_CAPS);
+		kbd.latch.caps ^= TRUE;
 		keyclick_sound();
 	}
 }
 
 void kbd_shift()
 {
-	if(kbd_latch_ishigh(KBD_BREAK))
-	{
-		kbd_latch_low(KBD_SHIFT);
-	}
-	else
-	{
-		kbd_latch_high(KBD_SHIFT);
-	}
+	kbd.latch.shift = kbd.latch._break ? FALSE : TRUE;
 }
 		
 void kbd_ctrl()
 {
-	if(kbd_latch_ishigh(KBD_BREAK))
-	{
-		kbd_latch_low(KBD_CTRL);
-	}
-	else
-	{
-		kbd_latch_high(KBD_CTRL);
-	}
+	kbd.latch.ctrl = kbd.latch._break ? FALSE : TRUE;
 }
 
 void kbd_keypad_0()
@@ -237,15 +224,15 @@ kbd_keypad_dot()
 	 break_event_stop();
 	
 	/* arrow key pressed */
-	if(kbd_latch_ishigh(KBD_MODIFIER))
+	if(kbd.latch.modifier)
 	{
 		uart_send(ASCII_DEL);
 	}
 	/* send accoring to Keypad mode */
-	else if(setting_read(SETTING_DECKPAM))
+	else if(setting.bits.DECKPAM)
 	{
 		uart_send_escape();
-		uart_send(setting_read(SETTING_DECANM) ? 'O' : '?');
+		uart_send(setting.bits.DECANM ? 'O' : '?');
 		/* appmode = 'n' */
 		uart_send('n');
 	}
@@ -263,11 +250,11 @@ kbd_enter()
 {
 	break_event_stop();
 	
-	if(kbd_latch_ishigh(KBD_MODIFIER) && parm_setting_ishigh(SETTING_DECKPAM))
+	if(kbd.latch.modifier && setting.bits.DECKPAM)
 	{
 		/* keypad enter */
 		uart_send_escape();
-		uart_send(setting_read(SETTING_DECANM) ? 'O' : '?');
+		uart_send(setting.bits.DECANM ? 'O' : '?');
 		uart_send('M');
 	}
 	else
@@ -282,4 +269,3 @@ void kbd_break()
 {
 	
 }
-

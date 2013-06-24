@@ -2,16 +2,17 @@
 
 const setting_t parm_setting =
 {
-	.vr_bits = 0,
 	.brightness = 3,
 	.uart_rx = 0, /* 9600 */
 	.uart_tx = 0, /* 9600 */
-	.nvr_bits = __setting_get_actual_bitmask(SETTING_DECSCLM)
-	| __setting_get_actual_bitmask(SETTING_DECARM)
-	| __setting_get_actual_bitmask(SETTING_KEYCLICK)
-	| __setting_get_actual_bitmask(SETTING_AUTOX)
-	| __setting_get_actual_bitmask(SETTING_BPC) ,
-
+	.bits = 
+	{
+		.DECSCLM = TRUE,
+		.DECARM = TRUE,
+		.KEYCLICK = TRUE,
+		.AUTOX = TRUE,
+		.BPC = TRUE
+	},
 	.tabs = 0b1000100010001000,
 	.answerback = {'d', 'i', 'y', '-', 'v', 't', '1', '0', '0'}
 };
@@ -36,7 +37,7 @@ void setting_store()
 	FCTL1 = FWKEY + ERASE;
 	FCTL3 = FWKEY;
 
-	dest->vr_bits = 0;
+	dest->tabs = 0;
 
 	FCTL1 = FWKEY + WRT;
 
@@ -51,5 +52,17 @@ void setting_store()
 void setting_load()
 {
 	setting = (setting_t)parm_setting;
-	setting.vr_bits = 0;
+
+	/* VR */	
+	setting.bits.DECKPAM = FALSE;
+	setting.bits.DECCKM = FALSE;
+	setting.bits.DECGON = FALSE;
+	setting.bits.DECCOM = FALSE;
+	
+	/* PRIVATE - VR */
+	setting.bits.UNSOLIC = FALSE;
+	setting.bits.CURSOR_STATE = FALSE;
+	setting.bits.LOCAL = FALSE;
+	setting.bits.SETUP_TYPE = FALSE;
+	setting.bits.SETUP_SHOW = FALSE;
 }
