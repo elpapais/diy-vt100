@@ -193,19 +193,19 @@ void setup_value_flip()
 		{
 			/* box 1 */
 			case 0:
-				setting.bits.CURSOR ^= TRUE;
+				setting.bits.DECSCLM ^= TRUE;
 			break;
 			
 			case 1:
-				setting.bits.DECSCNM ^= TRUE;
-			break;
-			
-			case 2:
 				setting.bits.DECARM ^= TRUE;
 			break;
 			
+			case 2:
+				setting.bits.DECSCNM ^= TRUE;
+			break;
+			
 			case 3:
-				setting.bits.DECSCLM ^= TRUE;
+				setting.bits.CURSOR ^= TRUE;
 			break;
 			
 			/* box 2 */
