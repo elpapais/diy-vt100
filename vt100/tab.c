@@ -31,11 +31,12 @@ void vt100_HTS()
 /* give a horizontal tab */
 void vt100_HT()
 {
-	for(register col_t j = vt100_cursor.col; j < SCREEN_COL; j++)
+	for(register col_t j = vt100_cursor.col + 1; j < SCREEN_COL; j++)
 	{
 		if(setting_tab_ishigh(j))
 		{
 			vt100_cursor.col = j;
+			break;
 		}
 	}
 }
