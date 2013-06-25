@@ -1,7 +1,7 @@
 #include <diy-vt100/hardware/port1.h>
 #include <diy-vt100/setup.h>
 
-void port1_init()
+void port1_init(void)
 {
 	P1DIR |= IC_74XX595_DATA | IC_74XX595_STCP | IC_74XX595_SHCP;
 	
@@ -17,7 +17,7 @@ void port1_init()
 	/* interrupt goes to port1_interrupt() */
 }
 
-void port1_interrupt()
+void port1_interrupt(void)
 {
 	setup();
 	P1IFG &= ~SETUP_BUTTON;

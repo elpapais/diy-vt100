@@ -5,7 +5,7 @@ void led_on(led_t led_no)
 {
 	switch(led_no)
 	{
-		case ONLINE:
+		case LINE:
 			ic_74xx595.led_online = TRUE;
 		break;
 		
@@ -39,7 +39,7 @@ void led_off(led_t led_no)
 {
 	switch(led_no)
 	{
-		case ONLINE:
+		case LINE:
 			ic_74xx595.led_online = FALSE;
 		break;
 		
@@ -69,7 +69,7 @@ void led_off(led_t led_no)
 	}
 }
 
-void led_off_allprog()
+void led_off_allprog(void)
 {
 	ic_74xx595.led_prog1 = FALSE;
 	ic_74xx595.led_prog2 = FALSE;

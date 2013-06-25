@@ -1,10 +1,10 @@
 #include <diy-vt100/vt100/buffer.h>
-
-#include <diy-vt100/cqueue.h>
 #include <diy-vt100/uart.h>
 
 void usciA0_RX_interrupt() __attribute__((interrupt(USCIAB0RX_VECTOR)));
 void usciA0_TX_interrupt() __attribute__((interrupt(USCIAB0TX_VECTOR)));
+
+cqueue_t uart_tx, uart_rx;
 
 const uint8_t uart_clkmul = '1';
 
@@ -70,16 +70,16 @@ void uart_init(const bool_t parity, const bool_t parity_sense, const uint8_t rx_
 }
 
 /* push received data to uart buffer */
-void usciA0_RX_interrupt()
+void usciA0_RX_interrupt(void)
 {
-	cqueue_push(&uart_rx, UCA0RXBUF);
+	cqueue_push(&uart_rx, __ishigh(UCA0STAT, UCPE) ? 176 : UCA0RXBUF);
 	/* TODO: XON/XOFF sending for preventing overflow on when count == 16 */
 
 	/* exit sleep mode to refresh screen */
 	__bic_status_register_on_exit(LPM1_bits);
 }
 
-void usciA0_TX_interrupt()
+void usciA0_TX_interrupt(void)
 {
 	if(uart_tx.count)
 	{
@@ -99,12 +99,21 @@ void uart_send(const uint8_t data)
 	IE2 |= UCA0TXIE;
 }
 
-void uart_loopback_disable()
+void uart_loopback(uartlopbk_t enable)
 {
-	__low(UCA0STAT, UCLISTEN);
+	switch(enable)
+	{
+		case ENABLE:
+			__high(UCA0STAT, UCLISTEN);
+		break;
+		
+		case DISABLE:
+			__low(UCA0STAT, UCLISTEN);
+		break;
+	}
 }
 
-void uart_loopback_enable()
+bool_t uart_disconnected(void)
 {
-	__high(UCA0STAT, UCLISTEN);
+	return __read(UCA0STAT, UCIDLE);
 }

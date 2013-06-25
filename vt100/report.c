@@ -33,12 +33,12 @@ vt100_DECREPTPARAM()
 	uart_send(parm_setting.bits.BPC ? '1' : '2');
 	
 	uart_send(';');
-	uart_send_array( &uart_speed[setting.uart_tx].value[1], 
-						uart_speed[setting.uart_tx].value[0]);
+	uart_send_array( &uart_speed[parm_setting.uart_tx].value[1], 
+						uart_speed[parm_setting.uart_tx].value[0]);
 	
 	uart_send(';');
-	uart_send_array( &uart_speed[setting.uart_rx].value[1], 
-						uart_speed[setting.uart_rx].value[0]);
+	uart_send_array( &uart_speed[parm_setting.uart_rx].value[1], 
+						uart_speed[parm_setting.uart_rx].value[0]);
 	
 	uart_send(';');
 	uart_send(uart_clkmul);

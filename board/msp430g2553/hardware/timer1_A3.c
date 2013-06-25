@@ -6,7 +6,7 @@
 #define TIMER1_A3_TACCR1 TA1CCR1
 
 /* used for generating PWM for lcd */
-void timer1_A3_init()
+void timer1_A3_init(void)
 {
 	/* P2.2/TA1.1 Output */
 	P2DIR |= BIT2;

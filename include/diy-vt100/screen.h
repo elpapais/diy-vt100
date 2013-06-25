@@ -37,24 +37,24 @@ void screen_invert(bool_t);
 void screen_gotorow(row_t);
 void screen_gotocol(col_t);
 
-void screen_splash();
-void screen_init();
+void screen_splash(void);
+void screen_init(void);
 
-void screen_refresh();
+void screen_refresh(void);
 
-void screen_shiftup();
-void screen_shiftdown();
+void screen_shiftup(void);
+void screen_shiftdown(void);
 void screen_putch(const uint8_t, const dataprop_t);
 
 void screen_row_clear(const row_t i);
-void screen_full_clear();
+void screen_full_clear(void);
 void screen_segment_clear(const row_t i, const col_t j_start, const col_t j_end);
 
 void screen_row_copy(const row_t i, const screench_t buffer[SCREEN_COL]);
 void screen_full_copy(const screench_t buffer[SCREEN_ROW][SCREEN_COL]);
 
 /* fill screen with E's */
-void screen_full_E();
+void screen_full_E(void);
 
 /* [hardware] */
 //#define SCREEN_BRIGHTNESS_MAX <interger>

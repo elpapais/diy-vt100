@@ -17,6 +17,6 @@ typedef struct
 
 extern ic_74xx595_t ic_74xx595;
 
-void ic_74xx595_refresh();
+void ic_74xx595_refresh(void);
 
 #endif

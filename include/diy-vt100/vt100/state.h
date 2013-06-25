@@ -11,6 +11,6 @@ extern const struct __state vt100_state_open_smallbracket[];
 extern const struct __state vt100_state_opensquarebracket[];
 extern const struct __state vt100_state_close_smallbracket[];
 
-void vt100_state_worker();
+void vt100_state_worker(void);
 
 #endif

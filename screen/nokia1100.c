@@ -8,6 +8,8 @@
 #include <diy-vt100/setting.h>
 #include <diy-vt100/hardware.h>
 
+#define CURSOR_STATE HW_PRIV0
+
 const uint8_t _contrast = 0x7F;
 
 const screench_t _E = {'E'};
@@ -161,6 +163,8 @@ void setupB_refresh()
 	}\
 	nokia1100_buffer[i][j].data = setting ? '1' : '0'
 	
+	/* end of macro */
+	
 	readvalue_setng(0, 6, 2, setting.bits.DECSCLM);
 	readvalue_setng(1, 6, 3, setting.bits.DECARM);
 	readvalue_setng(2, 6, 4, setting.bits.DECSCNM);
@@ -219,17 +223,12 @@ void setupA_refresh()
 	}		
 }
 
-void setup_save()
+void setup_show_wait()
 {
-	const static uint8_t msg[6] = {'S', 'a', 'v', 'e', 'd', '.'};
-	
-	/* start saving */
-	setting_store();
-
-	for(register col_t j = 0; j < 6; j++)
-	{
-		nokia1100_buffer[3][j].data = msg[j];
-	}
+	nokia1100_buffer[3][0].data = 'w';
+	nokia1100_buffer[3][1].data = 'a';
+	nokia1100_buffer[3][2].data = 'i';
+	nokia1100_buffer[3][3].data = 't';
 }
 
 void setupA_load()

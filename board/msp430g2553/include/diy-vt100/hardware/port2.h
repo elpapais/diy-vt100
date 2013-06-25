@@ -18,7 +18,7 @@
 #define port2_flip(bits)	__flip(P2OUT, bits)
 
 /* ==== */
-void port2_init();
-void port2_interrupt()__attribute__((interrupt(PORT2_VECTOR)));
+void port2_init(void);
+void port2_interrupt(void)__attribute__((interrupt(PORT2_VECTOR)));
 
 #endif

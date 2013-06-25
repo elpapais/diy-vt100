@@ -21,7 +21,7 @@
 		port2_high(NOKIA1100_CLK)
 
 void
-nokia1100_full_clear()
+nokia1100_full_clear(void)
 {
 	uint16_t i = 864;
 	

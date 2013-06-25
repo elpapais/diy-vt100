@@ -1,7 +1,7 @@
 #include <diy-vt100/setting.h>
 #include <diy-vt100/uart.h>
-
-cqueue_t uart_tx, uart_rx;
+#include <diy-vt100/vt100/attribute.h>
+#include <diy-vt100/screen.h>
 
 void uart_send_uint8(uint8_t val)
 {

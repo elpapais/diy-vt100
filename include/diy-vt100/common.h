@@ -59,7 +59,7 @@
 #define TRUE 1
 #define FALSE 0
 
-typedef void (* callback_t)();
+typedef void (* callback_t)(void);
 
 typedef uint8_t bool_t;
 

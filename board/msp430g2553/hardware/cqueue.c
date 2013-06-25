@@ -1,4 +1,4 @@
-#include <diy-vt100/cqueue.h>
+#include <diy-vt100/hardware/cqueue.h>
 
 uint8_t cqueue_pop(cqueue_t *queue)
 {
@@ -36,4 +36,9 @@ void cqueue_overflow(cqueue_t *queue)
 		P1OUT ^= BIT0;
 		__delay_cycles(6553500);
 	}
+}
+
+void cqueue_underflow(cqueue_t *queue)
+{
+
 }

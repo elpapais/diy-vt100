@@ -36,6 +36,6 @@ extern struct __state *state_iterate;
 #define state_ignore(ch)				state_state(ch, (callback_t)1, 0)
 #define state_select(ch, state)			state_state(ch, (callback_t)2, state)
 
-void state_do();
+void state_do(void);
 
 #endif

@@ -8,12 +8,13 @@
 
 typedef struct
 {
-	uint8_t count, start;
-	uint8_t data[CQUEUE_SIZE];
+	volatile uint8_t count, start;
+	volatile uint8_t data[CQUEUE_SIZE];
 }__attribute((packed)) cqueue_t;
 
 void cqueue_push(cqueue_t *, const uint8_t);
 uint8_t cqueue_pop(cqueue_t *);
 void cqueue_overflow(cqueue_t *);
+void cqueue_underflow(cqueue_t *);
 
 #endif

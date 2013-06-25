@@ -3,7 +3,7 @@
 param_t param;
 
 /* TODO: check for overflow */
-void param_add()
+void param_add(void)
 {
 	/* prevent overflow */
 	if(!(param.count < PARAM_QUEUE_SIZE))

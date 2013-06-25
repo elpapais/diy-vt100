@@ -8,30 +8,32 @@
 extern uint8_t setup_number;
 
 /* [LCD] */
-void setupA_refresh();
-void setupA_load();
-void setupB_refresh();
-void setupB_load();
-void setup_save();
+void setupA_refresh(void);
+void setupA_load(void);
+void setupB_refresh(void);
+void setupB_load(void);
+void setup_show_wait(void);
 
-void setup();
-void setup_state_worker();
-void setup_switch();
+void setup(void);
+void setup_state_worker(void);
+void setup_switch(void);
+void setup_recall(void);
+void setup_save(void);
 
-void setup_value_flip();
-void setup_next_setting();
-void setup_previous_setting();
+void setup_value_flip(void);
+void setup_next_setting(void);
+void setup_previous_setting(void);
 
-void setup_brightness_decrease();
-void setup_brightness_increase();
+void setup_brightness_decrease(void);
+void setup_brightness_increase(void);
 
-void setup_uart_tx();
-void setup_uart_rx();
+void setup_uart_tx(void);
+void setup_uart_rx(void);
 
-void setup_TAB_flip();
-void setup_TABS_clear();
+void setup_TAB_flip(void);
+void setup_TABS_clear(void);
 
-void setup_LOCAL();
-void setup_DECCOLM();
+void setup_LOCAL(void);
+void setup_DECCOLM(void);
 
 #endif

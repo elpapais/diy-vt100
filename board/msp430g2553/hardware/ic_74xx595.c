@@ -15,7 +15,7 @@ ic_74xx595_t ic_74xx595;
 	} \
 	port1_high(IC_74XX595_SHCP)
 
-void ic_74xx595_refresh()
+void ic_74xx595_refresh(void)
 {
 	IC_74XX595_SEND_BIT(ic_74xx595.led_prog4);
 	IC_74XX595_SEND_BIT(ic_74xx595.led_prog3);

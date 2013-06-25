@@ -7,6 +7,7 @@
 #include <diy-vt100/hardware.h>
 #include <diy-vt100/vt100/state.h>
 #include <diy-vt100/vt100/cursor.h>
+#include <diy-vt100/vt100/misc.h>
 
 extern const struct __state setup_state_type[];
 extern const struct __state setup_state_arrow[];
@@ -21,7 +22,7 @@ setup_state_type[] =
 	
 	state_select	(ASCII_ESCAPE, setup_state_arrow),
 	state_noparam	(ASCII_DC3, setup_save), /* CTRL-S pressed */
-	state_noparam	(ASCII_DC2, setting_load), /* CTRL-R pressed */
+	state_noparam	(ASCII_DC2, setup_recall), /* CTRL-R pressed */
 	state_noparam	('0', hardware_reset),
 	state_noparam	('2', setup_TAB_flip),
 	state_noparam	('3', setup_TABS_clear),
@@ -70,30 +71,26 @@ void setup()
 	if(setting.bits.SETUP_SHOW)
 	{
 		/* enter setup */
-		uart_loopback_enable();
+		uart_loopback(ENABLE);
 		state_current = (struct __state *)setup_state_type;
 		
-		/* simulate STATE B */
-		setting.bits.SETUP_TYPE = TRUE;
-		setup_switch();
+		/* switch to setupA */
+		setting.bits.SETUP_TYPE = FALSE;
+		setupA_load();
+		setupA_refresh();
 	}
 	else
 	{
 		/* exit setup */
 		
-		if(! setting.bits.LOCAL)
-		{
-			uart_loopback_disable();
-		}
+		vt100_refresh_connect_mode();
 		
 		state_current = (struct __state *)vt100_state_C0;
 		screen_splash();
 	}
-	
-	
 }
 
-void setup_switch()
+void setup_switch(void)
 {
 	setup_number = 0;
 	
@@ -104,17 +101,15 @@ void setup_switch()
 	{
 		/* high show setup B */
 		setupB_load();
-		setupB_refresh();
 	}
 	else
 	{
 		/* low show setup A */
 		setupA_load();
-		setupA_refresh();
 	}
 }
 
-void setup_state_worker()
+void setup_state_worker(void)
 {	
 	switch((int)state_iterate->cb)
 	{
@@ -147,7 +142,7 @@ void setup_state_worker()
 	}
 }
 
-void setup_brightness_increase()
+void setup_brightness_increase(void)
 {
 	/* increase brightness */
 	if(setting.brightness < SCREEN_BRIGHTNESS_MAX)
@@ -156,7 +151,7 @@ void setup_brightness_increase()
 	}
 }
 
-void setup_brightness_decrease()
+void setup_brightness_decrease(void)
 {
 	/* decrease brightness */
 	if(setting.brightness > SCREEN_BRIGHTNESS_MIN)
@@ -165,7 +160,7 @@ void setup_brightness_decrease()
 	}
 }
 
-void setup_previous_setting()
+void setup_previous_setting(void)
 {
 	/* select left value */
 	setup_number--;
@@ -174,7 +169,7 @@ void setup_previous_setting()
 	setup_number &= 0x0F;
 }
 
-void setup_next_setting()
+void setup_next_setting(void)
 {
 	/* select right value */
 	setup_number++;
@@ -183,7 +178,7 @@ void setup_next_setting()
 	setup_number &= 0x0F;
 }
 
-void setup_value_flip()
+void setup_value_flip(void)
 {
 	/* flip values in setup, 5 was pressed */
 	
@@ -262,7 +257,7 @@ void setup_value_flip()
 	}
 }
 
-void setup_DECCOLM()
+void setup_DECCOLM(void)
 {
 	/* is it setup A */
 	if(! setting.bits.SETUP_TYPE)
@@ -271,12 +266,12 @@ void setup_DECCOLM()
 	}
 }
 
-void setup_LOCAL()
+void setup_LOCAL(void)
 {
 	setting.bits.LOCAL ^= TRUE;
 }
 
-void setup_TABS_clear()
+void setup_TABS_clear(void)
 {
 	/* is it setup A */
 	if(! setting.bits.SETUP_TYPE)
@@ -285,7 +280,7 @@ void setup_TABS_clear()
 	}
 }
 
-void setup_TAB_flip()
+void setup_TAB_flip(void)
 {
 	if(! setting.bits.SETUP_TYPE)
 	/* is it setup A */
@@ -294,7 +289,7 @@ void setup_TAB_flip()
 	}
 }
 
-void setup_uart_rx()
+void setup_uart_rx(void)
 {
 	/* handle speeds */
 	if(!(++setting.uart_rx < UART_SPEED_COUNT))
@@ -303,11 +298,31 @@ void setup_uart_rx()
 	}
 }
 
-void setup_uart_tx()
+void setup_uart_tx(void)
 {
 	/* handle speeds */
 	if(!(++setting.uart_tx < UART_SPEED_COUNT))
 	{
 		setting.uart_tx = 0;
 	}
+}
+
+void setup_recall(void)
+{
+	setup_show_wait();
+	setting_load();
+	
+	/* now switch to setupA */
+	setting.bits.SETUP_TYPE = FALSE;
+	setupA_load();
+}
+
+void setup_save(void)
+{
+	setup_show_wait();
+	setting_store();
+	
+	/* now switch to setupA */
+	setting.bits.SETUP_TYPE = FALSE;
+	setupA_load();
 }

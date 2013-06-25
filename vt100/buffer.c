@@ -6,7 +6,7 @@
 
 /* TODO: partial support for autowarp */
 void
-vt100_putchar()
+vt100_putchar(void)
 {
 	/* screen overflowed on bottom */
 	if(!(vt100_cursor.row < SCREEN_ROW))
@@ -33,11 +33,14 @@ vt100_putchar()
 	/* increment position */
 	vt100_cursor.col++;
 
-	/* screen overflow on right */
-	if(!(vt100_cursor.col < SCREEN_COL))
+	if(parm_setting.bits.DECAWM)
 	{
-		vt100_cursor.col = 0;
-		vt100_cursor.row++;
+		/* screen overflow on right */
+		if(!(vt100_cursor.col < SCREEN_COL))
+		{
+			vt100_cursor.col = 0;
+			vt100_cursor.row++;
+		}
 	}
 }
 

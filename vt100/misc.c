@@ -13,16 +13,32 @@
 
 void vt100_init()
 {
-	led_on(ONLINE);
-	
-	/* TODO: check power online/offline mode & keyboard connected */
-	/* TODO: support offline mode */
 	/* TODO: support Keyboard lock */
 
 	param.data[0] = 2;
 	vt100_ED();
 	
+	setting.bits.LOCAL = FALSE;
+	vt100_refresh_connect_mode();
+	
 	state_current = (struct __state *)vt100_state_C0;
+}
+
+void vt100_refresh_connect_mode()
+{
+	const static uartlopbk_t map_lp_bk[2] = { DISABLE, ENABLE };
+	const static led_t led_to_off[] = {LOCAL, LINE};
+	const static led_t led_to_on[] = {LINE, LOCAL};
+
+	if(uart_disconnected())
+	{
+		/* force local mode if disconnected */
+		setting.bits.LOCAL = TRUE;
+	}
+	
+	uart_loopback(map_lp_bk[setting.bits.LOCAL]);
+	led_off(led_to_off[setting.bits.LOCAL]);
+	led_on(led_to_on[setting.bits.LOCAL]);
 }
 
 bool_t __is_vt100_malfunctioning()
@@ -70,7 +86,7 @@ void vt100_ENQ()
 {
 	for(uint8_t i=0; i < answerback_size; i++)
 	{
-		uart_send(setting.answerback[i]);
+		uart_send(parm_setting.answerback[i]);
 	}
 }
 
@@ -179,7 +195,10 @@ vt100_DECLL()
 		switch(param.data[i])
 		{
 			case 0:
-				led_off_allprog();
+				led_off(PROG1);
+				led_off(PROG2);
+				led_off(PROG3);
+				led_off(PROG4);
 			break;
 			
 			case 1:

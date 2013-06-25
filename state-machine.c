@@ -5,7 +5,7 @@ struct __state *state_current;
 struct __state *state_iterate;
 
 void
-state_do()
+state_do(void)
 {
 	state_iterate = state_current;
 	

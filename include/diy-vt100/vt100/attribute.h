@@ -29,9 +29,9 @@ typedef struct
 extern rowprop_t vt100_rowprop[SCREEN_ROW];
 extern dataprop_t vt100_dataprop;
 
-void vt100_SGR();
-void vt100_DECDWL();
-void vt100_DECDHL_bottom();
-void vt100_DECDHL_top();
+void vt100_SGR(void);
+void vt100_DECDWL(void);
+void vt100_DECDHL_bottom(void);
+void vt100_DECDHL_top(void);
 
 #endif

@@ -1,5 +1,4 @@
-#include <diy-vt100/keyboard/scancode.h>
-#include <diy-vt100/keyboard/keyboard.h>
+#include <diy-vt100/hardware/keyboard.h>
 
 #define number(ch, ch_alt) 	{0, {ch, ch_alt}}
 #define special(ch, ch_alt) {0, {ch, ch_alt}}
@@ -7,29 +6,29 @@
 #define callback(cb) 		{cb}
 #define ignore() 			{0}
 
-const struct __kbd_scancode kbd_scancode[KBD_SCANCODE_SIZE] =
+const hwkbdscancode_t hw_kbd_scancode[HW_KBD_SCANCODE_SIZE] =
 {
 	ignore	(),
 	ignore	(), /* KEYBOARD_PS2_F9 */
 	ignore	(),
-	callback(kbd_f5), /* KEYBOARD_PS2_F5 */
-	callback(kbd_f3),
-	callback(kbd_f1),
-	callback(kbd_f2),
+	callback(hw_kbd_f5), /* KEYBOARD_PS2_F5 */
+	callback(hw_kbd_f3),
+	callback(hw_kbd_f1),
+	callback(hw_kbd_f2),
 	ignore	(), /* KEYBOARD_PS2_F12 */
 	ignore	(),
 	ignore	(), /* KEYBOARD_PS2_F10 */
 	ignore	(), /* KEYBOARD_PS2_F8 */
 	ignore	(), /* KEYBOARD_PS2_F6 */
-	callback(kbd_f4),
+	callback(hw_kbd_f4),
 	special	(ASCII_TAB, ASCII_TAB),
 	special	('`', '~'),
 	ignore	(),
 	ignore	(),
 	ignore	(), /* left alt */
-	callback(kbd_shift), /* left shift */
+	callback(hw_kbd_shift), /* left shift */
 	ignore	(),
-	callback(kbd_ctrl), /* left ctrl */
+	callback(hw_kbd_ctrl), /* left ctrl */
 	alphabet('q', 'Q'),
 	number	('1', '!'),
 	ignore	(),
@@ -97,9 +96,9 @@ const struct __kbd_scancode kbd_scancode[KBD_SCANCODE_SIZE] =
 	special	('=', '+'),
 	ignore	(),
 	ignore	(),
-	callback(kbd_caps),
-	callback(kbd_shift), /* right shift */
-	callback(kbd_enter),
+	callback(hw_kbd_caps),
+	callback(hw_kbd_shift), /* right shift */
+	callback(hw_kbd_enter),
 	special	(']', '}'),
 	ignore	(),
 	special	('\\', '|'),
@@ -114,27 +113,27 @@ const struct __kbd_scancode kbd_scancode[KBD_SCANCODE_SIZE] =
 	special	(ASCII_BS, ASCII_BS),
 	ignore	(),
 	ignore	(),
-	callback(kbd_keypad_1),
+	callback(hw_kbd_keypad_1),
 	ignore	(),
-	callback(kbd_keypad_4),
-	callback(kbd_keypad_7),
+	callback(hw_kbd_keypad_4),
+	callback(hw_kbd_keypad_7),
 	ignore	(),
 	ignore	(),
 	ignore	(),
-	callback(kbd_keypad_0),
-	callback(kbd_keypad_dot),
-	callback(kbd_keypad_2),
-	callback(kbd_keypad_5),
-	callback(kbd_keypad_6),
-	callback(kbd_keypad_8),
+	callback(hw_kbd_keypad_0),
+	callback(hw_kbd_keypad_dot),
+	callback(hw_kbd_keypad_2),
+	callback(hw_kbd_keypad_5),
+	callback(hw_kbd_keypad_6),
+	callback(hw_kbd_keypad_8),
 	special	(ASCII_ESCAPE, ASCII_ESCAPE),
 	ignore	(), /* num lock */
 	ignore	(), /* KEYBOARD_PS2_F11 */
 	special	('+', '+'),
-	callback(kbd_keypad_3),
-	callback(kbd_keypad_dash),
+	callback(hw_kbd_keypad_3),
+	callback(hw_kbd_keypad_dash),
 	special	('*', '*'),
-	callback(kbd_keypad_9),
+	callback(hw_kbd_keypad_9),
 //	ignore(), /* KEYBOARD_PS2_SCROLL */
 //	ignore(),
 //	ignore(),

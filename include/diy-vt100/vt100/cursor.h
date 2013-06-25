@@ -14,15 +14,15 @@ struct __cursor
 extern struct __cursor vt100_cursor;
 extern struct __cursor vt100_cursor_bkp;
 
-void vt100_CUP();
-void vt100_CUD();
-void vt100_CUU();
-void vt100_CUF();
-void vt100_CUB();
-void vt100_DECRC();
-void vt100_DECSC();
+void vt100_CUP(void);
+void vt100_CUD(void);
+void vt100_CUU(void);
+void vt100_CUF(void);
+void vt100_CUB(void);
+void vt100_DECRC(void);
+void vt100_DECSC(void);
 
-void vt100_RI();
-void vt100_IND();
+void vt100_RI(void);
+void vt100_IND(void);
 
 #endif

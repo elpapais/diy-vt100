@@ -76,7 +76,7 @@
 
 void nokia1100_send_cmd (const uint8_t data);
 void nokia1100_send_data(const uint8_t *data_array, const uint8_t size);
-void nokia1100_full_clear();
+void nokia1100_full_clear(void);
 
 typedef uint8_t row_t;
 typedef uint8_t col_t;

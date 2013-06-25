@@ -3,7 +3,7 @@
 
 #include <diy-vt100/common.h>
 
-void wdt_init();
+void wdt_init(void);
 void wdt_interrupt (void) __attribute__((interrupt(WDT_VECTOR)));
 
 #endif

@@ -3,11 +3,28 @@
 #include <diy-vt100/hardware/port1.h>
 #include <diy-vt100/hardware/port2.h>
 #include <diy-vt100/hardware/ic_74xx595.h>
+#include <diy-vt100/hardware/keyboard.h>
+#include <diy-vt100/hardware/uart.h>
+#include <diy-vt100/hardware/cqueue.h>
+#include <diy-vt100/param.h>
+#include <diy-vt100/screen.h>
+#include <diy-vt100/state-machine.h>
 
-void timer1_A3_init();
+void timer1_A3_init(void);
+
+/*
+ * usuage of setting bits 
+ * setting.bits.HW_PRIV0 : cursor blink state
+ * setting.bits.HW_PRIV1 : keyboard modifier
+ * setting.bits.HW_PRIV2 : keyboard break
+ * setting.bits.HW_PRIV3 : not used(maybe keybpard PARITY)
+ * 
+ * their maybe preprocessor directive to 
+ * replace decscriptive names with their crossponding HW_PRIV#
+ */
 
 void
-hardware_init()
+hardware_init(void)
 {
 	/* hold watch dog timer */
 	WDTCTL = WDTPW + WDTHOLD;
@@ -38,13 +55,29 @@ hardware_init()
 	timer1_A3_init();
 }
 
-void hardware_reset()
+void hardware_reset(void)
 {
 	WDTCTL = 0;
 }
 
-void refresh_finished()
+void hardware_loop(void)
 {
+__loop:
+	while(hw_kbd.queue.count)
+	{
+		hw_kbd.param = cqueue_pop(&hw_kbd.queue);
+		hw_kbd_decode();
+	}
+	
+	while(uart_rx.count)
+	{
+		param.pass = cqueue_pop(&uart_rx);
+		state_do();
+	}
+	
+	screen_refresh();
+	
 	ic_74xx595_refresh();
 	_BIS_SR(LPM1_bits + GIE);
+goto __loop;
 }

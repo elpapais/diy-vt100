@@ -1,9 +1,9 @@
 #include <diy-vt100/hardware/port2.h>
-#include <diy-vt100/keyboard/keyboard.h>
+#include <diy-vt100/hardware/keyboard.h>
 #include <diy-vt100/uart.h>
-#include <diy-vt100/cqueue.h>
+#include <diy-vt100/hardware/cqueue.h>
 
-void port2_init()
+void port2_init(void)
 {
 	P2DIR &= ~(KEYBOARD_PS2_DATA | KEYBOARD_PS2_CLK);
 	P2REN |= KEYBOARD_PS2_DATA | KEYBOARD_PS2_CLK;
@@ -25,13 +25,13 @@ void port2_init()
 	P1OUT &= ~BIT6;
 }
 
-void port2_interrupt()
+void port2_interrupt(void)
 {
 	__flip(P1OUT, BIT6);
 	
 	__low(P2IFG, KEYBOARD_PS2_CLK);
 	
-	switch(kbd.index)
+	switch(hw_kbd.index)
 	{
 		case 0:
 			/* start bit */
@@ -47,11 +47,11 @@ void port2_interrupt()
 		case 7:
 		case 8:
 			/* data */
-			kbd.data >>= 1;
+			hw_kbd.data >>= 1;
 			if(__read(P2IN,KEYBOARD_PS2_DATA))
 			{
-				__high(kbd.data, BIT7);
-				//kbd.latch ^= KBD_PARITY;
+				__high(hw_kbd.data, BIT7);
+				//hw_kbd.latch ^= KBD_PARITY;
 			}
 		break;
 		
@@ -65,12 +65,12 @@ void port2_interrupt()
 		
 		case 10:
 			/* STOP bit */
-			cqueue_push(&kbd.queue, kbd.data);
+			cqueue_push(&hw_kbd.queue, hw_kbd.data);
 			__bic_status_register_on_exit(LPM1_bits);
 		default:
-			kbd.index = 0;
+			hw_kbd.index = 0;
 		return;
 	}
 	
-	kbd.index++;
+	hw_kbd.index++;
 }
