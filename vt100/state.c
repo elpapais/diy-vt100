@@ -61,14 +61,14 @@ vt100_state_C1[] = //ESC
 	state_noparam	('M', vt100_RI),
 
 	/* vt52 */
-	state_maxparam		('=', vt100_DECKPAM, 1, 1),
-	state_maxparam		('>', vt100_DECKPAM, 1, 0),
+	state_maxparam	('=', vt100_DECKPAM, 1, 1),
+	state_maxparam	('>', vt100_DECKPAM, 1, 0),
 	state_noparam	('<', vt52_enter_ansi_mode),
-	state_maxparam		('A', vt100_CUU, 1, 1),
-	state_maxparam		('B', vt100_CUD, 1, 1),
-	state_maxparam		('C', vt100_CUF, 1, 1),
-	state_maxparam		('D', vt100_CUB, 1, 1),
-	state_maxparam		('H', vt100_CUP, 2, 0),
+	state_maxparam	('A', vt100_CUU, 1, 1),
+	state_maxparam	('B', vt100_CUD, 1, 1),
+	state_maxparam	('C', vt100_CUF, 1, 1),
+	state_maxparam	('D', vt100_CUB, 1, 1),
+	state_maxparam	('H', vt100_CUP, 2, 0),
 	state_noparam	('I', vt100_RI),
 	state_noparam	('Z', vt52_ident),
 
@@ -107,24 +107,24 @@ vt100_state_opensquarebracket[] = //[
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
 	state_select	('?', vt100_state_question),
 
-	state_maxparam		('D', vt100_CUB, 1, 1),
-	state_maxparam		('B', vt100_CUD, 1, 1),
-	state_maxparam		('C', vt100_CUF, 1, 1),
-	state_maxparam		('A', vt100_CUU, 1, 1),
-	state_maxparam		('H', vt100_CUP, 2, 0),
-	state_maxparam		('f', vt100_CUP, 2, 0), /* vt100_HVP */
+	state_maxparam	('D', vt100_CUB, 1, 1),
+	state_maxparam	('B', vt100_CUD, 1, 1),
+	state_maxparam	('C', vt100_CUF, 1, 1),
+	state_maxparam	('A', vt100_CUU, 1, 1),
+	state_maxparam	('H', vt100_CUP, 2, 0),
+	state_maxparam	('f', vt100_CUP, 2, 0), /* vt100_HVP */
 	state_noparam	('c', vt100_DECID),
 	state_minparam	('q', vt100_DECLL, 1, 0),
-	state_maxparam		('r', vt100_DECSTBM, 2, 0),
+	state_maxparam	('r', vt100_DECSTBM, 2, 0),
 	state_noparam	('y', vt100_DECTST),
-	state_maxparam		('J', vt100_ED, 1, 0),
-	state_maxparam		('K', vt100_EL, 1, 0),
+	state_maxparam	('J', vt100_ED, 1, 0),
+	state_maxparam	('K', vt100_EL, 1, 0),
 	state_minparam	('m', vt100_SGR, 1, 0),
-	state_maxparam		('n', vt100_DSR, 1, 0),
-	state_maxparam		('x', vt100_DECREPTPARAM, 1, 0),
-	state_maxparam		('g', vt100_TBC, 1,0),
-	state_maxparam		('h', vt100_setting_high, 1, 0),
-	state_maxparam		('l', vt100_setting_low, 1, 0),
+	state_maxparam	('n', vt100_DSR, 1, 0),
+	state_maxparam	('x', vt100_DECREPTPARAM, 1, 0),
+	state_maxparam	('g', vt100_TBC, 1,0),
+	state_maxparam	('h', vt100_setting_high, 1, 0),
+	state_maxparam	('l', vt100_setting_low, 1, 0),
 	state_end		()
 };
 
@@ -185,7 +185,7 @@ void vt100_state_worker()
 	/* if we are at start state, store it in buffer */
 	else if(state_current == (struct __state *)vt100_state_C0)
 	{
-		vt100_putchar();
+		vt100_putch();
 	}
 	else
 	{

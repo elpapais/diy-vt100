@@ -44,7 +44,7 @@ setup_state_arrow[] =
 	state_worker	(setup_state_worker),
 	
 	state_select	('O', setup_state_arrow_select),
-	state_select	('?', setup_state_arrow_select),
+	state_select	('[', setup_state_arrow_select),
 	
 	state_noparam	('A', setup_brightness_increase),
 	state_noparam	('B', setup_brightness_decrease),

@@ -1,8 +1,9 @@
 #include <diy-vt100/setting.h>
+#include <diy-vt100/common.h>
 
 #define CURSOR_STATE HW_PRIV0
 
-const setting_t parm_setting =
+const setting_t parm_setting __attribute__((section(".infob"))) =
 {
 	.brightness = 3,
 	.uart_rx = 0, /* 9600 */
@@ -26,24 +27,39 @@ const setting_t parm_setting =
 
 void setting_init(void)
 {
-	FCTL2 = FWKEY + FSSEL_2 + (FN2|FN3);
+	/* SMCLK | divided by 12 =  */
+	FCTL2 = FWKEY + FSSEL_2 + (FN1|FN3);
 	setting_load();
 }
 
 void setting_store(void)
 {
-	register setting_t *dest = (setting_t *)(&parm_setting);
-
+	register uint8_t *dest = (uint8_t *)(&parm_setting);
+	register uint8_t *src = (uint8_t *)&setting;
+	register int size = sizeof(setting_t);
+	
 	__disable_interrupt();
+
+	/* delay till flash busy */
+	while(BUSY & FCTL3);
 
 	FCTL1 = FWKEY + ERASE;
 	FCTL3 = FWKEY;
 
-	dest->tabs = 0;
+	*dest = 0;
+
+	/* delay till flash busy */
+	while(BUSY & FCTL3);
 
 	FCTL1 = FWKEY + WRT;
 
-	*dest = setting;
+	while(size--)
+	{
+		*dest++ = *src++;
+	}
+
+	/* delay till flash busy */
+	while(BUSY & FCTL3);
 
 	FCTL1 = FWKEY;
 	FCTL3 = FWKEY + LOCK;

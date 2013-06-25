@@ -25,21 +25,19 @@ void keyboard_keypad_num(const uint8_t num);
 void keyboard_keypad_dot(void);
 void keyboard_keypad_dash(void);
 
-typedef enum
-{
-	PF1, PF2, PF3, PF4
-}
-kbdpfn_t;
+#define PF1 'P'
+#define PF2 'Q'
+#define PF3 'R'
+#define PF4 'S'
 
-void keyboard_pfn(const kbdpfn_t);
+void keyboard_pfn(const uint8_t);
 
-typedef enum
-{
-	UP,	LEFT, RIGHT, DOWN
-}
-kbdarrow_t;
+#define UP 		'A'
+#define DOWN 	'B'
+#define RIGHT 	'C'
+#define LEFT 	'D'
 
-void keyboard_arrow(const kbdarrow_t);
+void keyboard_arrow(const uint8_t);
 
 inline void keyboard_keyclick_sound(void);
 

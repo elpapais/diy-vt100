@@ -8,6 +8,4 @@
 #include <msp430.h>
 #include <stdint.h>
 
-typedef uint8_t size_t;
-
 #endif

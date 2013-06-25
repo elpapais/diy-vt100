@@ -5,25 +5,38 @@
 #include <diy-vt100/vt100/misc.h>
 #include <diy-vt100/setup.h>
 
-void keyboard_arrow(const kbdarrow_t arrow)
+void keyboard_arrow(const uint8_t arrow)
 {
 	uart_send_escape();
-	
-	uint8_t map[4] = {'P', 'Q', 'R', 'S'};
 	
 	if(parm_setting.bits.DECANM)
 	{
 		uart_send(parm_setting.bits.DECCKM ? 'O' : '[');
 	}
 
-	uart_send(map[arrow]);
+	uart_send(arrow);
 	
 	keyboard_keyclick_sound();
 }
 
 void keyboard_other(const uint8_t ascii)
 {
-	uart_send((setting.bits.KBD_CTRL) ? ((ascii -'@') & ~BIT7) : ascii);
+	if(setting.bits.KBD_CTRL)
+	{	
+		if(ascii >= '@' && ascii <= '_')
+		{
+			uart_send(ascii - '@');
+		}
+		else if(ascii >= 'a' && ascii <= 'z')
+		{
+			uart_send(ascii - 'a' + 1);
+		}
+	}
+	else
+	{
+		uart_send(ascii);
+	}
+	
 	keyboard_keyclick_sound();
 }
 
@@ -36,11 +49,11 @@ void keyboard_other(const uint8_t ascii)
 	if(parm_setting.bits.DECKPAM) \
 	{ \
 		detect_mode_send_esc_sequence(); \
-		uart_send('m'); \
+		uart_send(alt); \
 	} \
 	else \
 	{ \
-		uart_send('-'); \
+		uart_send(ch); \
 	} \
 	 \
 	keyboard_keyclick_sound()
@@ -60,10 +73,10 @@ void keyboard_keypad_dot()
 	keypad_DECKPAM_alt_seq('n', '.');
 }
 
-void keyboard_pfn(kbdpfn_t pfn)
+void keyboard_pfn(const uint8_t pfn)
 {
 	detect_mode_send_esc_sequence();
-	uart_send('p' + pfn);
+	uart_send(pfn);
 }
 
 void keyboard_keypad_enter(void)

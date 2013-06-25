@@ -6,29 +6,26 @@
 
 /* TODO: partial support for autowarp */
 void
-vt100_putchar(void)
+vt100_putch(void)
 {
-	/* screen overflowed on bottom */
-	if(!(vt100_cursor.row < SCREEN_ROW))
-	{
-		screen_shiftup();
-	
-		vt100_cursor.row = SCREEN_ROW - 1;
-		vt100_cursor.col = 0;
-	}
-	
-	/* screen function have no tension of screen overflow */
 	/* show control symbol in caret notation */
 	if(param.pass < ASCII_SPACE)
 	{
 		/* print special char */
-		screen_putch('^', vt100_dataprop);
-		screen_putch(('@' + param.pass) & ~BIT7, vt100_dataprop);
+		uint8_t bkp = param.pass;
+		
+		param.pass = '^';
+		vt100_putch();
+		
+		param.pass = ('@' + bkp) & ~BIT7;
+		vt100_putch();
+		
+		return;
 	}
-	else
-	{
-		screen_putch(param.pass, vt100_dataprop);
-	}
+	
+	/* screen function have no tension of screen overflow */
+	
+	screen_putch(param.pass, vt100_dataprop);
 	
 	/* increment position */
 	vt100_cursor.col++;
@@ -41,7 +38,22 @@ vt100_putchar(void)
 			vt100_cursor.col = 0;
 			vt100_cursor.row++;
 		}
+		
+		/* screen overflowed on bottom */
+		if(!(vt100_cursor.row < SCREEN_ROW))
+		{
+			screen_shiftup();
+		
+			vt100_cursor.row = SCREEN_ROW - 1;
+			vt100_cursor.col = 0;
+		}
 	}
+	else if(!(vt100_cursor.col < SCREEN_COL))
+	{
+		vt100_cursor.col = SCREEN_COL - 1;
+	}
+	
+	
 }
 
 /* screen alignment display 
