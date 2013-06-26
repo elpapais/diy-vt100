@@ -67,7 +67,7 @@ screen_splash()
 	vt100_rowprop[1] = rowp_1;
 	
 	const static uint8_t row_0_1[SCREEN_COL] = {' ', ' ', ' ', ' ', 'd', 'i', 'y', '-', 'v', 't', '1', '0', '0'};
-	const static uint8_t row_2[SCREEN_COL] = {' ', 'I', 'R', 'C', ' ', '#', 'd', 'i', 'y', 'v', 't', '1', '0', '0'};
+	const static uint8_t row_2[SCREEN_COL] = {' ', 'I', 'R', 'C', ' ', '#', 'd', 'i', 'y', '-','v', 't', '1', '0', '0'};
 	
 	for(register col_t j=0; j < SCREEN_COL; j++)
 	{
