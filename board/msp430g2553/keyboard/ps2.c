@@ -111,7 +111,7 @@ void ps2kbd_decode(const uint8_t data)
 
 					if(ch >= '@' && ch <= '_')
 					{
-						uart_send(ch);
+						uart_send(ch - '@');
 						keyclick_sound();
 					}
 				}
