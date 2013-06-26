@@ -5,7 +5,7 @@
 
 /* when parity error occurs , hardware will send 
  * place a checkerboard character ascii(176) */
-void vt100_putch(void);
+void vt100_putch(const uint8_t);
 
 void vt100_DECALN(void);
 

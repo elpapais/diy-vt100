@@ -1,16 +1,7 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
-#define __NOKIA1100LCD__
-
-#include <diy-vt100/common.h>
-
-#ifdef __NOKIA1100LCD__
-#include <diy-vt100/screen/nokia1100.h>
-#else
-#error "unkown LCD"
-#endif
-
+#include <diy-vt100/hardware/screen.h>
 #include <diy-vt100/vt100/attribute.h>
 
 typedef struct

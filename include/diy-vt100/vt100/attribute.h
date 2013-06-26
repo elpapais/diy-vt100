@@ -13,8 +13,6 @@ typedef struct
 
 #include <diy-vt100/screen.h>
 
-
-
 typedef struct
 {
 	uint8_t double_width:1;

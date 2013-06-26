@@ -9,15 +9,49 @@
 
 #include <diy-vt100/vt52/misc.h>
 
-#include <diy-vt100/state-machine.h>
 #include <diy-vt100/param.h>
 #include <diy-vt100/bell.h>
+
+/* note: 0 index is selected in case no match found */
+struct __state
+{
+	const callback_t cb;
+	const uint8_t ch;
+	
+	union
+	{
+		struct
+		{
+			const int8_t pcount;
+			const uint8_t pdefault;
+		} param;
+		
+		const struct __state *state;
+	} arg;
+};
+
+extern const struct __state vt100_state_C0[];
+extern const struct __state vt100_state_C1[];
+extern const struct __state vt100_state_hash[];
+extern const struct __state vt100_state_question[];
+extern const struct __state vt100_state_open_smallbracket[];
+extern const struct __state vt100_state_opensquarebracket[];
+extern const struct __state vt100_state_close_smallbracket[];
+
+#define state_state(ch, func, _state) 	{func, ch, .arg = {.state = _state}}
+#define state_param(ch, func, pc, pd) 	{func, ch, .arg = {.param = {.pcount = pc, .pdefault = pd}}}
+#define state_end() 					{0}
+
+/* some useful derivative */
+#define state_noparam(ch, func) 		state_param(ch, func, 0, 0)
+#define state_maxparam(ch, func, pc, pd)state_param(ch, func, pc, pd)
+#define state_minparam(ch, func, pc, pd)state_param(ch, func, (-1 * pc), pd)
+#define state_ignore(ch)				state_state(ch, (callback_t)1, 0)
+#define state_select(ch, state)			state_state(ch, (callback_t)2, state)
 
 const struct __state
 vt100_state_C0[] =
 {
-	state_worker	(vt100_state_worker),
-
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
 	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
 	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
@@ -38,8 +72,6 @@ vt100_state_C0[] =
 const struct __state
 vt100_state_C1[] = //ESC
 {
-	state_worker	(vt100_state_worker),
-
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
 	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
 	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
@@ -78,8 +110,6 @@ vt100_state_C1[] = //ESC
 const struct __state
 vt100_state_open_smallbracket[] = //(
 {
-	state_worker	(vt100_state_worker),
-
 	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
 	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
@@ -89,19 +119,15 @@ vt100_state_open_smallbracket[] = //(
 const struct __state
 vt100_state_close_smallbracket[] = //)
 {
-	state_worker	(vt100_state_worker),
-
 	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
 	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
-	state_end()
+	state_end		()
 };
 
 const struct __state
 vt100_state_opensquarebracket[] = //[
 {
-	state_worker	(vt100_state_worker),
-
 	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
 	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
@@ -131,8 +157,6 @@ vt100_state_opensquarebracket[] = //[
 const struct __state
 vt100_state_hash[] = //#
 {
-	state_worker	(vt100_state_worker),
-
 	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
 	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
 	state_select	(ASCII_ESCAPE, vt100_state_C1),
@@ -147,8 +171,6 @@ vt100_state_hash[] = //#
 const struct __state
 vt100_state_question[] = //?
 {
-	state_worker	(vt100_state_worker),
-
 	state_noparam	(ASCII_CAN, vt100_sequence_terminate),
 	state_noparam	(ASCII_SUB, vt100_sequence_terminate),
 	state_minparam	('l', vt100_setting_low, 1, 0),
@@ -156,40 +178,53 @@ vt100_state_question[] = //?
 	state_end		()
 };
 
-void vt100_state_worker()
+void vt100_state(const uint8_t data)
 {
-	if(state_iterate->cb != 0)
+	static struct __state *current = (struct __state *)vt100_state_C0;
+	struct __state *iterate;
+	
+	for(iterate = current; iterate->cb; iterate++)
 	{
-		if(state_iterate->cb == (callback_t)2)
+		if(iterate->ch == data)
+		{
+			break;
+		}
+	}
+	
+	if(iterate->cb != 0)
+	{
+		if(iterate->cb == (callback_t)2)
 		{
 			/* select state */
-			state_current = (struct __state *)state_iterate->arg.state;
+			current = (struct __state *)iterate->arg.state;
 		}
 		/* clear out ignore states */
-		else if(state_iterate->cb != (callback_t)1)
+		else if(iterate->cb != (callback_t)1)
 		{
 			/* NOTE: can become a bug if function with state used
 			 * currently we only support param's */
-			state_current = (struct __state *)vt100_state_C0;
+			current = (struct __state *)vt100_state_C0;
 
 			/* chop of extra param */
-			param_default(state_iterate->arg.param.pcount,
-							state_iterate->arg.param.pdefault);
+			param_default(iterate->arg.param.pcount,
+							iterate->arg.param.pdefault);
 
-			state_iterate->cb();
+			iterate->cb();
 
 			/* reset param */
 			param.count = 0;
 		}
 	}
+	
 	/* if we are at start state, store it in buffer */
-	else if(state_current == (struct __state *)vt100_state_C0)
+	else if(current == (struct __state *)vt100_state_C0)
 	{
-		vt100_putch();
+		vt100_putch(data);
 	}
+	
 	else
 	{
 		/* try to use missing items as param */
-		param_add();
+		param_add(data);
 	}
 }

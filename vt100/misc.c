@@ -4,7 +4,6 @@
 #include <diy-vt100/vt100/state.h>
 
 #include <diy-vt100/param.h>
-#include <diy-vt100/state-machine.h>
 #include <diy-vt100/setting.h>
 #include <diy-vt100/uart.h>
 #include <diy-vt100/hardware.h>
@@ -20,8 +19,6 @@ void vt100_init()
 	
 	setting.bits.LOCAL = FALSE;
 	vt100_refresh_connect_mode();
-	
-	state_current = (struct __state *)vt100_state_C0;
 }
 
 void vt100_refresh_connect_mode()

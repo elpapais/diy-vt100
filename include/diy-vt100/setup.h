@@ -2,8 +2,6 @@
 #define SETUP_H
 
 #include <diy-vt100/common.h>
-#include <diy-vt100/state-machine.h>
-#include <diy-vt100/vt100/buffer.h>
 
 extern uint8_t setup_number;
 
@@ -19,6 +17,7 @@ void setup_state_worker(void);
 void setup_switch(void);
 void setup_recall(void);
 void setup_save(void);
+void setup_reset(void);
 
 void setup_value_flip(void);
 void setup_next_setting(void);

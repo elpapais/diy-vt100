@@ -10,11 +10,10 @@ typedef struct
 {
 	volatile uint8_t count;
 	volatile uint8_t data[PARAM_QUEUE_SIZE];
-	volatile uint8_t pass;
 } __attribute((packed)) param_t;
 
 extern param_t param;
 
-void param_add(void);
-void param_default(int8_t pcount, uint8_t pdefault);
+void param_add(const uint8_t);
+void param_default(const int8_t pcount, const uint8_t pdefault);
 #endif

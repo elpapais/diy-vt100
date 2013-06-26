@@ -3,12 +3,12 @@
 #include <diy-vt100/hardware/port1.h>
 #include <diy-vt100/hardware/port2.h>
 #include <diy-vt100/hardware/ic_74xx595.h>
-#include <diy-vt100/hardware/keyboard.h>
+#include <diy-vt100/hardware/keyboard/ps2.h>
 #include <diy-vt100/hardware/uart.h>
 #include <diy-vt100/hardware/cqueue.h>
 #include <diy-vt100/param.h>
 #include <diy-vt100/screen.h>
-#include <diy-vt100/state-machine.h>
+#include <diy-vt100/vt100/state.h>
 
 void timer1_A3_init(void);
 
@@ -63,16 +63,14 @@ void hardware_reset(void)
 void hardware_loop(void)
 {
 __loop:
-	while(hw_kbd.queue.count)
+	while(ps2kbd.count)
 	{
-		hw_kbd.param = cqueue_pop(&hw_kbd.queue);
-		hw_kbd_decode();
+		ps2kbd_decode(cqueue_pop(&ps2kbd));
 	}
 	
 	while(uart_rx.count)
 	{
-		param.pass = cqueue_pop(&uart_rx);
-		state_do();
+		vt100_state(cqueue_pop(&uart_rx));
 	}
 	
 	screen_refresh();

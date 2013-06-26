@@ -4,7 +4,7 @@
 
 void vt52_ident()
 {
-	uart_send_escape();
+	uart_send(ASCII_ESCAPE);
 	uart_send('/');
 	uart_send('Z');
 }

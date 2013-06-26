@@ -12,7 +12,7 @@ vt100_DECREPTPARAM()
 {
 	setting.bits.UNSOLIC = param.data[0] ? FALSE : TRUE;
 	
-	uart_send_escape();
+	uart_send(ASCII_ESCAPE);
 	uart_send('[');
 	
 	uart_send_uint8(3);
@@ -53,7 +53,7 @@ vt100_DECREPTPARAM()
 void
 vt100_DSR()
 {
-	uart_send_escape();
+	uart_send(ASCII_ESCAPE);
 	uart_send('[');
 	
 	switch(param.data[0])
@@ -79,7 +79,7 @@ vt100_DSR()
  * identify terminal */
 void vt100_DECID()
 {
-	uart_send_escape();
+	uart_send(ASCII_ESCAPE);
 	uart_send('[');
 	uart_send('?');
 	uart_send('1');

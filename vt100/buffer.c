@@ -6,26 +6,21 @@
 
 /* TODO: partial support for autowarp */
 void
-vt100_putch(void)
+vt100_putch(const uint8_t data)
 {
 	/* show control symbol in caret notation */
-	if(param.pass < ASCII_SPACE)
+	if(data < ASCII_SPACE)
 	{
 		/* print special char */
-		uint8_t bkp = param.pass;
-		
-		param.pass = '^';
-		vt100_putch();
-		
-		param.pass = ('@' + bkp) & ~BIT7;
-		vt100_putch();
+		vt100_putch('^');
+		vt100_putch('@' + data);
 		
 		return;
 	}
 	
 	/* screen function have no tension of screen overflow */
 	
-	screen_putch(param.pass, vt100_dataprop);
+	screen_putch(data, vt100_dataprop);
 	
 	/* increment position */
 	vt100_cursor.col++;
@@ -52,8 +47,6 @@ vt100_putch(void)
 	{
 		vt100_cursor.col = SCREEN_COL - 1;
 	}
-	
-	
 }
 
 /* screen alignment display 
