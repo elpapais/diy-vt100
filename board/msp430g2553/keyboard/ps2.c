@@ -527,7 +527,7 @@ const ps2kbdscancode_t ps2kbd_scancode[PS2KBD_SCANCODE_SIZE] =
 	ignore	(), /* left alt */
 	callback_rb(ps2kbd_shift), /* left shift */
 	ignore	(),
-	callback(ps2kbd_ctrl), /* left ctrl */
+	callback_rb(ps2kbd_ctrl), /* left ctrl */
 	alphabet('q', 'Q'),
 	number	('1', '!'),
 	ignore	(),
