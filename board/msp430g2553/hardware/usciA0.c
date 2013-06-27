@@ -1,5 +1,6 @@
 #include <diy-vt100/vt100/buffer.h>
 #include <diy-vt100/uart.h>
+#include <diy-vt100/setting.h>
 
 void usciA0_RX_interrupt() __attribute__((interrupt(USCIAB0RX_VECTOR)));
 void usciA0_TX_interrupt() __attribute__((interrupt(USCIAB0TX_VECTOR)));
@@ -14,8 +15,7 @@ const uartspeed_t uart_speed[UART_SPEED_COUNT] =
 	{{5, '1', '9', '2', '0', '0'}, {3, '1', '2', '0'}}
 };
 
-void uart_init(const bool_t parity, const bool_t parity_sense, const uint8_t rx_speed, 
-													const uint8_t tx_speed)
+void usciA0_init(void)
 {
 #define usciA0_speed_collector(brx) {(uint8_t)(brx & 0x00FF), (uint8_t)(brx >> 8)}
 	const static struct
@@ -41,21 +41,21 @@ void uart_init(const bool_t parity, const bool_t parity_sense, const uint8_t rx_
 	/* Initialize USCI registers */
 	UCA0CTL1 = UCSSEL_2;
 
-	if(parity)
+	if(parm_setting.bits.PARITY)
 	{
 		/* enable parity */
 		UCA0CTL1 |= UCPEN;
 
 		/* set parity to EVEN */
-		if(parity_sense)
+		if(parm_setting.bits.PARITYSENSE)
 		{
 			/* EVEN parity */
 			UCA0CTL1 |= UCPAR;
 		}
 	}
 
-	UCA0BR0 = usciA0_speed[rx_speed].BR0;
-	UCA0BR1 = usciA0_speed[tx_speed].BR1;
+	UCA0BR0 = usciA0_speed[parm_setting.uart_rx].BR0;
+	UCA0BR1 = usciA0_speed[parm_setting.uart_rx].BR1;
 
 	UCA0MCTL = UCBRS_6;
 

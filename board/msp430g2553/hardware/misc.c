@@ -1,18 +1,5 @@
 #include <diy-vt100/common.h>
 #include <diy-vt100/hardware.h>
-#include <diy-vt100/hardware/ic_74xx595.h>
-#include <diy-vt100/hardware/uart.h>
-#include <diy-vt100/hardware/cqueue.h>
-#include <diy-vt100/param.h>
-#include <diy-vt100/screen.h>
-#include <diy-vt100/vt100/state.h>
-
-void timer1_A3_init(void);
-extern cqueue_t ps2kbd;
-void ps2kbd_decode(uint8_t);
-void wdt_init(void);
-void port1_init(void);
-void port2_init(void);
 
 /*
  * usuage of setting bits 
@@ -25,61 +12,9 @@ void port2_init(void);
  * replace decscriptive names with their crossponding HW_PRIV#
  */
 
-void
-hardware_init(void)
-{
-	/* hold watch dog timer */
-	WDTCTL = WDTPW + WDTHOLD;
-	
-	/* If calibration constant erased */
-	if(CALBC1_16MHZ == 0xFF)
-	{
-		/* go in low power mode!! */
-		__do_nothing: goto __do_nothing;
-	}
-	
-	/*
-	 * MCLK  @ 16MHz
-	 * SMCLK @ 4MHz
-	 */
-	
-	/* Set DCO step and modulation */
-	DCOCTL = CALDCO_16MHZ;
-	
-	/* Set range */ 
-	BCSCTL1 = CALBC1_16MHZ;
-	BCSCTL2 = DIVS_2;
-	
-	/* hardware dependent code */
-	port1_init();
-	port2_init();
-	wdt_init();
-	timer1_A3_init();
-}
-
 void hardware_reset(void)
 {
 	WDTCTL = 0;
-}
-
-void hardware_loop(void)
-{
-__loop:
-	while(ps2kbd.count)
-	{
-		ps2kbd_decode(cqueue_pop(&ps2kbd));
-	}
-	
-	while(uart_rx.count)
-	{
-		vt100_state(cqueue_pop(&uart_rx));
-	}
-	
-	screen_refresh();
-	
-	ic_74xx595_refresh();
-	_BIS_SR(LPM1_bits + GIE);
-goto __loop;
 }
 
 bool_t hardware_malfunctioning(void)

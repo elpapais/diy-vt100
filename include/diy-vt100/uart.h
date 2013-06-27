@@ -14,9 +14,6 @@ typedef struct
 extern const uartspeed_t uart_speed[UART_SPEED_COUNT];
 extern const uint8_t uart_clkmul;
 
-void uart_init(const bool_t parity,const bool_t parity_sense,
-						const uint8_t rx_speed, const uint8_t tx_speed);
-
 typedef enum
 {
 	DISABLE,
