@@ -102,7 +102,6 @@ inline void setting_tabs_clear()
 
 void setting_load(void);
 void setting_store(void);
-void setting_init(void);
 
 /* defined by hardware */
 //setting_t parm_setting

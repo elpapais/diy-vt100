@@ -24,7 +24,7 @@ const setting_t parm_setting __attribute__((section(".infob"))) =
  * clocked from SMCLK
  */
 
-void setting_init(void)
+void flash_init(void)
 {
 	/* SMCLK | divided by 12 =  */
 	FCTL2 = FWKEY + FSSEL_2 + (FN1|FN3);
