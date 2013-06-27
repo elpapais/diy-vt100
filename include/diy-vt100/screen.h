@@ -28,11 +28,6 @@ void screen_invert(bool_t);
 void screen_gotorow(row_t);
 void screen_gotocol(col_t);
 
-void screen_splash(void);
-void screen_init(void);
-
-void screen_refresh(void);
-
 void screen_shiftup(void);
 void screen_shiftdown(void);
 void screen_putch(const uint8_t, const dataprop_t);
