@@ -1,8 +1,8 @@
-#ifndef _VT100_TAB_H_
-#define _VT100_TAB_H_
+#ifndef VT100_TAB_H
+#define VT100_TAB_H
 
-void vt100_TBC();
-void vt100_HTS();
-void vt100_HT();
+void vt100_TBC(void);
+void vt100_HTS(void);
+void vt100_HT(void);
 
 #endif

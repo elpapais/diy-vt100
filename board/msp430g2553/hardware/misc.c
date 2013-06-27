@@ -1,16 +1,32 @@
-#include <diy-vt100/hardware/misc.h>
-#include <diy-vt100/hardware/timer1_A3.h>
-#include <diy-vt100/hardware/wdt.h>
-#include <diy-vt100/hardware/port1.h>
-#include <diy-vt100/hardware/port2.h>
+#include <diy-vt100/common.h>
+#include <diy-vt100/hardware.h>
 #include <diy-vt100/hardware/ic_74xx595.h>
-#include <diy-vt100/hardware/bell.h>
-#include <diy-vt100/hardware/led.h>
-#include <diy-vt100/hardware/usciA0.h>
-#include <diy-vt100/hardware/nokia1100.h>
+#include <diy-vt100/hardware/uart.h>
+#include <diy-vt100/hardware/cqueue.h>
+#include <diy-vt100/param.h>
+#include <diy-vt100/screen.h>
+#include <diy-vt100/vt100/state.h>
+
+void timer1_A3_init(void);
+extern cqueue_t ps2kbd;
+void ps2kbd_decode(uint8_t);
+void wdt_init(void);
+void port1_init(void);
+void port2_init(void);
+
+/*
+ * usuage of setting bits 
+ * setting.bits.HW_PRIV0 : cursor blink state
+ * setting.bits.HW_PRIV1 : keyboard modifier
+ * setting.bits.HW_PRIV2 : keyboard break
+ * setting.bits.HW_PRIV3 : not used(maybe keybpard PARITY)
+ * 
+ * their maybe preprocessor directive to 
+ * replace decscriptive names with their crossponding HW_PRIV#
+ */
 
 void
-msp430_init()
+hardware_init(void)
 {
 	/* hold watch dog timer */
 	WDTCTL = WDTPW + WDTHOLD;
@@ -36,10 +52,37 @@ msp430_init()
 	
 	/* hardware dependent code */
 	port1_init();
-	ic_74xx595_init();
 	port2_init();
-	usciA0_init();
 	wdt_init();
 	timer1_A3_init();
-	nokia1100_init();
+}
+
+void hardware_reset(void)
+{
+	WDTCTL = 0;
+}
+
+void hardware_loop(void)
+{
+__loop:
+	while(ps2kbd.count)
+	{
+		ps2kbd_decode(cqueue_pop(&ps2kbd));
+	}
+	
+	while(uart_rx.count)
+	{
+		vt100_state(cqueue_pop(&uart_rx));
+	}
+	
+	screen_refresh();
+	
+	ic_74xx595_refresh();
+	_BIS_SR(LPM1_bits + GIE);
+goto __loop;
+}
+
+bool_t hardware_malfunctioning(void)
+{
+	return FALSE;
 }

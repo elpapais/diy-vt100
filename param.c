@@ -1,9 +1,9 @@
 #include <diy-vt100/param.h>
 
-struct __param param;
+param_t param;
 
 /* TODO: check for overflow */
-void param_add()
+void param_add(const uint8_t data)
 {
 	/* prevent overflow */
 	if(!(param.count < PARAM_QUEUE_SIZE))
@@ -12,11 +12,11 @@ void param_add()
 	}
 	
 	/* parse the parameters and add it to list */
-	if( PARAM_DELIMITER == param.pass)
+	if(PARAM_DELIMITER == data)
 	{
 		param.data[param.count++] = 0;
 	}
-	else if(param.pass >= '0' && param.pass <= '9') /* is digit, else ignore */
+	else if(data >= '0' && data <= '9') /* is digit, else ignore */
 	{
 		if(! param.count)
 		{
@@ -25,7 +25,7 @@ void param_add()
 		}
 		
 		param.data[param.count - 1] *= 10;
-		param.data[param.count - 1] += param.pass - '0';
+		param.data[param.count - 1] += data - '0';
 	}
 	//else
 	//{
@@ -36,7 +36,7 @@ void param_add()
 	//return TRUE;
 }
 
-void param_default(int8_t pcount, uint8_t pdefault)
+void param_default(const int8_t pcount, const uint8_t pdefault)
 {
 	if(pcount < 0)
 	{

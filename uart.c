@@ -1,5 +1,7 @@
 #include <diy-vt100/setting.h>
 #include <diy-vt100/uart.h>
+#include <diy-vt100/vt100/attribute.h>
+#include <diy-vt100/screen.h>
 
 void uart_send_uint8(uint8_t val)
 {
@@ -21,12 +23,10 @@ void uart_send_uint8(uint8_t val)
 	uart_send('0' + val);
 }
 
-inline void uart_send_enter()
+void uart_send_array(const uint8_t *arr, const uint8_t size)
 {
-	uart_send(ASCII_CR);
-	
-	if(setting_ishigh(SETTING_LNM))
+	for(uint8_t i=0; i < size; i++)
 	{
-		uart_send(ASCII_LF);
+		uart_send(arr[i]);
 	}
 }

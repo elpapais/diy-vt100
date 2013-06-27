@@ -1,10 +1,7 @@
-#ifndef _COMMON_H_
-#define _COMMON_H_
+#ifndef COMMON_H
+#define COMMON_H
 
 #include <diy-vt100/hardware/common.h>
-
-typedef uint8_t col_t;
-typedef uint8_t row_t;
 
 /* ASCII code */
 #define ASCII_NULL		0x00 /* null(\0)					CTRL @ */
@@ -62,7 +59,7 @@ typedef uint8_t row_t;
 #define TRUE 1
 #define FALSE 0
 
-typedef void (* callback_t)();
+typedef void (* callback_t)(void);
 
 typedef uint8_t bool_t;
 
@@ -70,11 +67,9 @@ typedef uint8_t bool_t;
 #define __flip(var, bit) ((var) ^= (bit))
 #define __low(var, bit) ((var) &= ~(bit))
 #define __high(var, bit) ((var) |= (bit))
-#define __clear(var) ((var) = 0)
 
 #define __read(var, bit) ((var) & (bit))
 #define __islow(var, bit) (!__read(var, bit))
 #define __ishigh(var, bit) (!!__read(var, bit))
-
 
 #endif

@@ -4,26 +4,38 @@
 #include <diy-vt100/vt100/state.h>
 
 #include <diy-vt100/param.h>
-#include <diy-vt100/state-machine.h>
 #include <diy-vt100/setting.h>
-
-#include <diy-vt100/hardware/misc.h>
-#include <diy-vt100/hardware/bell.h>
-#include <diy-vt100/hardware/led.h>
+#include <diy-vt100/uart.h>
+#include <diy-vt100/hardware.h>
+#include <diy-vt100/bell.h>
+#include <diy-vt100/led.h>
 
 void vt100_init()
 {
-	led_on(LED_ONLINE);
-	led_refresh();
-	
-	/* TODO: check power online/offline mode & keyboard connected */
-	/* TODO: support offline mode */
 	/* TODO: support Keyboard lock */
 
 	param.data[0] = 2;
 	vt100_ED();
 	
-	state_current = (struct __state *)vt100_state_C0;
+	setting.bits.LOCAL = FALSE;
+	vt100_refresh_connect_mode();
+}
+
+void vt100_refresh_connect_mode()
+{
+	const static uartlopbk_t map_lp_bk[2] = { DISABLE, ENABLE };
+	const static led_t led_to_off[] = {LOCAL, LINE};
+	const static led_t led_to_on[] = {LINE, LOCAL};
+
+	if(uart_disconnected())
+	{
+		/* force local mode if disconnected */
+		setting.bits.LOCAL = TRUE;
+	}
+	
+	uart_loopback(map_lp_bk[setting.bits.LOCAL]);
+	led_off(led_to_off[setting.bits.LOCAL]);
+	led_on(led_to_on[setting.bits.LOCAL]);
 }
 
 bool_t __is_vt100_malfunctioning()
@@ -42,15 +54,7 @@ vt100_DECTST()
 void
 vt100_DECKPAM()
 {
-	if(param.data[0])
-	{
-		setting_high(SETTING_DECKPAM);
-	}
-	else
-	{
-		setting_low(SETTING_DECKPAM);
-	}
-	
+	setting.bits.DECKPAM = (param.data[0]) ? TRUE : FALSE;
 }
 
 /* reset to inital state (as on power on) */
@@ -65,34 +69,21 @@ vt100_RIS()
 void
 vt100_DECCKM()
 {
-	setting_high(SETTING_DECCKM);
+	setting.bits.DECCKM = TRUE;
 }
 
 /* screen in reverse vedio mode */
 void vt100_DECSCNM()
 {
-	if(param.data[0])
-	{
-		setting_high(SETTING_DECSCNM);
-		nokia1100_invertpixel_on();
-	}
-	else
-	{
-		setting_low(SETTING_DECSCNM);
-		nokia1100_invertpixel_off();
-	}
-	
-	
+	setting.bits.DECSCNM = (param.data[0]) ? TRUE : FALSE;
 }
 
 /* send answerback message */
 void vt100_ENQ()
 {
-	uint8_t i = 0;
-
-	for(i=0; i < SETTING_ANSWERBACK_SIZE; i++)
+	for(uint8_t i=0; i < answerback_size; i++)
 	{
-		uart_send(setting.answerback[i]);
+		uart_send(parm_setting.answerback[i]);
 	}
 }
 
@@ -101,39 +92,39 @@ void vt100_setting_high()
 	switch(param.data[0])
 	{
 		case 1:
-			setting_high(SETTING_DECCKM);
+			setting.bits.DECCKM = TRUE;
 		break;
 		
 		case 3:
-			setting_high(SETTING_DECCOLM);
+			setting.bits.DECCOLM = TRUE;
 		break;
 		
 		case 4:
-			setting_high(SETTING_DECSCLM);
+			setting.bits.DECSCLM = TRUE;
 		break;
 		
 		case 5:
-			setting_high(SETTING_DECSCNM);
+			setting.bits.DECSCNM = TRUE;
 		break;
 		
 		case 6:
-			setting_high(SETTING_DECOM);
+			setting.bits.DECCOM = TRUE;
 		break;
 		
 		case 7:
-			setting_high(SETTING_DECAWM);
+			setting.bits.DECAWM = TRUE;
 		break;
 		
 		case 8:
-			setting_high(SETTING_DECARM);
+			setting.bits.DECARM = TRUE;
 		break;
 		
 		case 9:
-			setting_high(SETTING_DECINLM);
+			setting.bits.DECINLM = TRUE;
 		break;
 		
 		case 20:
-			setting_high(SETTING_LNM);
+			setting.bits.LNM = TRUE;
 		break;
 	}
 }
@@ -143,91 +134,77 @@ void vt100_setting_low()
 	switch(param.data[0])
 	{
 		case 1:
-			setting_low(SETTING_DECCKM);
+			setting.bits.DECCKM = FALSE;
 		break;
 		
 		case 2:
-			setting_low(SETTING_DECANM);
+			setting.bits.DECANM = FALSE;
 		break;
 		
 		case 3:
-			setting_low(SETTING_DECCOLM);
+			setting.bits.DECCOLM = FALSE;
 		break;
 		
 		case 4:
-			setting_low(SETTING_DECSCLM);
+			setting.bits.DECSCLM = FALSE;
 		break;
 		
 		case 5:
-			setting_low(SETTING_DECSCNM);
+			setting.bits.DECSCNM = FALSE;
 		break;
 		
 		case 6:
-			setting_low(SETTING_DECOM);
+			setting.bits.DECCOM = FALSE;
 		break;
 		
 		case 7:
-			setting_low(SETTING_DECAWM);
+			setting.bits.DECAWM = FALSE;
 		break;
 		
 		case 8:
-			setting_low(SETTING_DECARM);
+			setting.bits.DECARM = FALSE;
 		break;
 		
 		case 9:
-			setting_low(SETTING_DECINLM);
+			setting.bits.DECINLM = FALSE;
 		break;
 		
 		case 20:
-			setting_low(SETTING_LNM);
+			setting.bits.LNM = FALSE;
 		break;
 	}
-}
-
-void vt100_sequence_terminate()
-{
-	/* reset to C0 state (this work is already preformed by worker function) */
-	//state_current = (struct __state)vt100_state_C0;
-
-	/* TODO: print error char */
 }
 
 /* load led's */
 void 
 vt100_DECLL()
 {
-	uint8_t i;
-	
-	for(i=0; i < param.count; i++)
+	for(register uint8_t i=0; i < param.count; i++)
 	{
 		switch(param.data[i])
 		{
 			case 0:
-				led_off(LED_L1 | LED_L2 | LED_L3 | LED_L4);
+				led_off(PROG1);
+				led_off(PROG2);
+				led_off(PROG3);
+				led_off(PROG4);
 			break;
 			
 			case 1:
-				led_on(LED_L1);
+				led_on(PROG1);
 			break;
 			
 			case 2:
-				led_on(LED_L2);
+				led_on(PROG2);
 			break;
 			
 			case 3:
-				led_on(LED_L3);
+				led_on(PROG3);
 			break;
 			
 			case 4:
-				led_on(LED_L4);
+				led_on(PROG4);
 			break;
 		}
 	}
-	
-	led_refresh();
-}
-
-void vt100_BEL()
-{
-	bell_long();
 }

@@ -1,5 +1,5 @@
-#ifndef _HW_COMMON_H_
-#define _HW_COMMON_H_
+#ifndef HW_COMMON_H
+#define HW_COMMON_H
 
 #ifndef __MSP430G2553__
 #define __MSP430G2553__

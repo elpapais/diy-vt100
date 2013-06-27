@@ -1,50 +1,62 @@
-#include <diy-vt100/hardware/usciA0.h>
-#include <diy-vt100/hardware/usciA0.h>
-#include <diy-vt100/hardware/flash.h>
-
-#include <diy-vt100/cqueue.h>
+#include <diy-vt100/vt100/buffer.h>
 #include <diy-vt100/uart.h>
 
-#define usciA0_speed_collector(brx, ch5, ch4, ch3, ch2, ch1, ch0) \
-			{(uint8_t)(brx & 0x00FF), (uint8_t)(brx >> 8), {{ch5}, {ch4}, {ch3}, {ch2}, {ch1}, {ch0}}}
+void usciA0_RX_interrupt() __attribute__((interrupt(USCIAB0RX_VECTOR)));
+void usciA0_TX_interrupt() __attribute__((interrupt(USCIAB0TX_VECTOR)));
 
-/* SMCLK @ 4MHz */
-const struct __usciA0_speed usciA0_speed[USCIA_SPEED_SIZE] =
+cqueue_t uart_tx, uart_rx;
+
+const uint8_t uart_clkmul = '1';
+
+const uartspeed_t uart_speed[UART_SPEED_COUNT] = 
 {
-	usciA0_speed_collector(416, '9','6','0','0', 0,  0),
-	usciA0_speed_collector(208, '1','9','2','0','0', 0),
-	usciA0_speed_collector(104, '3','8','4','0','0', 0),
-	usciA0_speed_collector(071, '5','6','0','0','0', 0),
-	usciA0_speed_collector(034, '1','1','5','2','0','0'),
-	usciA0_speed_collector(031, '1','2','8','0','0','0'),
-	usciA0_speed_collector(015, '2','5','6','0','0','0')
+	{{4, '9', '6', '0', '0'}, {3, '1', '1', '2'}},
+	{{5, '1', '9', '2', '0', '0'}, {3, '1', '2', '0'}}
 };
 
-void usciA0_init()
+void uart_init(const bool_t parity, const bool_t parity_sense, const uint8_t rx_speed, 
+													const uint8_t tx_speed)
 {
+#define usciA0_speed_collector(brx) {(uint8_t)(brx & 0x00FF), (uint8_t)(brx >> 8)}
+	const static struct
+	{
+		uint8_t BR0;
+		uint8_t BR1;
+	}
+	usciA0_speed[UART_SPEED_COUNT] =
+	{
+		usciA0_speed_collector(416),
+		usciA0_speed_collector(208),
+		//usciA0_speed_collector(104, '3','8','4','0','0', 0),
+		//usciA0_speed_collector(071, '5','6','0','0','0', 0),
+		//usciA0_speed_collector(034, '1','1','5','2','0','0'),
+		//usciA0_speed_collector(031, '1','2','8','0','0','0'),
+		//usciA0_speed_collector(015, '2','5','6','0','0','0')
+	};
+	
 	/* Configure ports */
 	P1SEL = BIT1 + BIT2; /* P1.1 = RXD, P1.2=TXD */
 	P1SEL2= BIT1 + BIT2; /* P1.1 = RXD, P1.2=TXD */
 
 	/* Initialize USCI registers */
 	UCA0CTL1 = UCSSEL_2;
-	
-	if(flash_setting_read(SETTING_PARITY))
+
+	if(parity)
 	{
 		/* enable parity */
 		UCA0CTL1 |= UCPEN;
-		
+
 		/* set parity to EVEN */
-		if(flash_setting_read(SETTING_PARITYSENSE))
+		if(parity_sense)
 		{
 			/* EVEN parity */
 			UCA0CTL1 |= UCPAR;
 		}
 	}
-	
-	UCA0BR0 = usciA0_speed[flash_setting.speed].BR0;
-	UCA0BR1 = usciA0_speed[flash_setting.speed].BR1;
-	
+
+	UCA0BR0 = usciA0_speed[rx_speed].BR0;
+	UCA0BR1 = usciA0_speed[tx_speed].BR1;
+
 	UCA0MCTL = UCBRS_6;
 
 	/* Clear UCSWRST flag (Initialize USCI state machine) */
@@ -58,23 +70,50 @@ void usciA0_init()
 }
 
 /* push received data to uart buffer */
-void usciA0_RX_interrupt()
+void usciA0_RX_interrupt(void)
 {
-	uart_rx_push(UCA0RXBUF);
+	cqueue_push(&uart_rx, __ishigh(UCA0STAT, UCPE) ? 176 : UCA0RXBUF);
 	/* TODO: XON/XOFF sending for preventing overflow on when count == 16 */
-	
+
 	/* exit sleep mode to refresh screen */
 	__bic_status_register_on_exit(LPM1_bits);
 }
 
-void usciA0_TX_interrupt()
+void usciA0_TX_interrupt(void)
 {
-	if(uart_tx_count())
+	if(uart_tx.count)
 	{
-		UCA0TXBUF = uart_tx_pop();
+		UCA0TXBUF = cqueue_pop(&uart_tx);
 	}
 	else
 	{
 		IE2 &= ~UCA0TXIE;
 	}
+}
+
+void uart_send(const uint8_t data)
+{
+	cqueue_push(&uart_tx, data);
+
+	/* enable interrupt if it was disabled due to empty cqueue */
+	IE2 |= UCA0TXIE;
+}
+
+void uart_loopback(uartlopbk_t enable)
+{
+	switch(enable)
+	{
+		case ENABLE:
+			__high(UCA0STAT, UCLISTEN);
+		break;
+		
+		case DISABLE:
+			__low(UCA0STAT, UCLISTEN);
+		break;
+	}
+}
+
+bool_t uart_disconnected(void)
+{
+	return __read(UCA0STAT, UCIDLE);
 }

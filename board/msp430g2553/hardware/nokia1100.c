@@ -1,6 +1,6 @@
-#include <diy-vt100/hardware/nokia1100.h>
+#include <diy-vt100/screen.h>
+#include <diy-vt100/hardware/screen/nokia1100.h>
 #include <diy-vt100/hardware/port2.h>
-#include <diy-vt100/hardware/flash.h>
 
 #define NOKIA1100_ONLY_CLKTRANSITION() \
 		port2_low(NOKIA1100_CLK); \
@@ -20,12 +20,9 @@
 		port2_high(NOKIA1100_CLK)
 
 void
-nokia1100_clear()
+nokia1100_full_clear(void)
 {
-	uint16_t i = NOKIA1100_SCREEN_LOOP_SIZE;
-	
-	nokia1100_showpixel_off();
-	nokia1100_gotoyx(0,0);
+	uint16_t i = 864;
 	
 	port2_low(NOKIA1100_SS);
 	
@@ -50,26 +47,6 @@ nokia1100_clear()
 	
 	/* Disable display LCD */
 	port2_high(NOKIA1100_SS);
-	
-	nokia1100_showpixel_on();
-}
-
-/* init */
-void
-nokia1100_init()
-{
-	/* initalization commands */
-	nokia1100_chargepump_on();
-	nokia1100_contrast(NOKIA1100_INIT_CONTRAST);
-	nokia1100_power_on();
-	nokia1100_clear();
-	nokia1100_gotoy(0);
-	nokia1100_gotox(0);
-	
-	if(flash_setting_ishigh(SETTING_DECSCNM))
-	{
-		nokia1100_invertpixel_on();
-	}
 }
 
 /* only used to send data in one go */

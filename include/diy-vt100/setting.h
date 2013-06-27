@@ -1,25 +1,12 @@
-#ifndef _SETTING_H_
-#define _SETTING_H_
+#ifndef SETTING_H
+#define SETTING_H
 
 #include <diy-vt100/common.h>
-#include <diy-vt100/hardware/flash.h>
+#include <diy-vt100/screen.h>
 
-#define SETTING_ANSWERBACK_SIZE 20
+#define answerback_size 20
 
-struct __setting
-{
-	uint16_t vr_bits;
-	uint16_t nvr_bits;
-	uint8_t brightness;
-	uint8_t speed;
-	uint16_t tabs;
-	uint8_t answerback[SETTING_ANSWERBACK_SIZE];
-};
-
-extern struct __setting setting;
-
-/* note: (FALSE|TRUE)
- * ONLINE: 	(online mode|offline mode)
+/* ONLINE: 	(online mode|offline mode)
  * MODE: 	(vt52|ansi)
  * AUTOX: 	auto XON & XOFF (OFF|ON)
  * BPS:		bits per character(7|8)
@@ -30,90 +17,100 @@ extern struct __setting setting;
  * SCREEN: 	(DARK|LIGHT)
  */
 
-#define __setting_nvr(no) 	(no | BIT7)
-#define __setting_vr(no) 	(no & (~BIT7))
+#define TABS_SIZE ((SCREEN_COL/8) + ((SCREEN_COL/8.0) - (SCREEN_COL/8)) > 0 ? 1 : 0)
 
-#define SETTING_DECKPAM		__setting_vr(0)
-#define SETTING_DECCKM		__setting_vr(2)
-#define SETTING_DECGON		__setting_vr(1)
-#define SETTING_DECOM		__setting_vr(3)
+typedef struct
+{
+	struct
+	{
+		/* DEC PRIV - VR */
+		uint8_t DECKPAM:1;
+		uint8_t DECCKM:1;
+		uint8_t DECGON:1;
+		uint8_t DECCOM:1;
 
-/* private use of vt100 */
-#define SETTING__UNSOLIC 		__setting_vr(4)
-#define SETTING__CURSOR_STATE 	__setting_vr(5)
-#define SETTING__ATTR_BOLD		__setting_vr(6)
-#define SETTING__ATTR_UNDERLINE	__setting_vr(7)
-#define SETTING__ATTR_INVERSE	__setting_vr(8)
-#define SETTING__ATTR_BLINK		__setting_vr(9)
-#define SETTING__LOCAL			__setting_vr(10)
-#define SETTING__SETUP_TYPE		__setting_vr(11)
-#define SETTING__SETUP_SHOW		__setting_vr(12)
+		/* VT100 PRIVATE - VR */
+		uint8_t UNSOLIC:1;
+		uint8_t LOCAL:1;
+		uint8_t SETUP_TYPE:1;
+		uint8_t SETUP_SHOW:1;
 
-#define SETTING_DECANM 		__setting_nvr(0)
-#define SETTING_DECARM 		__setting_nvr(1)
-#define SETTING_AUTOX 		__setting_nvr(2)
-#define SETTING_BPC 		__setting_nvr(3)
-#define SETTING_DECCOLM		__setting_nvr(4)
-#define SETTING_CURSOR		__setting_nvr(5)
-#define SETTING_DECINLM		__setting_nvr(6)
-#define SETTING_LNM			__setting_nvr(7)
-#define SETTING_KEYCLICK	__setting_nvr(8)
-#define SETTING_MARGINBELL	__setting_nvr(9)
-#define SETTING_PARITY		__setting_nvr(10)
-#define SETTING_PARITYSENSE	__setting_nvr(11)
-#define SETTING_DECSCNM		__setting_nvr(12)
-#define SETTING_DECSCLM		__setting_nvr(13)
-#define SETTING_DECAWM		__setting_nvr(14)
-#define SETTING_SHIFTED		__setting_nvr(15)
+		/* KEYBOARD - VR */
+		uint8_t KBD_SHIFT:1;
+		uint8_t KBD_CTRL:1;
+		uint8_t KBD_CAPS:1;
 
-#define __setting_get_actual_bitmask(num) __bitmask(num & ~BIT7) /* remove BIT7(for NVR or not) */
-#define __setting_flip(var, num) __flip(var, __setting_get_actual_bitmask(num))
-#define __setting_high(var, num) __high(var, __setting_get_actual_bitmask(num))
-#define __setting_low(var, num)  __low(var, __setting_get_actual_bitmask(num))
+		/* HW - PRIVATE - NA */
+		uint8_t HW_PRIV0:1;
+		uint8_t HW_PRIV1:1;
+		uint8_t HW_PRIV2:1;
+		uint8_t HW_PRIV3:1;
 
-#define __setting_read(var, num) __read(var, __setting_get_actual_bitmask(num))
-#define __setting_ishigh(var, num) __ishigh(var, __setting_get_actual_bitmask(num))
-#define __setting_islow(var, num) __islow(var, __setting_get_actual_bitmask(num))
+		/* DEC PRIV - NVR */
+		uint8_t DECANM:1;
+		uint8_t DECARM:1;
+		uint8_t AUTOX:1;
+		uint8_t BPC:1;
+		uint8_t DECCOLM:1;
+		uint8_t CURSOR:1;
+		uint8_t DECINLM:1;
+		uint8_t LNM:1;
+		uint8_t KEYCLICK:1;
+		uint8_t MARGINBELL:1;
+		uint8_t PARITY:1;
+		uint8_t PARITYSENSE:1;
+		uint8_t DECSCNM:1;
+		uint8_t DECSCLM:1;
+		uint8_t DECAWM:1;
+		uint8_t SHIFTED:1;
+		uint8_t POWER:1;
+	}
+	__attribute((packed)) bits;
 
-#define __setting_select_mem(num, code_nvr, code_vr) \
-	(__read(num, BIT7) /* is NVR */ ? code_nvr : code_vr)
-
-#define setting_flip(num) \
-	__setting_select_mem(num, __setting_flip(setting.nvr_bits, num), \
-								__setting_flip(setting.vr_bits, num))
+	uint8_t brightness;
+	uint8_t uart_rx;
+	uint8_t uart_tx;
 	
-#define setting_low(num) \
-	__setting_select_mem(num, __setting_low(setting.nvr_bits, num), \
-								__setting_low(setting.vr_bits, num))
+	uint8_t tabs[TABS_SIZE];
 
-#define setting_high(num) \
-	__setting_select_mem(num, __setting_high(setting.nvr_bits, num), \
-								__setting_high(setting.vr_bits, num))
+	uint8_t answerback[answerback_size];
+}
+__attribute((packed)) setting_t;
 
-#define setting_read(num) \
-	__setting_select_mem(num, __setting_read(setting.nvr_bits, num), \
-								__setting_read(setting.vr_bits, num))
-								
-#define setting_islow(num) \
-	__setting_select_mem(num, __setting_islow(setting.nvr_bits, num), \
-								__setting_islow(setting.vr_bits, num))
+extern volatile setting_t setting;
 
-#define setting_ishigh(num) \
-	__setting_select_mem(num, __setting_ishigh(setting.nvr_bits, num), \
-								__setting_ishigh(setting.vr_bits, num))
+#define __tab_array_indexval(arr, pos) (arr[pos >> 3])
+#define __tab_array_bitmask(pos) __bitmask(pos & 0x07)
+#define __tab_ishigh(var, pos)	__ishigh(__tab_array_indexval(var,pos),	__tab_array_bitmask(pos))
+#define __tab_islow(var, pos) 	__islow(__tab_array_indexval(var,pos),	__tab_array_bitmask(pos))
 
-#define setting_tab_high(pos) 	__high(setting.tabs, __bitmask(pos))
-#define setting_tab_low(pos) 	__low(setting.tabs, __bitmask(pos))
-#define setting_tab_flip(pos) 	__flip(setting.tabs, __bitmask(pos))
-#define setting_tab_clear() 	__clear(setting.tabs)
+#define setting_tab_high(pos) 	__high(__tab_array_indexval(setting.tabs, pos), __tab_array_bitmask(pos))
+#define setting_tab_low(pos) 	__low(__tab_array_indexval(setting.tabs, pos), __tab_array_bitmask(pos))
+#define setting_tab_flip(pos) 	__flip(__tab_array_indexval(setting.tabs, pos),__tab_array_bitmask(pos))
+#define setting_tab_ishigh(pos) __tab_ishigh(setting.tabs, pos)
+#define setting_tab_islow(pos) 	__tab_islow(setting.tabs, pos)
 
-#define setting_tab_islow(pos) 	__islow(setting.tabs, __bitmask(pos))
-#define setting_tab_ishigh(pos) __ishigh(setting.tabs, __bitmask(pos))
-#define setting_tab_read(pos) 	__read(setting.tabs, __bitmask(pos))
+inline void setting_tabs_clear()
+{
+	uint8_t i = TABS_SIZE;
 
+	while(i--)
+	{
+		setting.tabs[i] = 0;
+	}
+}
 
-#define setting_save() flash_store()
-#define setting_load() flash_load()
-#define setting_init() flash_load()
+void setting_load(void);
+void setting_store(void);
+void setting_init(void);
+
+/* defined by hardware */
+//setting_t parm_setting
+
+#include <diy-vt100/hardware/setting.h>
+
+#define parm_setting_tab_ishigh(pos) __tab_ishigh(parm_setting.tabs, pos)
+#define parm_setting_tab_islow(pos) __tab_islow(parm_setting.tabs, pos)
+
 
 #endif

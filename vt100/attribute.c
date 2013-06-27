@@ -4,60 +4,61 @@
 #include <diy-vt100/vt100/cursor.h>
 #include <diy-vt100/param.h>
 
+rowprop_t vt100_rowprop[SCREEN_ROW];
+dataprop_t vt100_dataprop;
+
 /* double height line [top half] */
 void
 vt100_DECDHL_top()
 {
-	/* TODO: support double height */
-	vt100_buffer_row_high(vt100_cursor.row, ROW_TOUCH | ROW_DOUBLE_HEIGHT_TOP);
+	vt100_rowprop[vt100_cursor.row].double_height = TRUE;
+	vt100_rowprop[vt100_cursor.row].double_height_pos = TRUE;
 }
 
 /* double height line [bottom half]*/
 void
 vt100_DECDHL_bottom()
 {
-	/* TODO: support double height */
-	vt100_buffer_row_high(vt100_cursor.row, ROW_TOUCH | ROW_DOUBLE_HEIGHT_BOT);
+	vt100_rowprop[vt100_cursor.row].double_height = TRUE;
+	vt100_rowprop[vt100_cursor.row].double_height_pos = FALSE;
 }
 
 /* double width line */
 void 
 vt100_DECDWL()
 {
-	/* TODO: support double width */
-	vt100_buffer_row_high(vt100_cursor.row, ROW_TOUCH | ROW_DOUBLE_WIDTH);
+	vt100_rowprop[vt100_cursor.row].double_width = TRUE;
 }
 
 /* select graphics rendition */
 void 
 vt100_SGR()
 {
-	uint8_t i;
-	for(i=0; i < param.count; i++)
+	for(uint8_t i=0; i < param.count; i++)
 	{
 		switch(param.data[i])
 		{
 			case 0:
-				setting_low(SETTING__ATTR_BOLD);
-				setting_low(SETTING__ATTR_INVERSE);
-				setting_low(SETTING__ATTR_BLINK);
-				setting_low(SETTING__ATTR_UNDERLINE);
+				vt100_dataprop.bold = FALSE;
+				vt100_dataprop.invert = FALSE;
+				vt100_dataprop.blink = FALSE;
+				vt100_dataprop.underline = FALSE;
 			break;
 			
 			case 1:
-				setting_high(SETTING__ATTR_BOLD);
+				vt100_dataprop.bold = TRUE;
 			break;
 			
 			case 4:
-				setting_high(SETTING__ATTR_UNDERLINE);
+				vt100_dataprop.underline = TRUE;
 			break;
 			
 			case 5:
-				setting_high(SETTING__ATTR_BLINK);
+				vt100_dataprop.blink = TRUE;
 			break;
 			
 			case 7:
-				setting_high(SETTING__ATTR_INVERSE);
+				vt100_dataprop.invert = TRUE;
 			break;
 		}
 	}

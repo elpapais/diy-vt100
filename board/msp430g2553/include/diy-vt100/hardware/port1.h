@@ -1,5 +1,5 @@
-#ifndef _HW_PORT1_H_
-#define _HW_PORT1_H_
+#ifndef HW_PORT1_H
+#define HW_PORT1_H
 
 #include <diy-vt100/common.h>
 
@@ -12,9 +12,5 @@
 #define port1_low(bits) 	__low(P1OUT, bits)
 #define port1_high(bits)	__high(P1OUT, bits)
 #define port1_flip(bits)	__flip(P1OUT, bits)
-
-void port1_init();
-void port1_interrupt()__attribute__((interrupt(PORT1_VECTOR)));
-
 
 #endif

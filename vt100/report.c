@@ -3,30 +3,26 @@
 #include <diy-vt100/param.h>
 #include <diy-vt100/setting.h>
 #include <diy-vt100/vt100/cursor.h>
-#include <diy-vt100/hardware/flash.h>
+#include <diy-vt100/vt100/misc.h>
+#include <diy-vt100/setting.h>
+#include <diy-vt100/hardware.h>
 
 /* report terminal parameter (requested via DECREQTPARAM) */
 void
 vt100_DECREPTPARAM()
 {
-	if(param.data[0])
-	{
-		setting_low(SETTING__UNSOLIC);
-	}
-	else
-	{
-		setting_high(SETTING__UNSOLIC);
-	}
+	setting.bits.UNSOLIC = param.data[0] ? FALSE : TRUE;
 	
-	uart_send_escape();
+	uart_send(ASCII_ESCAPE);
 	uart_send('[');
-	uart_send_uint8(3);
-	uart_send(';');
 	
+	uart_send_uint8(3);
+	
+	uart_send(';');
 	/* parity info's */
-	if(flash_setting_read(SETTING_PARITY))
+	if(parm_setting.bits.PARITY)
 	{
-		uart_send(flash_setting_read(SETTING_PARITYSENSE) ? '5' : '4');
+		uart_send(parm_setting.bits.PARITYSENSE ? '5' : '4');
 	}
 	else
 	{
@@ -35,15 +31,22 @@ vt100_DECREPTPARAM()
 	}
 	
 	uart_send(';');
+	uart_send(parm_setting.bits.BPC ? '1' : '2');
 	
-	uart_send((flash_setting_read(SETTING_BPC)) ? '1' : '2');
+	uart_send(';');
+	uart_send_array( &uart_speed[parm_setting.uart_tx].value[1], 
+						uart_speed[parm_setting.uart_tx].value[0]);
 	
 	uart_send(';');
-	uart_send_uint8(112);
+	uart_send_array( &uart_speed[parm_setting.uart_rx].value[1], 
+						uart_speed[parm_setting.uart_rx].value[0]);
+	
 	uart_send(';');
-	uart_send_uint8(16);
+	uart_send(uart_clkmul);
+	
 	uart_send(';');
-	uart_send_uint8(0);
+	uart_send('0');
+	
 	uart_send('x');
 }
 
@@ -51,7 +54,7 @@ vt100_DECREPTPARAM()
 void
 vt100_DSR()
 {
-	uart_send_escape();
+	uart_send(ASCII_ESCAPE);
 	uart_send('[');
 	
 	switch(param.data[0])
@@ -59,7 +62,7 @@ vt100_DSR()
 		case 5:
 			/* report status 
 			 * sending using DSR control sequence */
-			uart_send(__is_vt100_malfunctioning() ? '0' : '3');
+			uart_send(hardware_malfunctioning() ? '0' : '3');
 		break;
 		
 		case 6:
@@ -77,7 +80,7 @@ vt100_DSR()
  * identify terminal */
 void vt100_DECID()
 {
-	uart_send_escape();
+	uart_send(ASCII_ESCAPE);
 	uart_send('[');
 	uart_send('?');
 	uart_send('1');

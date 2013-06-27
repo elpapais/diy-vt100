@@ -1,10 +1,11 @@
 #include <diy-vt100/hardware/port2.h>
-#include <diy-vt100/hardware/flash.h>
-#include <diy-vt100/keyboard/keyboard.h>
 #include <diy-vt100/uart.h>
-#include <diy-vt100/cqueue.h>
+#include <diy-vt100/hardware/cqueue.h>
 
-void port2_init()
+cqueue_t ps2kbd;
+void port2_interrupt(void)__attribute__((interrupt(PORT2_VECTOR)));
+
+void port2_init(void)
 {
 	P2DIR &= ~(KEYBOARD_PS2_DATA | KEYBOARD_PS2_CLK);
 	P2REN |= KEYBOARD_PS2_DATA | KEYBOARD_PS2_CLK;
@@ -26,17 +27,19 @@ void port2_init()
 	P1OUT &= ~BIT6;
 }
 
-void port2_interrupt()
+void port2_interrupt(void)
 {
+	static uint8_t data;
+	static uint8_t index;
+	
 	__flip(P1OUT, BIT6);
 	
 	__low(P2IFG, KEYBOARD_PS2_CLK);
 	
-	switch(kbd.index)
+	switch(index)
 	{
 		case 0:
 			/* start bit */
-			//keyboard_ps2.mode &= ~KEYBOARD_PS2_MODE_PARITY;
 		break;
 		
 		case 1:
@@ -48,30 +51,25 @@ void port2_interrupt()
 		case 7:
 		case 8:
 			/* data */
-			kbd.data >>= 1;
+			data >>= 1;
 			if(__read(P2IN,KEYBOARD_PS2_DATA))
 			{
-				__high(kbd.data, BIT7);
-				//kbd.latch ^= KBD_PARITY;
+				__high(data, BIT7);
 			}
 		break;
 		
 		case 9:
-			//if((!(KEYBOARD_PS2_PIN & KEYBOARD_PS2_DATA)) == (!keyboard_ps2.mode & KEYBOARD_PS2_MODE_PARITY))
-			//{
-				//parity error
-				/* TODO: check parity for data */
-			//}
+			/* TODO: check parity for data */
 		break;
 		
 		case 10:
 			/* STOP bit */
-			cqueue_push(&kbd.queue, kbd.data);
+			cqueue_push(&ps2kbd, data);
 			__bic_status_register_on_exit(LPM1_bits);
 		default:
-			kbd.index = 0;
+			index = 0;
 		return;
 	}
 	
-	kbd.index++;
+	index++;
 }
