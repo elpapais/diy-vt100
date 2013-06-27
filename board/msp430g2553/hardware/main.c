@@ -20,6 +20,10 @@ void wdt_init(void);
 void port1_init(void);
 void port2_init(void);
 
+void screen_splash(void);
+void screen_init(void);
+void screen_refresh(void);
+
 extern cqueue_t ps2kbd;
 
 void
