@@ -5,7 +5,7 @@
 #include <diy-vt100/setup.h>
 #include <diy-vt100/setting.h>
 #include <diy-vt100/uart.h>
-#include <diy-vt100/font/simple.h>
+#include <diy-vt100/hardware/font/simple.h>
 
 #include <diy-vt100/vt100/cursor.h>
 
