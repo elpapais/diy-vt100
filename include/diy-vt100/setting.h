@@ -2,6 +2,7 @@
 #define SETTING_H
 
 #include <diy-vt100/common.h>
+#include <diy-vt100/screen.h>
 
 #define answerback_size 20
 
@@ -15,6 +16,8 @@
  * POWER: 	(60Hz|50Hz)
  * SCREEN: 	(DARK|LIGHT)
  */
+
+#define TABS_SIZE ((SCREEN_COL/8) + ((SCREEN_COL/8.0) - (SCREEN_COL/8)) > 0 ? 1 : 0)
 
 typedef struct
 {
@@ -31,12 +34,12 @@ typedef struct
 		uint8_t LOCAL:1;
 		uint8_t SETUP_TYPE:1;
 		uint8_t SETUP_SHOW:1;
-		
+
 		/* KEYBOARD - VR */
 		uint8_t KBD_SHIFT:1;
 		uint8_t KBD_CTRL:1;
 		uint8_t KBD_CAPS:1;
-		
+
 		/* HW - PRIVATE - NA */
 		uint8_t HW_PRIV0:1;
 		uint8_t HW_PRIV1:1;
@@ -67,20 +70,35 @@ typedef struct
 	uint8_t brightness;
 	uint8_t uart_rx;
 	uint8_t uart_tx;
-	uint16_t tabs;
+	
+	uint8_t tabs[TABS_SIZE];
+
 	uint8_t answerback[answerback_size];
 }
 __attribute((packed)) setting_t;
 
 extern volatile setting_t setting;
 
-#define setting_tab_high(pos) 	__high(setting.tabs, __bitmask(pos))
-#define setting_tab_low(pos) 	__low(setting.tabs, __bitmask(pos))
-#define setting_tab_flip(pos) 	__flip(setting.tabs, __bitmask(pos))
-#define setting_tabs_clear() 	(setting.tabs = 0)
+#define __tab_array_indexval(arr, pos) (arr[pos >> 3])
+#define __tab_array_bitmask(pos) __bitmask(pos & 0x07)
+#define __tab_ishigh(var, pos)	__ishigh(__tab_array_indexval(var,pos),	__tab_array_bitmask(pos))
+#define __tab_islow(var, pos) 	__islow(__tab_array_indexval(var,pos),	__tab_array_bitmask(pos))
 
-#define setting_tab_islow(pos) 	__islow(setting.tabs, __bitmask(pos))
-#define setting_tab_ishigh(pos) __ishigh(setting.tabs, __bitmask(pos))
+#define setting_tab_high(pos) 	__high(__tab_array_indexval(setting.tabs, pos), __tab_array_bitmask(pos))
+#define setting_tab_low(pos) 	__low(__tab_array_indexval(setting.tabs, pos), __tab_array_bitmask(pos))
+#define setting_tab_flip(pos) 	__flip(__tab_array_indexval(setting.tabs, pos),__tab_array_bitmask(pos))
+#define setting_tab_ishigh(pos) __tab_ishigh(setting.tabs, pos)
+#define setting_tab_islow(pos) 	__tab_islow(setting.tabs, pos)
+
+inline void setting_tabs_clear()
+{
+	uint8_t i = TABS_SIZE;
+
+	while(i--)
+	{
+		setting.tabs[i] = 0;
+	}
+}
 
 void setting_load(void);
 void setting_store(void);
@@ -88,9 +106,11 @@ void setting_init(void);
 
 /* defined by hardware */
 //setting_t parm_setting
-//#define parm_setting_tab_islow(pos)
-//#define parm_setting_tab_ishigh(pos)
 
 #include <diy-vt100/hardware/setting.h>
+
+#define parm_setting_tab_ishigh(pos) __tab_ishigh(parm_setting.tabs, pos)
+#define parm_setting_tab_islow(pos) __tab_islow(parm_setting.tabs, pos)
+
 
 #endif

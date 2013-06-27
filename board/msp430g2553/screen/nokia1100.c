@@ -1,16 +1,95 @@
+#include <diy-vt100/hardware/screen/nokia1100.h>
+#include <diy-vt100/hardware.h>
+
 #include <diy-vt100/screen.h>
 #include <diy-vt100/setup.h>
 #include <diy-vt100/setting.h>
-#include <diy-vt100/hardware/screen/nokia1100.h>
-#include <diy-vt100/vt100/cursor.h>
 #include <diy-vt100/uart.h>
 #include <diy-vt100/font/simple.h>
-#include <diy-vt100/setting.h>
-#include <diy-vt100/hardware.h>
+
+#include <diy-vt100/vt100/cursor.h>
 
 #define CURSOR_STATE HW_PRIV0
 
-const uint8_t _contrast = 0x7F;
+/* ============================================================== */
+
+#define _contrast 0x7F
+
+/* VERT ADDR */
+#define nokia1100_gotoy(addr) nokia1100_send_cmd(0xB0 | (addr & 0x0F))
+
+#define nokia1100_gotox(addr) \
+			/* HORZ ADDR LSB */ \
+			nokia1100_send_cmd(0x00 | (addr & 0x0F)); \
+			/* HORZ ADDR MSB */ \
+			nokia1100_send_cmd(0x18 | ( (addr>>4)))
+
+#define nokia1100_gotoyx(yaddr, xaddr) \
+			nokia1100_gotoy(yaddr); \
+			nokia1100_gotox(xaddr)
+
+/* INITAL DISPLAY LINE */
+#define nokia1100_setinitrow_zero()	nokia1100_send_cmd(0x40  | 0x00)
+
+/* DISPLAY POWER */
+#define nokia1100_showpixel_on() nokia1100_send_cmd(0xAE | 0x01)
+
+/* DISPLAY POWER */
+#define nokia1100_showpixel_off() nokia1100_send_cmd(0xAE | 0x00); 
+
+#define nokia1100_power_on() \
+			nokia1100_showpixel_on(); \
+			nokia1100_allpixel_off(); \
+			nokia1100_invertpixel_off()
+
+#define nokia1100_power_off() \
+			nokia1100_showpixel_off(); \
+			nokia1100_allpixel_on()
+
+#define nokia1100_power_partialoff() \
+			nokia1100_showpixel_off(); \
+			nokia1100_allpixel_off()
+
+/* PIXEL INVERT */
+#define nokia1100_invertpixel_on() 	nokia1100_send_cmd(0xA6 | 0x01)
+
+/* PIXEL INVERT */
+#define nokia1100_invertpixel_off() nokia1100_send_cmd(0xA6 | 0x00)
+
+/* PIXEL ALL */
+#define nokia1100_allpixel_on() nokia1100_send_cmd(0xA4 | 0x01)
+
+/* PIXEL ALL */
+#define nokia1100_allpixel_off() nokia1100_send_cmd(0xA4 | 0x00)
+
+#define nokia1100_contrast(value) \
+			/* VOP-MSB */ \
+			nokia1100_send_cmd(0x20 | (value >> 5)); \
+			/* VOP-LSB */ \
+			nokia1100_send_cmd(0x80 | (value & 0x1F)) 
+
+/* CHARGE PUMP CONTROL */
+#define nokia1100_chargepump_on() nokia1100_send_cmd(0x2F)
+
+/* CHARGE PUMP */
+#define nokia1100_chargepump(value) \
+			nokia1100_send_cmd(0x3D ); \
+			nokia1100_send_cmd(value & 0x03)
+
+/* CHARGE PUMP CONTROL */
+#define nokia1100_chargepump_off() nokia1100_send_cmd(0x28 | 0x02)
+
+/* RAM ADDRESSING */
+#define nokia1100_addressingmode_vertical() nokia1100_send_cmd(0xAA  | 0x01)
+
+/* RAM ADDRESSING */
+#define nokia1100_addressingmode_horizontal() nokia1100_send_cmd(0xAA | 0x00)
+
+
+void nokia1100_send_cmd (const uint8_t data);
+void nokia1100_send_data(const uint8_t *data_array, const uint8_t size);
+void nokia1100_full_clear(void);
+/* ================================================================ */
 
 const screench_t _E = {'E'};
 const screench_t _zeroed = {0};
@@ -101,11 +180,7 @@ void screen_invert(bool_t b)
 }
 
 void setupB_refresh()
-{
-	/* limit to 16 only */
-	setup_number &= 0x0F;
-	
-	
+{	
 	/*row_t i;
 	col_t j;
 	uint8_t value_no = 0;
@@ -219,12 +294,11 @@ void setupB_refresh()
 void setupA_refresh()
 {
 	/* limit to 16 only */
-	setup_number &= 0x0F;
 	
 	vt100_cursor.row = 6;
 	vt100_cursor.col = setup_number;
 	
-	for(register col_t j=0; j < 16; j++)
+	for(register col_t j=0; j < SCREEN_COL; j++)
 	{
 		nokia1100_buffer[6][j].data = setting_tab_ishigh(j) ? 'T' : ' ';
 	}		
@@ -579,6 +653,8 @@ void screen_shiftdown()
 void screen_row_clear(const row_t i)
 {
 	screen_segment_clear(i, 0, SCREEN_COL - 1);
+	nokia1100_gotox(0);
+	nokia1100_gotoy(0);
 }
 
 void screen_segment_clear(const row_t i, const col_t j_start, const col_t j_end)

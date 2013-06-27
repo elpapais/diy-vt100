@@ -6,5 +6,6 @@
 void hardware_init(void);
 void hardware_reset(void);
 void hardware_loop(void);
+bool_t hardware_malfunctioning(void);
 
 #endif

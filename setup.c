@@ -79,7 +79,21 @@ void setup_next_setting(void)
 	/* select right value */
 	setup_number++;
 
-	(setting.bits.SETUP_TYPE) ? setupB_refresh() : setupA_refresh();
+	if(setting.bits.SETUP_TYPE)
+	{
+		setup_number &= 0x0F;
+		
+		setupB_refresh();
+	}
+	else
+	{
+		if(!(setup_number < SCREEN_COL))
+		{
+			setup_number = 0;
+		}
+
+		setupA_refresh();
+	}
 }
 
 void setup_value_flip(void)

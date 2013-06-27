@@ -1,4 +1,3 @@
-#include <diy-vt100/hardware/keyboard/ps2.h>
 #include <diy-vt100/setting.h>
 #include <diy-vt100/bell.h>
 #include <diy-vt100/uart.h>
@@ -61,8 +60,6 @@ extern const ps2kbdscancode_t ps2kbd_scancode[PS2KBD_SCANCODE_SIZE];
 
 #define KBD_MODIFIER HW_PRIV1
 #define KBD_BREAK HW_PRIV2
-
-cqueue_t ps2kbd;
 
 /* === */
 

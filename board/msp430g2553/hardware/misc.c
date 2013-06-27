@@ -1,9 +1,6 @@
+#include <diy-vt100/common.h>
 #include <diy-vt100/hardware.h>
-#include <diy-vt100/hardware/wdt.h>
-#include <diy-vt100/hardware/port1.h>
-#include <diy-vt100/hardware/port2.h>
 #include <diy-vt100/hardware/ic_74xx595.h>
-#include <diy-vt100/hardware/keyboard/ps2.h>
 #include <diy-vt100/hardware/uart.h>
 #include <diy-vt100/hardware/cqueue.h>
 #include <diy-vt100/param.h>
@@ -11,6 +8,11 @@
 #include <diy-vt100/vt100/state.h>
 
 void timer1_A3_init(void);
+extern cqueue_t ps2kbd;
+void ps2kbd_decode(uint8_t);
+void wdt_init(void);
+void port1_init(void);
+void port2_init(void);
 
 /*
  * usuage of setting bits 
@@ -78,4 +80,9 @@ __loop:
 	ic_74xx595_refresh();
 	_BIS_SR(LPM1_bits + GIE);
 goto __loop;
+}
+
+bool_t hardware_malfunctioning(void)
+{
+	return FALSE;
 }

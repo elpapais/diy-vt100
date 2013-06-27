@@ -175,14 +175,6 @@ void vt100_setting_low()
 	}
 }
 
-void vt100_sequence_terminate()
-{
-	/* reset to C0 state (this work is already preformed by worker function) */
-	//state_current = (struct __state)vt100_state_C0;
-
-	/* TODO: print error char */
-}
-
 /* load led's */
 void 
 vt100_DECLL()

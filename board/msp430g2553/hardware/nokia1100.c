@@ -2,7 +2,6 @@
 #include <diy-vt100/hardware/screen/nokia1100.h>
 #include <diy-vt100/hardware/port2.h>
 
-
 #define NOKIA1100_ONLY_CLKTRANSITION() \
 		port2_low(NOKIA1100_CLK); \
 		port2_high(NOKIA1100_CLK)
@@ -24,8 +23,6 @@ void
 nokia1100_full_clear(void)
 {
 	uint16_t i = 864;
-	
-	nokia1100_gotoyx(0,0);
 	
 	port2_low(NOKIA1100_SS);
 	

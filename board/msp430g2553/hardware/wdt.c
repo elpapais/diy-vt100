@@ -1,5 +1,6 @@
-#include <diy-vt100/hardware/wdt.h>
 #include <diy-vt100/setting.h>
+
+void wdt_interrupt (void) __attribute__((interrupt(WDT_VECTOR)));
 
 #define CURSOR_STATE HW_PRIV0
 

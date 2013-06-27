@@ -16,7 +16,6 @@ const setting_t parm_setting __attribute__((section(".infob"))) =
 		.AUTOX = TRUE,
 		.BPC = TRUE
 	},
-	.tabs = 0b1000100010001000,
 	.answerback = {'d', 'i', 'y', '-', 'v', 't', '1', '0', '0'}
 };
 

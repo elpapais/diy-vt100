@@ -12,6 +12,8 @@
 #include <diy-vt100/param.h>
 #include <diy-vt100/bell.h>
 
+void vt100_sequence_terminate(void);
+
 /* note: 0 index is selected in case no match found */
 struct __state
 {
@@ -227,4 +229,12 @@ void vt100_state(const uint8_t data)
 		/* try to use missing items as param */
 		param_add(data);
 	}
+}
+
+void vt100_sequence_terminate()
+{
+	/* reset to C0 state (this work is already preformed by worker function) */
+	//state_current = (struct __state)vt100_state_C0;
+
+	/* TODO: print error char */
 }

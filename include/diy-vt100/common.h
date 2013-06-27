@@ -72,5 +72,4 @@ typedef uint8_t bool_t;
 #define __islow(var, bit) (!__read(var, bit))
 #define __ishigh(var, bit) (!!__read(var, bit))
 
-
 #endif

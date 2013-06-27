@@ -1,6 +1,8 @@
 #include <diy-vt100/hardware/port1.h>
 #include <diy-vt100/setup.h>
 
+void port1_interrupt(void)__attribute__((interrupt(PORT1_VECTOR)));
+
 void port1_init(void)
 {
 	P1DIR |= IC_74XX595_DATA | IC_74XX595_STCP | IC_74XX595_SHCP;

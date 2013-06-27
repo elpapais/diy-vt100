@@ -13,8 +13,4 @@
 #define port1_high(bits)	__high(P1OUT, bits)
 #define port1_flip(bits)	__flip(P1OUT, bits)
 
-void port1_init(void);
-void port1_interrupt(void)__attribute__((interrupt(PORT1_VECTOR)));
-
-
 #endif

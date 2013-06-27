@@ -14,9 +14,6 @@ void vt100_ENQ(void);
 void vt100_setting_low(void);
 void vt100_setting_high(void);
 
-bool_t __is_vt100_malfunctioning(void);
-void vt100_sequence_terminate(void);
-
 void vt100_DECTST(void);
 void vt100_DECLL(void);
 

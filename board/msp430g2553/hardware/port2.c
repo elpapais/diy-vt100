@@ -1,7 +1,9 @@
 #include <diy-vt100/hardware/port2.h>
-#include <diy-vt100/hardware/keyboard/ps2.h>
 #include <diy-vt100/uart.h>
 #include <diy-vt100/hardware/cqueue.h>
+
+cqueue_t ps2kbd;
+void port2_interrupt(void)__attribute__((interrupt(PORT2_VECTOR)));
 
 void port2_init(void)
 {
