@@ -12,9 +12,9 @@ fi
 
 export PROGNAME=diy-vt100
 export SRC_DIR=$PWD
-export HW_DIR=$PWD/port/$1
+export PORT_DIR=$PWD/port/$1
 export BUILD_DIR=$PWD/build
 export INCLUDE_DIR=$SRC_DIR/include
 
-cd $HW_DIR
+cd $PORT_DIR
 make $2
