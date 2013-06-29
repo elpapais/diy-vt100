@@ -1,4 +1,4 @@
-#include <diy-vt100/hardware/cqueue.h>
+#include <diy-vt100/msp430g2553/cqueue.h>
 
 uint8_t cqueue_pop(cqueue_t *queue)
 {

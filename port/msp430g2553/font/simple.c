@@ -1,4 +1,4 @@
-#include <diy-vt100/hardware/font/simple.h>
+#include <diy-vt100/msp430g2553/font/simple.h>
 
 const uint8_t font_simple_table[256][6] = 
 {

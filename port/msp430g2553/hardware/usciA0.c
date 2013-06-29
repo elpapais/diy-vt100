@@ -1,6 +1,7 @@
 #include <diy-vt100/vt100/buffer.h>
 #include <diy-vt100/uart.h>
 #include <diy-vt100/setting.h>
+#include <diy-vt100/msp430g2553/cqueue.h>
 
 void usciA0_RX_interrupt() __attribute__((interrupt(USCIAB0RX_VECTOR)));
 void usciA0_TX_interrupt() __attribute__((interrupt(USCIAB0TX_VECTOR)));

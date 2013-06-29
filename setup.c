@@ -3,7 +3,7 @@
 #include <diy-vt100/screen.h>
 #include <diy-vt100/vt100/misc.h>
 #include <diy-vt100/uart.h>
-#include <diy-vt100/hardware.h>
+#include <diy-vt100/misc.h>
 
 uint8_t setup_number;
 
@@ -269,5 +269,5 @@ void setup_save(void)
 
 void setup_reset(void)
 {
-	hardware_reset();
+	diyvt100_reset();
 }

@@ -1,4 +1,4 @@
-#include <diy-vt100/hardware/port1.h>
+#include <diy-vt100/msp430g2553/port1.h>
 #include <diy-vt100/setup.h>
 
 void port1_interrupt(void)__attribute__((interrupt(PORT1_VECTOR)));

@@ -5,7 +5,7 @@
 #include <diy-vt100/vt100/cursor.h>
 #include <diy-vt100/vt100/misc.h>
 #include <diy-vt100/setting.h>
-#include <diy-vt100/hardware.h>
+#include <diy-vt100/misc.h>
 
 /* report terminal parameter (requested via DECREQTPARAM) */
 void
@@ -62,7 +62,7 @@ vt100_DSR()
 		case 5:
 			/* report status 
 			 * sending using DSR control sequence */
-			uart_send(hardware_malfunctioning() ? '0' : '3');
+			uart_send(diyvt100_malfunctioning() ? '0' : '3');
 		break;
 		
 		case 6:

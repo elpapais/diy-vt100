@@ -106,7 +106,7 @@ void setting_store(void);
 /* defined by hardware */
 //setting_t parm_setting
 
-#include <diy-vt100/hardware/setting.h>
+#include <diy-vt100/port/setting.h>
 
 #define parm_setting_tab_ishigh(pos) __tab_ishigh(parm_setting.tabs, pos)
 #define parm_setting_tab_islow(pos) __tab_islow(parm_setting.tabs, pos)

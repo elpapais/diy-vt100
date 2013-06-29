@@ -1,12 +1,11 @@
-#include <diy-vt100/hardware/screen/nokia1100.h>
-#include <diy-vt100/hardware.h>
+#include <diy-vt100/msp430g2553/screen/nokia1100.h>
+#include <diy-vt100/msp430g2553/font/simple.h>
 
+#include <diy-vt100/misc.h>
 #include <diy-vt100/screen.h>
 #include <diy-vt100/setup.h>
 #include <diy-vt100/setting.h>
 #include <diy-vt100/uart.h>
-#include <diy-vt100/hardware/font/simple.h>
-
 #include <diy-vt100/vt100/cursor.h>
 
 #define CURSOR_STATE HW_PRIV0

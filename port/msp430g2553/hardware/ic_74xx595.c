@@ -1,5 +1,5 @@
-#include <diy-vt100/hardware/ic_74xx595.h>
-#include <diy-vt100/hardware/port1.h>
+#include <diy-vt100/msp430g2553/ic_74xx595.h>
+#include <diy-vt100/msp430g2553/port1.h>
 
 ic_74xx595_t ic_74xx595;
 

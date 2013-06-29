@@ -1,5 +1,5 @@
 #include <diy-vt100/common.h>
-#include <diy-vt100/hardware/screen/nokia1100.h>
+#include <diy-vt100/msp430g2553/screen/nokia1100.h>
 
 #define TIMER1_A3_TACTL TA1CTL
 #define TIMER1_A3_TACCR0 TA1CCR0

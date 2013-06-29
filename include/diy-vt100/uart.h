@@ -3,7 +3,7 @@
 
 #include <diy-vt100/common.h>
 #include <diy-vt100/setting.h>
-#include <diy-vt100/hardware/uart.h>
+#include <diy-vt100/port/uart.h>
 
 typedef struct
 {

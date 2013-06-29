@@ -1,6 +1,6 @@
 #include <diy-vt100/screen.h>
-#include <diy-vt100/hardware/screen/nokia1100.h>
-#include <diy-vt100/hardware/port2.h>
+#include <diy-vt100/msp430g2553/screen/nokia1100.h>
+#include <diy-vt100/msp430g2553/port2.h>
 
 #define NOKIA1100_ONLY_CLKTRANSITION() \
 		port2_low(NOKIA1100_CLK); \

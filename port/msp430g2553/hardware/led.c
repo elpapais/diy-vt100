@@ -1,5 +1,5 @@
 #include <diy-vt100/led.h>
-#include <diy-vt100/hardware/ic_74xx595.h>
+#include <diy-vt100/msp430g2553/ic_74xx595.h>
 
 void led_on(led_t led_no)
 {

@@ -3,7 +3,7 @@
 
 #include <diy-vt100/common.h>
 
-void hardware_reset(void);
-bool_t hardware_malfunctioning(void);
+void diyvt100_reset(void);
+bool_t diyvt100_malfunctioning(void);
 
 #endif

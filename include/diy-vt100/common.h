@@ -1,7 +1,7 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-#include <diy-vt100/hardware/common.h>
+#include <diy-vt100/port/common.h>
 
 /* ASCII code */
 #define ASCII_NULL		0x00 /* null(\0)					CTRL @ */

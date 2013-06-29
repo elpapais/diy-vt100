@@ -1,5 +1,5 @@
 #include <diy-vt100/common.h>
-#include <diy-vt100/hardware.h>
+#include <diy-vt100/misc.h>
 
 /*
  * usuage of setting bits 
@@ -12,12 +12,12 @@
  * replace decscriptive names with their crossponding HW_PRIV#
  */
 
-void hardware_reset(void)
+void diyvt100_reset(void)
 {
 	WDTCTL = 0;
 }
 
-bool_t hardware_malfunctioning(void)
+bool_t diyvt100_malfunctioning(void)
 {
 	return FALSE;
 }

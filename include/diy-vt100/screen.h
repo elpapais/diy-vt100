@@ -1,7 +1,7 @@
 #ifndef SCREEN_H
 #define SCREEN_H
 
-#include <diy-vt100/hardware/screen.h>
+#include <diy-vt100/port/screen.h>
 #include <diy-vt100/vt100/attribute.h>
 
 typedef struct

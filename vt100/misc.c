@@ -6,7 +6,7 @@
 #include <diy-vt100/param.h>
 #include <diy-vt100/setting.h>
 #include <diy-vt100/uart.h>
-#include <diy-vt100/hardware.h>
+#include <diy-vt100/misc.h>
 #include <diy-vt100/bell.h>
 #include <diy-vt100/led.h>
 
@@ -61,8 +61,8 @@ vt100_DECKPAM()
 void 
 vt100_RIS()
 {
-	/* reset MSP430 */
-	hardware_reset();
+	/* reset diy-vt100 */
+	diyvt100_reset();
 }
 
 /* cursor key mode */

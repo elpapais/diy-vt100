@@ -1,15 +1,15 @@
-#include <diy-vt100/hardware.h>
+#include <diy-vt100/msp430g2553/cqueue.h>
+#include <diy-vt100/msp430g2553/ic_74xx595.h>
+#include <diy-vt100/msp430g2553/cqueue.h>
+
 #include <diy-vt100/common.h>
 #include <diy-vt100/screen.h>
-#include <diy-vt100/uart.h>
-#include <diy-vt100/vt100/misc.h>
 #include <diy-vt100/setting.h>
-#include <diy-vt100/hardware/ic_74xx595.h>
-#include <diy-vt100/hardware/uart.h>
-#include <diy-vt100/hardware/cqueue.h>
 #include <diy-vt100/param.h>
-#include <diy-vt100/screen.h>
+
 #include <diy-vt100/vt100/state.h>
+#include <diy-vt100/vt100/misc.h>
+
 
 void usciA0_init(void);
 void flash_init(void);
@@ -24,6 +24,8 @@ void screen_splash(void);
 void screen_init(void);
 void screen_refresh(void);
 
+extern cqueue_t uart_tx;
+extern cqueue_t uart_rx;
 extern cqueue_t ps2kbd;
 
 void

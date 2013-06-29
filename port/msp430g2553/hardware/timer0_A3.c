@@ -1,5 +1,5 @@
 #include <diy-vt100/bell.h>
-#include <diy-vt100/hardware/ic_74xx595.h>
+#include <diy-vt100/msp430g2553/ic_74xx595.h>
 
 /* note on naming convention
  * timerX_YZ
