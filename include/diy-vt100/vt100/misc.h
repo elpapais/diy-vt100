@@ -17,4 +17,7 @@ void vt100_setting_high(void);
 void vt100_DECTST(void);
 void vt100_DECLL(void);
 
+void vt100_XOFF(void);
+void vt100_XON(void);
+
 #endif

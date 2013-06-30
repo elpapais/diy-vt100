@@ -2,6 +2,7 @@
 #include <diy-vt100/uart.h>
 #include <diy-vt100/setting.h>
 #include <diy-vt100/msp430g2553/cqueue.h>
+#include <diy-vt100/msp430g2553/ic_74xx595.h>
 
 void usciA0_RX_interrupt() __attribute__((interrupt(USCIAB0RX_VECTOR)));
 void usciA0_TX_interrupt() __attribute__((interrupt(USCIAB0TX_VECTOR)));
@@ -73,8 +74,7 @@ void usciA0_init(void)
 /* push received data to uart buffer */
 void usciA0_RX_interrupt(void)
 {
-	cqueue_push(&uart_rx, __ishigh(UCA0STAT, UCPE) ? 176 : UCA0RXBUF);
-	/* TODO: XON/XOFF sending for preventing overflow on when count == 16 */
+	cqueue_push(&uart_rx, __read(UCA0STAT, UCPE) ? 176 : UCA0RXBUF);
 
 	/* exit sleep mode to refresh screen */
 	__bic_status_register_on_exit(LPM1_bits);
@@ -94,15 +94,27 @@ void usciA0_TX_interrupt(void)
 
 void uart_send(const uint8_t data)
 {
-	cqueue_push(&uart_tx, data);
-
-	/* enable interrupt if it was disabled due to empty cqueue */
-	IE2 |= UCA0TXIE;
+	if(! setting.bits.XOFFED)
+	{
+		/* enable transmission */
+		IE2 |= UCA0TXIE;
+	}
+	
+	if(uart_tx.count < CQUEUE_SIZE)
+	{
+		cqueue_push(&uart_tx, data);
+		
+		ic_74xx595.led_kbdlock = FALSE;
+	}
+	else
+	{
+		ic_74xx595.led_kbdlock = TRUE;
+	}
 }
 
-void uart_loopback(uartlopbk_t enable)
+void uart_loopback(edable_t ed)
 {
-	switch(enable)
+	switch(ed)
 	{
 		case ENABLE:
 			__high(UCA0STAT, UCLISTEN);

@@ -13,6 +13,8 @@ void setup()
 
 	if(setting.bits.SETUP_SHOW)
 	{
+		uart_send(ASCII_XOFF);
+		
 		/* switch to setupA */
 		setup_number = 0;
 		setting.bits.SETUP_TYPE = FALSE;
@@ -23,8 +25,13 @@ void setup()
 	{
 		/* exit setup */
 		vt100_refresh_connect_mode();
+		
+		uart_send(ASCII_XON);
+		
 		screen_full_clear();
 	}
+	
+	setting.bits.XOFFED = FALSE;
 }
 
 void setup_switch(void)

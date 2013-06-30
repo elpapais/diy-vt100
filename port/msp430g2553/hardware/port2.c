@@ -1,6 +1,9 @@
 #include <diy-vt100/msp430g2553/port2.h>
-#include <diy-vt100/uart.h>
 #include <diy-vt100/msp430g2553/cqueue.h>
+#include <diy-vt100/msp430g2553/ic_74xx595.h>
+
+#include <diy-vt100/common.h>
+#include <diy-vt100/uart.h>
 
 cqueue_t ps2kbd;
 void port2_interrupt(void)__attribute__((interrupt(PORT2_VECTOR)));

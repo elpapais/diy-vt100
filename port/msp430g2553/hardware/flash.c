@@ -16,7 +16,7 @@ const setting_t parm_setting __attribute__((section(".infob"))) =
 		.AUTOX = TRUE,
 		.BPC = TRUE
 	},
-	.answerback = {'d', 'i', 'y', '-', 'v', 't', '1', '0', '0'}
+	.answerback = {'i', 'm', ' ', 'a', ' ', 'd', 'i', 'y', '-', 'v', 't', '1', '0', '0'}
 };
 
 /*
@@ -92,5 +92,4 @@ void setting_load(void)
 	setting.bits.HW_PRIV0 = FALSE;
 	setting.bits.HW_PRIV1 = FALSE;
 	setting.bits.HW_PRIV2 = FALSE;
-	setting.bits.HW_PRIV3 = FALSE;
 }

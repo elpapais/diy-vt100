@@ -68,6 +68,8 @@ vt100_state_C0[] =
 	state_ignore	(ASCII_DEL),
 	state_ignore	(ASCII_NULL),
 	state_noparam	(ASCII_ENQ, vt100_ENQ),
+	state_noparam	(ASCII_XON, vt100_XON),
+	state_noparam	(ASCII_XOFF, vt100_XOFF),
 	state_end		()
 };
 

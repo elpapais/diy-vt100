@@ -654,6 +654,9 @@ void screen_row_clear(const row_t i)
 	screen_segment_clear(i, 0, SCREEN_COL - 1);
 	nokia1100_gotox(0);
 	nokia1100_gotoy(0);
+	
+	vt100_rowprop[i].double_height = FALSE;
+	vt100_rowprop[i].double_width = FALSE;
 }
 
 void screen_segment_clear(const row_t i, const col_t j_start, const col_t j_end)
@@ -677,6 +680,9 @@ void screen_full_clear()
 		{
 			nokia1100_buffer[i][j] = _zeroed;
 		}
+		
+		vt100_rowprop[i].double_height = FALSE;
+		vt100_rowprop[i].double_width = FALSE;
 	}
 	
 	nokia1100_full_clear();

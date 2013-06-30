@@ -61,6 +61,12 @@
 
 typedef void (* callback_t)(void);
 
+typedef enum
+{
+	DISABLE = 0,
+	ENABLE = 1
+} edable_t;
+
 typedef uint8_t bool_t;
 
 #define __bitmask(num)	(1 << (num))

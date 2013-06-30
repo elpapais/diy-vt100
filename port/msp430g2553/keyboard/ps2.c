@@ -32,7 +32,7 @@ void ps2kbd_keypad_9(void);
 void ps2kbd_keypad_dot(void);
 void ps2kbd_keypad_dash(void);
 */
-#define PS2KBD_SCANCODE_SIZE 126
+#define PS2KBD_SCANCODE_SIZE 127
 
 typedef struct
 {
@@ -491,6 +491,27 @@ void ps2kbd_space(void)
 	keyclick_sound();
 }
 
+void ps2kbd_scroll(void)
+{
+	if(setting.bits.SETUP_SHOW)
+	{
+		return;
+	}
+	
+	if(setting.bits.XOFF_SEND)
+	{
+		uart_send(ASCII_XON);
+		setting.bits.XOFF_SEND = FALSE;
+	}
+	else
+	{
+		uart_send(ASCII_XOFF);
+		setting.bits.XOFF_SEND = TRUE;
+	}
+
+	setting.bits.XOFF_SCROLL = TRUE;
+}
+
 /* === key mapping === */
 
 #define number(ch, ch_alt) 	{(callback_t)2, {ch, ch_alt}}
@@ -629,8 +650,8 @@ const ps2kbdscancode_t ps2kbd_scancode[PS2KBD_SCANCODE_SIZE] =
 	callback(ps2kbd_keypad_3),
 	callback(ps2kbd_keypad_dash),
 	special	('*', '*'),
-	callback(ps2kbd_keypad_9)
-//	ignore(), /* KEYBOARD_PS2_SCROLL */
+	callback(ps2kbd_keypad_9),
+	callback(ps2kbd_scroll)
 //	ignore(),
 //	ignore(),
 //	ignore(),

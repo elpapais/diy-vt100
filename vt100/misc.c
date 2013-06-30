@@ -23,7 +23,7 @@ void vt100_init()
 
 void vt100_refresh_connect_mode()
 {
-	const static uartlopbk_t map_lp_bk[2] = { DISABLE, ENABLE };
+	const static edable_t map_loopback[2] = {DISABLE, ENABLE};
 	const static led_t led_to_off[] = {LOCAL, LINE};
 	const static led_t led_to_on[] = {LINE, LOCAL};
 
@@ -33,7 +33,7 @@ void vt100_refresh_connect_mode()
 		setting.bits.LOCAL = TRUE;
 	}
 	
-	uart_loopback(map_lp_bk[setting.bits.LOCAL]);
+	uart_loopback(map_loopback[setting.bits.LOCAL]);
 	led_off(led_to_off[setting.bits.LOCAL]);
 	led_on(led_to_on[setting.bits.LOCAL]);
 }
@@ -206,5 +206,19 @@ vt100_DECLL()
 				led_on(PROG4);
 			break;
 		}
+	}
+}
+
+void vt100_XON(void)
+{
+	setting.bits.XOFFED = FALSE;
+}
+
+void
+vt100_XOFF(void)
+{
+	if(! setting.bits.LOCAL)
+	{
+		setting.bits.XOFFED = TRUE;
 	}
 }

@@ -14,14 +14,7 @@ typedef struct
 extern const uartspeed_t uart_speed[UART_SPEED_COUNT];
 extern const uint8_t uart_clkmul;
 
-typedef enum
-{
-	DISABLE,
-	ENABLE
-}	
-uartlopbk_t;
-
-void uart_loopback(uartlopbk_t);
+void uart_loopback(edable_t);
 bool_t uart_disconnected(void);
 
 void uart_send(const uint8_t data);
@@ -120,5 +113,4 @@ inline void uart_send_arrow(const uint8_t code)
 	
 	uart_send(code);
 }
-
 #endif

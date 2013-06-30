@@ -44,7 +44,11 @@ typedef struct
 		uint8_t HW_PRIV0:1;
 		uint8_t HW_PRIV1:1;
 		uint8_t HW_PRIV2:1;
-		uint8_t HW_PRIV3:1;
+
+		/* XON / XOFF */
+		uint8_t XOFF_SEND:1; 		/* is XOFF send */
+		uint8_t XOFF_SCROLL:1; 		/* send XOFF by user */
+		uint8_t XOFFED:1;			/* XOFFed by computer */
 
 		/* DEC PRIV - NVR */
 		uint8_t DECANM:1;

@@ -1,11 +1,13 @@
 #include <diy-vt100/msp430g2553/cqueue.h>
 #include <diy-vt100/msp430g2553/ic_74xx595.h>
 #include <diy-vt100/msp430g2553/cqueue.h>
+#include <diy-vt100/msp430g2553/port2.h>
 
 #include <diy-vt100/common.h>
 #include <diy-vt100/screen.h>
 #include <diy-vt100/setting.h>
 #include <diy-vt100/param.h>
+#include <diy-vt100/uart.h>
 
 #include <diy-vt100/vt100/state.h>
 #include <diy-vt100/vt100/misc.h>
@@ -28,8 +30,37 @@ extern cqueue_t uart_tx;
 extern cqueue_t uart_rx;
 extern cqueue_t ps2kbd;
 
+inline void __autox_feature(void);
+inline void __init(void);
+
 void
 main(void)
+{
+	__init();
+	
+	__loop:
+		while(ps2kbd.count)
+		{
+			ps2kbd_decode(cqueue_pop(&ps2kbd));
+		}
+		
+		/* use AUTO XON */
+		__autox_feature();
+		
+		while(uart_rx.count)
+		{
+			vt100_state(cqueue_pop(&uart_rx));
+		}
+		
+		ic_74xx595_refresh();
+		
+		screen_refresh();
+		
+		_BIS_SR(LPM1_bits + GIE);
+	goto __loop;
+}
+
+inline void __init()
 {
 	msp430_init();
 	
@@ -48,24 +79,6 @@ main(void)
 	
 	/* show splash screen */
 	screen_splash();
-	
-	__loop:
-		while(ps2kbd.count)
-		{
-			ps2kbd_decode(cqueue_pop(&ps2kbd));
-		}
-		
-		while(uart_rx.count)
-		{
-			vt100_state(cqueue_pop(&uart_rx));
-		}
-		
-		ic_74xx595_refresh();
-		
-		screen_refresh();
-		
-		_BIS_SR(LPM1_bits + GIE);
-	goto __loop;
 }
 
 void
@@ -92,4 +105,34 @@ msp430_init(void)
 	/* Set range */ 
 	BCSCTL1 = CALBC1_16MHZ;
 	BCSCTL2 = DIVS_2;
+}
+
+inline void __autox_feature(void)
+{
+	/* AUTOX is enabled */
+	if(parm_setting.bits.AUTOX)
+	{
+		/* we are half way in buffer */
+		if(!(uart_rx.count < 16))
+		{
+			/* XOFF isnt send */
+			if(! setting.bits.XOFF_SEND)
+			{
+				uart_send(ASCII_XOFF);
+				setting.bits.XOFF_SEND = TRUE;
+				setting.bits.XOFF_SCROLL = FALSE;
+			}
+		}
+		/* is RX buffer empty */
+		else if(! uart_rx.count)
+		{
+			/* XON is send */
+			if(setting.bits.XOFF_SEND)
+			{
+				uart_send(ASCII_XON);
+				setting.bits.XOFF_SEND = FALSE;
+				setting.bits.XOFF_SCROLL = FALSE;
+			}
+		}
+	}
 }
