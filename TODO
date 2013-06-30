@@ -1,10 +1,8 @@
 serial printer
 light pen (interlace)
-NO_SCROLL support
 BREAK support
 SHIFT_BREAK support
 CTRL_BREAK support(send answerback string)
-only send ctrl signal generated from specific keys(if improper found, alloc a char in table for each char)
 support AUTO_REPEAT feature
 print last char of code if in ANSI mode or LOCAL mode
 send PARAM(settings) to host instead of dummy values

@@ -23,6 +23,13 @@ TODO: send login prompt at computer startup
 
 and vola! you have a hardware terminal
 
+FAQ:
+Q: why my terminal show everything in on line?
+A: try enabling Auto warp mode (setup B).
+
+Q: why my terminal showing double content in single enter?
+A: try disabling NEW LINE mode (setup B).
+
 how to use!
 since its a clone of vt100
 everything is same(except hardware limitation),
