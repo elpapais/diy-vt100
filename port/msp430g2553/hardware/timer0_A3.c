@@ -18,16 +18,6 @@
 void timer0_A3_start(const uint16_t delay);
 void timer0_A0_interrupt (void) __attribute__((interrupt(TIMER0_A0_VECTOR)));
 
-void bell_short(void)
-{
-	timer0_A3_start(0x4000);
-}
-
-void bell_long(void)
-{
-	timer0_A3_start(0xFFFF);
-}
-
 void timer0_A3_start(const uint16_t delay)
 {
 	ic_74xx595.buzzer = TRUE;
